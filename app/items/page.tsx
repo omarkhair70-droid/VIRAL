@@ -1,17 +1,175 @@
 import Link from "next/link";
 import { ItemCard } from "@/components/item-card";
+import { ItemSearchFilters } from "@/components/item-search-filters";
 import { SectionHeading } from "@/components/section-heading";
 import { EmptyStatePanel } from "@/components/ui/empty-state-panel";
 import { createClient } from "@/lib/supabase/server";
 
 type MaybeArray<T> = T | T[] | null | undefined;
-function firstOrNull<T>(value: MaybeArray<T>): T | null { if (!value) return null; return Array.isArray(value) ? value[0] ?? null : value; }
-type ItemListRawRow = { id: string; title: string; condition: "almost_new" | "good_used" | "minor_issues" | "needs_repair"; city: string | null; area: string | null; desire_mode: "specific" | "flexible" | "surprise"; desire_text: string | null; categories: MaybeArray<{ name_ar: string | null }>; item_images: Array<{ image_url: string | null; is_primary: boolean | null }> | null; };
 
-export default async function ItemsPage() {
+type Condition = "almost_new" | "good_used" | "minor_issues" | "needs_repair";
+type Sort = "newest" | "oldest" | "title";
+
+type SearchParams = Promise<{
+  q?: string | string[];
+  category?: string | string[];
+  city?: string | string[];
+  condition?: string | string[];
+  sort?: string | string[];
+}>;
+
+type ItemListRawRow = {
+  id: string;
+  title: string;
+  condition: Condition;
+  city: string | null;
+  area: string | null;
+  desire_mode: "specific" | "flexible" | "surprise";
+  desire_text: string | null;
+  categories: MaybeArray<{ name_ar: string | null }>;
+  item_images: Array<{ image_url: string | null; is_primary: boolean | null }> | null;
+};
+
+function firstOrNull<T>(value: MaybeArray<T>): T | null {
+  if (!value) return null;
+  return Array.isArray(value) ? value[0] ?? null : value;
+}
+
+function cleanText(value: string | null, maxLength: number): string {
+  if (!value) return "";
+  return value.trim().slice(0, maxLength);
+}
+
+function parseCondition(value: string | null): Condition | null {
+  if (!value) return null;
+  if (value === "almost_new" || value === "good_used" || value === "minor_issues" || value === "needs_repair") {
+    return value;
+  }
+  return null;
+}
+
+function parseSort(value: string | null): Sort {
+  if (value === "oldest" || value === "title") return value;
+  return "newest";
+}
+
+export default async function ItemsPage({ searchParams }: { searchParams: SearchParams }) {
+  const params = await searchParams;
+  const qRaw = firstOrNull(params.q) ?? null;
+  const categoryRaw = firstOrNull(params.category) ?? null;
+  const cityRaw = firstOrNull(params.city) ?? null;
+  const condition = parseCondition(firstOrNull(params.condition) ?? null);
+  const sort = parseSort(firstOrNull(params.sort) ?? null);
+
+  const q = cleanText(qRaw, 80);
+  const category = cleanText(categoryRaw, 80);
+  const city = cleanText(cityRaw, 60);
+
+  const hasFilters = Boolean(q || category || city || condition || sort !== "newest");
+
   const supabase = await createClient();
-  const { data, error } = await supabase.from("items").select("id,title,condition,city,area,desire_mode,desire_text,categories(name_ar),item_images(image_url,is_primary)").eq("status", "active").order("created_at", { ascending: false });
-  const items = ((data ?? []) as unknown as ItemListRawRow[]).map((item) => ({ ...item, categoryName: firstOrNull(item.categories)?.name_ar ?? null, imageUrl: item.item_images?.find((img) => img.is_primary)?.image_url ?? item.item_images?.[0]?.image_url ?? null }));
+  const { data: categoriesData } = await supabase
+    .from("categories")
+    .select("id,name_ar,slug")
+    .eq("is_active", true)
+    .order("sort_order", { ascending: true });
 
-  return <section className="mx-auto max-w-6xl px-4 py-10"><SectionHeading title="السوق" subtitle="إعلانات حقيقية من ناس بتدور على مقايضة مفيدة." />{error ? <p className="rounded-xl bg-red-50 p-3 text-red-700">مش قادرين نحمّل السوق دلوقتي. جرّب تاني.</p> : null}{items.length === 0 ? <EmptyStatePanel title="السوق الحقيقي لسه بيتبني." subtitle="ابدأ بأول حاجة عندك، أو شوف الناس عارضة إيه." actions={<><Link href="/items/new" className="rounded-xl bg-clay px-5 py-3 text-white">اعرض حاجة</Link><Link href="/feed" className="rounded-xl border border-stone-300 px-5 py-3">شوف العروض</Link></>} /> : <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{items.map((item) => <ItemCard key={item.id} item={item} />)}</div>}</section>;
+  let query = supabase
+    .from("items")
+    .select("id,title,condition,city,area,desire_mode,desire_text,categories(name_ar),item_images(image_url,is_primary)")
+    .eq("status", "active");
+
+  if (q) {
+    query = query.or(
+      `title.ilike.%${q}%,description.ilike.%${q}%,desire_text.ilike.%${q}%,city.ilike.%${q}%,area.ilike.%${q}%`,
+    );
+  }
+
+  if (category) {
+    const matchedCategory = (categoriesData ?? []).find((row) => row.slug === category || row.id === category);
+    if (matchedCategory) {
+      query = query.eq("category_id", matchedCategory.id);
+    }
+  }
+
+  if (city) {
+    query = query.ilike("city", `%${city}%`);
+  }
+
+  if (condition) {
+    query = query.eq("condition", condition);
+  }
+
+  if (sort === "oldest") {
+    query = query.order("created_at", { ascending: true });
+  } else if (sort === "title") {
+    query = query.order("title", { ascending: true });
+  } else {
+    query = query.order("created_at", { ascending: false });
+  }
+
+  const { data, error } = await query;
+
+  const items = ((data ?? []) as unknown as ItemListRawRow[]).map((item) => ({
+    ...item,
+    categoryName: firstOrNull(item.categories)?.name_ar ?? null,
+    imageUrl:
+      item.item_images?.find((img) => img.is_primary)?.image_url ?? item.item_images?.[0]?.image_url ?? null,
+  }));
+
+  return (
+    <section className="mx-auto max-w-6xl px-4 py-10">
+      <SectionHeading
+        title={hasFilters ? "نتائج البحث" : "السوق"}
+        subtitle={hasFilters ? `لقينا ${items.length} إعلان مناسب` : "إعلانات حقيقية من ناس بتدور على مقايضة مفيدة."}
+      />
+
+      <ItemSearchFilters
+        categories={(categoriesData ?? []).map((row) => ({ id: row.id, name_ar: row.name_ar, slug: row.slug }))}
+        values={{ q, category, city, condition: condition ?? "", sort }}
+      />
+
+      {error ? <p className="rounded-xl bg-red-50 p-3 text-red-700">مش قادرين نحمّل السوق دلوقتي. جرّب تاني.</p> : null}
+
+      {items.length === 0 ? (
+        hasFilters ? (
+          <EmptyStatePanel
+            title="مفيش نتائج مطابقة دلوقتي."
+            subtitle="جرّب توسّع البحث أو اعرض الحاجة اللي عندك يمكن حد يدور عليها."
+            actions={
+              <>
+                <Link href="/items" className="rounded-xl border border-stone-300 px-5 py-3">
+                  امسح الفلاتر
+                </Link>
+                <Link href="/items/new" className="rounded-xl bg-clay px-5 py-3 text-white">
+                  اعرض حاجة
+                </Link>
+              </>
+            }
+          />
+        ) : (
+          <EmptyStatePanel
+            title="السوق الحقيقي لسه بيتبني."
+            subtitle="ابدأ بأول حاجة عندك، أو شوف الناس عارضة إيه."
+            actions={
+              <>
+                <Link href="/items/new" className="rounded-xl bg-clay px-5 py-3 text-white">
+                  اعرض حاجة
+                </Link>
+                <Link href="/feed" className="rounded-xl border border-stone-300 px-5 py-3">
+                  شوف العروض
+                </Link>
+              </>
+            }
+          />
+        )
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {items.map((item) => (
+            <ItemCard key={item.id} item={item} />
+          ))}
+        </div>
+      )}
+    </section>
+  );
 }
