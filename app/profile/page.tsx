@@ -27,6 +27,7 @@ export default async function ProfilePage({ searchParams }: PageParams) {
   return (
     <section className="mx-auto max-w-2xl space-y-5 px-4 py-10">
       <h1 className="text-3xl font-bold">بروفايلك</h1>
+      <p className="text-sm text-stone-600">البروفايل الواضح بيساعد الناس تتعامل معاك بثقة.</p>
       {query.updated ? <p className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-emerald-800">تم تحديث بروفايلك بنجاح.</p> : null}
       {query.error ? <p className="rounded-xl border border-red-200 bg-red-50 p-3 text-red-800">{query.error}</p> : null}
 

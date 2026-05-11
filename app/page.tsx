@@ -9,13 +9,13 @@ export const metadata: Metadata = {
     "بدّل الحاجة بدل ما تسيبها مركونة. اعرض حاجة، استقبل عروض، اتفقوا بهدوء، وبعد المقايضة قيّموا بعض.",
 };
 
-const steps = ["اعرض الحاجة", "استقبل عروض", "اتفقوا بهدوء", "قيّموا بعض بعد المقايضة"];
+const steps = ["اعرض حاجة مركونة", "استقبل عروض", "افتح صفحة التنسيق", "قيّم بعد المقايضة"];
 
 export default function HomePage() {
   return (
     <div className="mx-auto max-w-6xl space-y-10 px-4 py-10 md:py-14">
       <Card className="rounded-3xl bg-cream p-6 md:p-10">
-        <PageHeading eyebrow="بدّلها — Baddelha Swap" title="بدّل الحاجة بدل ما تسيبها مركونة." subtitle="بدّلها مش سوق بيع تقليدي. دي مساحة للمقايضة الواضحة بين ناس حقيقية." />
+        <PageHeading eyebrow="بدّلها — Baddelha Swap" title="بدّل الحاجة بدل ما تسيبها مركونة." subtitle="بدّلها مساحة مقايضة عملية: اعرض حاجة، استقبل عروض، واتفقوا بأمان في مكان عام." />
         <div className="mt-2 flex flex-wrap gap-3">
           <ButtonLink href="/items/new" size="lg">
             اعرض حاجة
@@ -26,11 +26,8 @@ export default function HomePage() {
           <ButtonLink href="/how-it-works" variant="quiet" size="lg">
             إزاي بتشتغل؟
           </ButtonLink>
-          <ButtonLink href="/install" variant="quiet" size="lg">
-            نزّله كتطبيق
-          </ButtonLink>
           <ButtonLink href="/beta" variant="quiet" size="lg">
-            جرّب النسخة التجريبية
+            ليه النسخة Beta؟
           </ButtonLink>
         </div>
       </Card>
