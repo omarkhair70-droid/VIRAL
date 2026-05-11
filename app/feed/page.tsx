@@ -9,16 +9,20 @@ import { demoFeedItems } from "@/lib/demo-feed";
 type MaybeArray<T> = T | T[] | null | undefined;
 function firstOrNull<T>(value: MaybeArray<T>): T | null { if (!value) return null; return Array.isArray(value) ? value[0] ?? null : value; }
 
-type OfferRow = { id: string; status: string; created_at: string; sender_profile: MaybeArray<{ display_name: string | null; username: string | null }>; receiver_profile: MaybeArray<{ display_name: string | null; username: string | null }>; requested_item: MaybeArray<{ title: string; item_images: Array<{ image_url: string | null; is_primary: boolean | null }> | null }>; offered_item: MaybeArray<{ title: string; item_images: Array<{ image_url: string | null; is_primary: boolean | null }> | null }>; };
+type OfferStatus = "pending" | "thinking" | "accepted" | "soft_rejected" | "redirected" | "withdrawn" | "expired" | "cancelled_after_accept";
+type FeedTabKey = "all" | "pending" | "thinking" | "accepted" | "soft_rejected" | "redirected";
+type FeedTab = { key: FeedTabKey; label: string; statuses: OfferStatus[] | null };
 
-const tabStatuses = [
+type OfferRow = { id: string; status: OfferStatus; created_at: string; sender_profile: MaybeArray<{ display_name: string | null; username: string | null }>; receiver_profile: MaybeArray<{ display_name: string | null; username: string | null }>; requested_item: MaybeArray<{ title: string; item_images: Array<{ image_url: string | null; is_primary: boolean | null }> | null }>; offered_item: MaybeArray<{ title: string; item_images: Array<{ image_url: string | null; is_primary: boolean | null }> | null }>; };
+
+const tabStatuses: FeedTab[] = [
   { key: "all", label: "الكل", statuses: null },
   { key: "pending", label: "مستنية رد", statuses: ["pending"] },
   { key: "thinking", label: "محتاج تفكير", statuses: ["thinking"] },
   { key: "accepted", label: "اتقبلت", statuses: ["accepted"] },
   { key: "soft_rejected", label: "ما ظبطتش", statuses: ["soft_rejected"] },
   { key: "redirected", label: "اتفتح باب تاني", statuses: ["redirected"] },
-] as const;
+];
 
 export default async function FeedPage({ searchParams }: { searchParams?: Promise<{ tab?: string }> }) {
   const params = (await searchParams) ?? {};
@@ -31,7 +35,7 @@ export default async function FeedPage({ searchParams }: { searchParams?: Promis
   });
   const visibleOffers = realOffers.filter((offer) => {
     const tab = tabStatuses.find((x) => x.key === activeTab);
-    return !tab?.statuses || tab.statuses.includes(offer.status);
+    return !tab?.statuses || tab.statuses.includes(offer.status as OfferStatus);
   });
 
   return <section className="mx-auto max-w-6xl px-4 py-10"><SectionHeading title="العروض اللي بتحصل" subtitle="شوف الناس بتعرض إيه على إيه. مش كل عرض لازم يبقى منطقي للناس… المهم ينفع أصحابه." /><div className="mb-6 flex flex-wrap gap-2">{tabStatuses.map((tab) => <Link key={tab.key} href={tab.key === "all" ? "/feed" : `/feed?tab=${tab.key}`} className={`rounded-full border px-4 py-2 text-sm ${activeTab === tab.key ? "border-clay bg-clay text-white" : "border-stone-300 text-stone-700"}`}>{tab.label}</Link>)}</div>{realOffers.length > 0 ? <div className="space-y-6"><div className="grid gap-4 md:grid-cols-2">{visibleOffers.map((offer) => <OfferCard key={offer.id} offer={offer} />)}</div></div> : <div className="space-y-6"><EmptyStatePanel title="لسه مفيش عروض حقيقية كتير." subtitle="ابدأ بأول عرض، أو اتفرّج على أمثلة توضيحية." actions={<><Link href="/items" className="rounded-xl border border-stone-300 px-5 py-3">شوف السوق</Link><Link href="/items/new" className="rounded-xl bg-clay px-5 py-3 text-white">اعرض حاجة</Link></>} /><div><h2 className="mb-3 font-semibold">أمثلة توضيحية — مش عروض حقيقية</h2><div className="grid gap-4 md:grid-cols-2">{demoFeedItems.slice(0, 4).map((item) => <FeedCard key={item.id} item={item} />)}</div></div></div>}<div className="mt-8 flex flex-wrap gap-3"><Link href="/items" className="rounded-xl border border-stone-300 px-5 py-3">السوق</Link><Link href="/items/new" className="rounded-xl bg-clay px-5 py-3 text-white">اعرض حاجة</Link></div></section>;
