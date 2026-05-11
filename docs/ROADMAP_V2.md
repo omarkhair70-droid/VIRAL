@@ -13,7 +13,7 @@
 - UI personality principles
 - Social preview style
 
-## Phase 21 — UI Design System
+## Phase 21 — UI Design System: reusable primitives + light application across key product surfaces. — UI Design System
 **Goal:** Unify all screens visually and structurally.
 
 **Deliverables**

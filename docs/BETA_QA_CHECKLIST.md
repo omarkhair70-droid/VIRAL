@@ -29,3 +29,15 @@
 
 ## Build
 - [ ] `npm run build` passes.
+
+
+## N. UI Design System regression
+- Home CTAs still work.
+- Item publish still works.
+- Item detail offer/report/share still works.
+- Offer response buttons still work.
+- Deal confirm/review/message still work.
+- Notifications mark-read still works.
+- Admin reports status update still works.
+- Mobile bottom nav does not cover main actions.
+- No horizontal overflow on mobile.

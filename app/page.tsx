@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { SectionHeading } from "@/components/section-heading";
+import { ButtonLink } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { PageHeading } from "@/components/ui/page-heading";
 
 export const metadata: Metadata = {
   title: "بدّلها | سوق المقايضة",
@@ -13,33 +14,29 @@ const steps = ["اعرض الحاجة", "استقبل عروض", "اتفقوا �
 export default function HomePage() {
   return (
     <div className="mx-auto max-w-6xl space-y-10 px-4 py-10 md:py-14">
-      <section className="rounded-3xl border border-warmBorder bg-cream p-6 shadow-sm md:p-10">
-        <p className="text-sm font-medium text-clay">بدّلها — Baddelha Swap</p>
-        <h1 className="mt-2 text-3xl font-bold leading-tight text-ink md:text-5xl">بدّل الحاجة بدل ما تسيبها مركونة.</h1>
-        <p className="mt-4 max-w-3xl text-base leading-8 text-muted md:text-lg">
-          بدّلها مش سوق بيع تقليدي. دي مساحة للمقايضة الواضحة بين ناس حقيقية.
-        </p>
-        <div className="mt-6 flex flex-wrap gap-3">
-          <Link href="/items/new" className="rounded-xl bg-clay px-5 py-3 text-white hover:bg-clayDark">
+      <Card className="rounded-3xl bg-cream p-6 md:p-10">
+        <PageHeading eyebrow="بدّلها — Baddelha Swap" title="بدّل الحاجة بدل ما تسيبها مركونة." subtitle="بدّلها مش سوق بيع تقليدي. دي مساحة للمقايضة الواضحة بين ناس حقيقية." />
+        <div className="mt-2 flex flex-wrap gap-3">
+          <ButtonLink href="/items/new" size="lg">
             اعرض حاجة
-          </Link>
-          <Link href="/items" className="rounded-xl border border-warmBorder bg-white px-5 py-3">
+          </ButtonLink>
+          <ButtonLink href="/items" variant="secondary" size="lg">
             شوف السوق
-          </Link>
-          <Link href="/how-it-works" className="rounded-xl px-5 py-3 text-muted underline-offset-4 hover:underline">
+          </ButtonLink>
+          <ButtonLink href="/how-it-works" variant="quiet" size="lg">
             إزاي بتشتغل؟
-          </Link>
-          <Link href="/install" className="rounded-xl px-5 py-3 text-muted underline-offset-4 hover:underline">
+          </ButtonLink>
+          <ButtonLink href="/install" variant="quiet" size="lg">
             نزّله كتطبيق
-          </Link>
-          <Link href="/beta" className="rounded-xl px-5 py-3 text-muted underline-offset-4 hover:underline">
+          </ButtonLink>
+          <ButtonLink href="/beta" variant="quiet" size="lg">
             جرّب النسخة التجريبية
-          </Link>
+          </ButtonLink>
         </div>
-      </section>
+      </Card>
 
-      <section className="rounded-3xl border border-warmBorder bg-white p-6 shadow-sm md:p-8">
-        <SectionHeading title="الموضوع بيمشي في 4 خطوات" />
+      <Card className="rounded-3xl p-6 md:p-8">
+        <CardHeader><CardTitle>الموضوع بيمشي في 4 خطوات</CardTitle></CardHeader>
         <ol className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {steps.map((step, index) => (
             <li key={step} className="rounded-xl border border-warmBorder bg-sand p-4 text-sm font-medium text-ink">
@@ -48,13 +45,13 @@ export default function HomePage() {
             </li>
           ))}
         </ol>
-      </section>
+      </Card>
 
-      <section className="grid gap-4 rounded-3xl border border-warmBorder bg-white p-6 shadow-sm md:grid-cols-3 md:p-8">
+      <Card className="grid gap-4 rounded-3xl p-6 md:grid-cols-3 md:p-8"><CardContent className="contents">
         <p className="rounded-xl bg-sand p-4 text-sm text-muted">مفيش بيع إجباري.</p>
         <p className="rounded-xl bg-sand p-4 text-sm text-muted">مفيش أرقام موبايل عامة.</p>
         <p className="rounded-xl bg-sand p-4 text-sm text-muted">التقييمات بتظهر بعد المقايضة المكتملة فقط.</p>
-      </section>
+      </CardContent></Card>
     </div>
   );
 }
