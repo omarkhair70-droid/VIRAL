@@ -86,3 +86,6 @@
 - Phase 21D completed UI-system adoption across item/deal/profile/report transaction surfaces.
 
 **Phase 22A Update (May 11, 2026):** Redirected offers now have a complete follow-up loop (`/offers/new?fromOffer=<id>`), linked by `parent_offer_id` with app+DB duplicate/safety guards.
+
+
+**Phase 22B Update (May 11, 2026):** Core UX flow elevation: first-time entry, publish, offer, deal, review, report, notifications.

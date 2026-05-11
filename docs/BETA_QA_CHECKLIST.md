@@ -61,3 +61,20 @@
 - [ ] follow-up blocked if requested item unavailable.
 - [ ] duplicate active follow-up blocked.
 - [ ] normal offer creation still works.
+
+
+## P. Core UX Flow Elevation
+- [ ] homepage first action is clear
+- [ ] beta page explains controlled beta
+- [ ] item publish helper copy appears
+- [ ] marketplace empty state explains no results
+- [ ] item detail has one main offer CTA
+- [ ] send offer page explains existing vs new item mode
+- [ ] redirected follow-up explains different item requirement
+- [ ] offer response panel explains consequences
+- [ ] deal page step tracker matches status
+- [ ] deal message copy explains not realtime
+- [ ] completion/review copy appears in correct states
+- [ ] report page explains what happens next
+- [ ] notifications page explains in-app nature
+- [ ] profile pages explain trust/reviews

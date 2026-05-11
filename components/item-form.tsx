@@ -119,6 +119,7 @@ export function ItemForm({ categories, prefill, action, authRequired = false, us
 
   return (
     <form onSubmit={onSubmit} className="space-y-4 rounded-2xl border border-stone-200 bg-white p-5">
+      <div className="rounded-xl bg-sand p-3 text-sm text-ink">1) صور الحاجة • 2) وصف واضح • 3) حالتها • 4) عايز إيه بدلها • 5) مكان عام للتنسيق</div>
       {authRequired ? <p className="rounded-xl bg-amber-50 p-3 text-sm text-amber-800">سجّل دخول عشان ترفع صور الحاجة وتنشر الإعلان.</p> : null}
       <div>
         <label className="mb-1 block text-sm font-medium">عنوان الحاجة</label>
@@ -133,7 +134,7 @@ export function ItemForm({ categories, prefill, action, authRequired = false, us
       </div>
       <div>
         <label className="mb-1 block text-sm font-medium">صور الحاجة</label>
-        <p className="mb-2 text-xs text-stone-500">اختار من 1 إلى 4 صور واضحة. الصيغ المدعومة: JPG / PNG / WEBP. الحد الأقصى 5MB لكل صورة. أول صورة هتبقى الصورة الرئيسية. الصور المعروضة في السوق عامة (Public) — ما ترفعش أي بيانات خاصة أو حساسة.</p>
+        <p className="mb-2 text-xs text-stone-500">مش لازم تكون الصورة مثالية، المهم تبقى واضحة. اختار من 1 إلى 4 صور واضحة. الصيغ المدعومة: JPG / PNG / WEBP. الحد الأقصى 5MB لكل صورة. أول صورة هتبقى الصورة الرئيسية. الصور المعروضة في السوق عامة (Public) — ما ترفعش أي بيانات خاصة أو حساسة.</p>
         <input
           type="file"
           accept="image/jpeg,image/png,image/webp"
@@ -158,9 +159,9 @@ export function ItemForm({ categories, prefill, action, authRequired = false, us
       </div>
       <div><label className="mb-1 block text-sm font-medium">وصف إضافي</label><textarea name="description" className="w-full rounded-xl border border-stone-300 px-3 py-2" /></div>
       <div><label className="mb-1 block text-sm font-medium">الحالة</label><select name="condition" required defaultValue="good_used" className="w-full rounded-xl border border-stone-300 px-3 py-2"><option value="almost_new">جديد تقريبًا</option><option value="good_used">مستخدم بحالة كويسة</option><option value="minor_issues">فيه عيوب بسيطة</option><option value="needs_repair">محتاج تصليح / عارف حالته</option></select></div>
-      <div><label className="mb-1 block text-sm font-medium">ملاحظات الحالة (مهم جدًا)</label><textarea name="condition_notes" className="w-full rounded-xl border border-stone-300 px-3 py-2" /></div>
+      <div><label className="mb-1 block text-sm font-medium">ملاحظات الحالة (مهم جدًا)</label><p className="mb-1 text-xs text-stone-500">اكتب العيب بصراحة لو موجود. الصراحة بتقلل المشاكل.</p><textarea name="condition_notes" className="w-full rounded-xl border border-stone-300 px-3 py-2" /></div>
       <div className="grid gap-3 sm:grid-cols-2"><input name="city" placeholder="المدينة" className="rounded-xl border border-stone-300 px-3 py-2" /><input name="area" placeholder="المنطقة" className="rounded-xl border border-stone-300 px-3 py-2" /></div>
-      <div><label className="mb-1 block text-sm font-medium">إنت عايز إيه؟</label><select name="desire_mode" required defaultValue="flexible" className="w-full rounded-xl border border-stone-300 px-3 py-2"><option value="specific">بدور على حاجة معينة</option><option value="flexible">عندي حاجات في بالي، بس فاجئني</option><option value="surprise">فاجئني تمامًا</option></select></div>
+      <div><label className="mb-1 block text-sm font-medium">إنت عايز إيه؟</label><p className="mb-1 text-xs text-stone-500">لو مش عارف عايز إيه، اختار فاجئني.</p><select name="desire_mode" required defaultValue="flexible" className="w-full rounded-xl border border-stone-300 px-3 py-2"><option value="specific">بدور على حاجة معينة</option><option value="flexible">عندي حاجات في بالي، بس فاجئني</option><option value="surprise">فاجئني تمامًا</option></select></div>
       <div><label className="mb-1 block text-sm font-medium">تفاصيل إضافية عن اللي بدور عليه (مثال: مقاس، نوع، حالة)</label><textarea name="desire_text" className="w-full rounded-xl border border-stone-300 px-3 py-2" /></div>
       <div><label className="mb-1 block text-sm font-medium">كلمات مفتاحية للحاجة اللي محتاجها (افصل بينهم بفاصلة)</label><input name="wanted_tags" placeholder="مثال: مكتب, ديكور, خشب" className="w-full rounded-xl border border-stone-300 px-3 py-2" /></div>
       {isSubmitting ? (

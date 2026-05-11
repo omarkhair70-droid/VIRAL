@@ -13,15 +13,15 @@ export default function BetaPage() {
   return (
     <section className="mx-auto max-w-4xl space-y-6 px-4 py-10">
       <Card className="bg-cream">
-        <PageHeading title="جرّب بدّلها في النسخة التجريبية" subtitle="بدّل الحاجة بدل ما تسيبها مركونة. اعرض اللي عندك، استقبل عروض، واتفقوا بهدوء." />
-        <p className="text-sm text-muted">دي نسخة تجريبية متحكَّم فيها: التجربة شغالة، ولسه بنحسّن التفاصيل خطوة بخطوة.</p>
+        <PageHeading title="جرّب بدّلها في النسخة التجريبية" subtitle="دي نسخة تجريبية متحكَّم فيها عشان نتأكد إن الرحلة واضحة وآمنة قبل التوسّع." />
+        <p className="text-sm text-muted">ليه Beta؟ لأننا بنفتح بدّلها بالتدريج ونحسّن التجربة من ملاحظات المستخدمين الحقيقيين.</p>
         <div className="mt-4">
           <ShareActions title="بدّلها Beta" text="جرب بدّلها: بدّل الحاجة بدل ما تسيبها مركونة." urlPath="/beta" label="ابعتها لحد يجربها معاك" />
         </div>
       </Card>
 
       <Card>
-        <CardHeader><CardTitle>بتعمل إيه؟</CardTitle></CardHeader>
+        <CardHeader><CardTitle>أول حاجة تعملها</CardTitle></CardHeader>
         <CardContent>
         <ul className="mt-3 list-inside list-disc space-y-1 text-muted">
           <li>اعرض حاجة عندك بصور واضحة.</li>

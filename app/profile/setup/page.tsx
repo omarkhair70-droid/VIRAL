@@ -32,7 +32,7 @@ export default async function ProfileSetupPage({ searchParams }: SetupPageParams
   return (
     <section className="mx-auto max-w-2xl space-y-5 px-4 py-10">
       <h1 className="text-3xl font-bold">خلّي الناس تعرف تتعامل معاك</h1>
-      <p className="text-stone-700">كمّل بروفايلك في أقل من دقيقة. ده اللي هيظهر للناس لما يشوفوا حاجاتك أو يعرضوا عليك حاجة.</p>
+      <p className="text-stone-700">البروفايل بيساعد الناس تعرف تتعامل مع مين. كمّله في أقل من دقيقة.</p>
       {query.error ? <p className="rounded-xl border border-red-200 bg-red-50 p-3 text-red-800">{query.error}</p> : null}
 
       <form action={completeProfileSetup} className="space-y-4 rounded-2xl border bg-white p-5">
@@ -48,16 +48,16 @@ export default async function ProfileSetupPage({ searchParams }: SetupPageParams
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
           <div>
-            <label htmlFor="city" className="mb-1 block text-sm font-medium">المدينة (مستحسن)</label>
+            <label htmlFor="city" className="mb-1 block text-sm font-medium">المدينة (اختياري)</label>
             <input id="city" name="city" maxLength={60} defaultValue={profile?.city ?? ""} className="w-full rounded-lg border p-2" />
           </div>
           <div>
-            <label htmlFor="area" className="mb-1 block text-sm font-medium">المنطقة</label>
+            <label htmlFor="area" className="mb-1 block text-sm font-medium">المنطقة (اختياري)</label>
             <input id="area" name="area" maxLength={60} defaultValue={profile?.area ?? ""} className="w-full rounded-lg border p-2" />
           </div>
         </div>
         <div>
-          <label htmlFor="bio" className="mb-1 block text-sm font-medium">نبذة قصيرة</label>
+          <label htmlFor="bio" className="mb-1 block text-sm font-medium">نبذة قصيرة (اختياري)</label>
           <textarea id="bio" name="bio" maxLength={200} defaultValue={profile?.bio ?? ""} className="h-24 w-full rounded-lg border p-2" />
         </div>
         <button className="rounded-xl bg-clay px-5 py-2.5 text-white">ابدأ ببروفايلك</button>

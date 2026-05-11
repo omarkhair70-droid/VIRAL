@@ -141,6 +141,7 @@ export default async function UserProfilePage({ params, searchParams }: { params
 
       <div className="space-y-3">
         <h2 className="text-xl font-semibold">آراء الناس بعد المقايضة</h2>
+        <p className="text-sm text-stone-600">الآراء دي بتظهر بعد مقايضات مكتملة فقط.</p>
         {latestReviews.length ? (
           <div className="space-y-3">
             {latestReviews.map((review) => {

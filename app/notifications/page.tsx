@@ -71,7 +71,7 @@ export default async function NotificationsPage({
 
   return (
     <PageShell title="الإشعارات">
-      <PageHeading title="الإشعارات" subtitle="كل التحديثات المهمة عن عروضك وصفقاتك وبلاغاتك في مكان واحد." />
+      <PageHeading title="الإشعارات" subtitle="الإشعارات بتجمع عروضك وصفقاتك وبلاغاتك، لكنها مش Push Notifications لسه." />
       {query.updated === "read_all" ? <Alert variant="success" className="mb-4">تم تعليم كل الإشعارات كمقروءة.</Alert> : null}
 
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
@@ -87,7 +87,7 @@ export default async function NotificationsPage({
       </div>
 
       {notifications.length === 0 ? (
-        <EmptyState title={filter === "unread" ? "مفيش إشعارات جديدة." : "لسه مفيش إشعارات."} subtitle={filter === "all" ? "لما يوصلك عرض أو يحصل تحديث مهم، هيظهر هنا." : "جرّب تبدّل على كل الإشعارات."} />
+        <EmptyState title={filter === "unread" ? "مفيش جديد دلوقتي." : "لسه مفيش إشعارات."} subtitle={filter === "all" ? "لما يوصلك عرض أو يحصل تحديث مهم، هيظهر هنا." : "جرّب تبدّل على كل الإشعارات."} />
       ) : (
         <div className="space-y-3">
           {notifications.map((notification) => {
