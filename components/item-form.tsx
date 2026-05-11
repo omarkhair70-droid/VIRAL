@@ -79,16 +79,17 @@ export function ItemForm({ categories, prefill, action, authRequired = false, us
 
         uploadedPaths.push(objectPath);
       }
-
-      const formData = new FormData(event.currentTarget);
-      formData.set("item_id", draftItemId);
-      formData.set("uploaded_image_paths_json", JSON.stringify(uploadedPaths));
-      await action(formData);
     } catch (error) {
       console.error("Item image upload failed", error);
       setErrorMessage("حصلت مشكلة أثناء رفع الصور. جرّب تاني.");
       setIsSubmitting(false);
+      return;
     }
+
+    const formData = new FormData(event.currentTarget);
+    formData.set("item_id", draftItemId);
+    formData.set("uploaded_image_paths_json", JSON.stringify(uploadedPaths));
+    await action(formData);
   };
 
   return (
