@@ -13,7 +13,9 @@ function parseImagePaths(raw: string): string[] {
   }
 }
 
-export async function createItem(formData: FormData) {
+export type CreateItemResult = { ok: true; itemId: string } | { ok: false; error: "validation" | "publish" };
+
+export async function createItem(formData: FormData): Promise<CreateItemResult> {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -36,17 +38,17 @@ export async function createItem(formData: FormData) {
   const uploadedPaths = parseImagePaths(uploadedPathsRaw);
 
   if (!itemId || !title || !condition || !desire_mode) {
-    redirect("/items/new?error=validation");
+    return { ok: false, error: "validation" };
   }
 
   if (uploadedPaths.length < 1 || uploadedPaths.length > 4) {
-    redirect("/items/new?error=validation");
+    return { ok: false, error: "validation" };
   }
 
   const expectedPrefix = `items/${user.id}/${itemId}/`;
   const invalidPath = uploadedPaths.some((path) => !path.startsWith(expectedPrefix));
   if (invalidPath) {
-    redirect("/items/new?error=validation");
+    return { ok: false, error: "validation" };
   }
 
   const { data: item, error } = await supabase
@@ -71,7 +73,7 @@ export async function createItem(formData: FormData) {
 
   if (error || !item) {
     console.error("Failed to create item", error);
-    redirect("/items/new?error=publish");
+    return { ok: false, error: "publish" };
   }
 
   const itemImagesPayload = uploadedPaths.map((path, index) => {
@@ -87,7 +89,7 @@ export async function createItem(formData: FormData) {
   const { error: imageInsertError } = await supabase.from("item_images").insert(itemImagesPayload);
   if (imageInsertError) {
     console.error("Failed to insert item images", imageInsertError);
-    redirect("/items/new?error=publish");
+    return { ok: false, error: "publish" };
   }
 
   const tags = wantedTagsRaw
@@ -102,5 +104,5 @@ export async function createItem(formData: FormData) {
     }
   }
 
-  redirect(`/items/${item.id}`);
+  return { ok: true, itemId: item.id };
 }
