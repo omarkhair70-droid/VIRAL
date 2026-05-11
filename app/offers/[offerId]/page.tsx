@@ -10,6 +10,7 @@ function firstOrNull<T>(value: MaybeArray<T>): T | null { if (!value) return nul
 
 type ItemJoin = { id: string; title: string; condition: "almost_new"|"good_used"|"minor_issues"|"needs_repair"; item_images: Array<{image_url:string|null;is_primary:boolean|null}>|null; profiles: MaybeArray<{display_name:string|null}>; categories: MaybeArray<{name_ar:string|null}> };
 type OfferRow = { id: string; status: string; message: string | null; public_note: string | null; redirect_type: string | null; created_at: string; sender_id: string; receiver_id: string; requested_item_id: string; offered_item_id: string; requested_item: MaybeArray<ItemJoin>; offered_item: MaybeArray<ItemJoin>; offer_events: Array<{id:string;event_type:string;created_at:string}>|null; };
+type DealRow = { id: string; requester_id: string; offerer_id: string };
 const conditionLabels = { almost_new: "جديد تقريبًا", good_used: "مستخدم بحالة كويسة", minor_issues: "فيه عيوب بسيطة", needs_repair: "محتاج تصليح / عارف حالته" };
 
 const timelineMap: Record<string, string> = { created: "العرض اتبعت", marked_thinking: "صاحب الحاجة محتاج يفكر", accepted: "العرض اتقبل", soft_rejected: "العرض ما ظبطش", redirected: "اتفتح باب تاني" };
@@ -40,7 +41,18 @@ export default async function OfferDetail({ params, searchParams }: { params: Pr
   const offImg = offered.item_images?.find((x) => x.is_primary)?.image_url ?? offered.item_images?.[0]?.image_url ?? null;
   const isReceiver = user?.id === offer.receiver_id;
   const isSender = user?.id === offer.sender_id;
+  const isParticipant = isReceiver || isSender;
   const canRespond = isReceiver && (offer.status === "pending" || offer.status === "thinking");
+
+  let deal: DealRow | null = null;
+  if (offer.status === "accepted") {
+    const { data: dealData } = await supabase
+      .from("swap_deals")
+      .select("id,requester_id,offerer_id")
+      .eq("offer_id", offer.id)
+      .maybeSingle();
+    deal = (dealData as DealRow | null) ?? null;
+  }
 
   return <section className="mx-auto max-w-5xl space-y-6 px-4 py-10">
     <h1 className="text-3xl font-bold">عرض مقايضة</h1>
@@ -64,13 +76,21 @@ export default async function OfferDetail({ params, searchParams }: { params: Pr
 
     {isSender && offer.status === "pending" ? <p className="rounded-xl bg-blue-50 p-3 text-blue-900">عرضك اتبعت. مستني رد صاحب الحاجة.</p> : null}
     {isSender && offer.status === "thinking" ? <p className="rounded-xl bg-yellow-50 p-3 text-yellow-900">صاحب الحاجة شاف العرض ومحتاج يفكر.</p> : null}
-    {isSender && offer.status === "accepted" ? <p className="rounded-xl bg-emerald-50 p-3 text-emerald-900">عرضك اتقبل. خطوة الاتفاق هتتفتح قريب.</p> : null}
+    {isSender && offer.status === "accepted" ? <p className="rounded-xl bg-emerald-50 p-3 text-emerald-900">عرضك اتقبل. دلوقتي تقدروا تبدأوا التنسيق.</p> : null}
     {isSender && offer.status === "soft_rejected" ? <p className="rounded-xl bg-stone-100 p-3 text-stone-700">العرض ما ظبطش المرة دي.</p> : null}
     {isSender && offer.status === "redirected" ? <p className="rounded-xl bg-sky-50 p-3 text-sky-900">صاحب الحاجة فتح باب تاني. شوف ملاحظته.</p> : null}
 
-    {isReceiver && offer.status === "accepted" ? <p className="rounded-xl bg-emerald-50 p-3 text-emerald-900">أنت قبلت العرض. التنسيق جاي في المرحلة الجاية.</p> : null}
+    {isReceiver && offer.status === "accepted" ? <p className="rounded-xl bg-emerald-50 p-3 text-emerald-900">أنت قبلت العرض. تقدروا تبدأوا التنسيق من الصفحة الخاصة.</p> : null}
     {isReceiver && offer.status === "soft_rejected" ? <p className="rounded-xl bg-stone-100 p-3 text-stone-700">أنت رفضت العرض بلطف.</p> : null}
     {isReceiver && offer.status === "redirected" ? <p className="rounded-xl bg-sky-50 p-3 text-sky-900">أنت فتحت باب تاني لصاحب العرض.</p> : null}
+
+    {offer.status === "accepted" && isParticipant ? (
+      deal ? (
+        <Link href={`/deals/${deal.id}`} className="inline-flex rounded-xl bg-emerald-700 px-4 py-2 text-white">افتح صفحة التنسيق</Link>
+      ) : (
+        <p className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-amber-900">العرض اتقبل، وصفحة التنسيق لسه بتتجهز.</p>
+      )
+    ) : null}
 
     <div className="flex flex-wrap gap-3"><Link href={`/items/${requested.id}`} className="rounded-xl border px-4 py-2">افتح الحاجة المطلوبة</Link><Link href={`/items/${offered.id}`} className="rounded-xl border px-4 py-2">افتح الحاجة المعروضة</Link><Link href="/feed" className="rounded-xl bg-clay px-4 py-2 text-white">ارجع للعروض</Link></div>
   </section>;

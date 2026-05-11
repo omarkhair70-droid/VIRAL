@@ -122,6 +122,26 @@ export async function acceptOffer(formData: FormData) {
       notificationTitle: "العرض اتقبل",
       notificationBody: "صاحب الحاجة قبل العرض.",
     });
+
+    const { data: existingDeal, error: existingDealError } = await ctx.supabase
+      .from("swap_deals")
+      .select("id")
+      .eq("offer_id", ctx.offer.id)
+      .maybeSingle();
+    if (existingDealError) throw existingDealError;
+
+    if (!existingDeal) {
+      const { error: dealInsertError } = await ctx.supabase.from("swap_deals").insert({
+        offer_id: ctx.offer.id,
+        requested_item_id: ctx.offer.requested_item_id,
+        offered_item_id: ctx.offer.offered_item_id,
+        requester_id: ctx.offer.receiver_id,
+        offerer_id: ctx.offer.sender_id,
+        status: "coordinating",
+      });
+      if (dealInsertError) throw dealInsertError;
+    }
+
     redirect(`/offers/${ctx.offerId}?response=accepted`);
   } catch (error) {
     console.error("acceptOffer failed", error);
