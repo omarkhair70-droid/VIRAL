@@ -19,3 +19,9 @@ Manual end-to-end checks before inviting first beta users:
    - Item publish page
    - Dashboard
    - Deal page
+14. Report an item from a second account.
+15. Report an offer as a participant.
+16. Report a deal as a participant.
+17. Report a public user profile.
+18. Verify report success message appears after submit.
+19. Verify reports are not publicly visible.

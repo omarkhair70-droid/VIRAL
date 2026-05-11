@@ -21,9 +21,11 @@ type ReviewRow = {
   reviewer: { display_name: string | null; username: string | null }[] | null;
 };
 
-export default async function UserProfilePage({ params }: { params: Promise<{ username: string }> }) {
+export default async function UserProfilePage({ params, searchParams }: { params: Promise<{ username: string }>; searchParams?: Promise<{ reported?: string }> }) {
   const { username } = await params;
+  const query = (await searchParams) ?? {};
   const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
 
   const { data: profile } = await supabase
     .from("profiles")
@@ -76,7 +78,9 @@ export default async function UserProfilePage({ params }: { params: Promise<{ us
         <div className="rounded-xl border bg-stone-50 p-4"><p className="text-sm text-stone-600">متوسط التقييم</p><p className="text-2xl font-bold">{averageRating ? averageRating.toFixed(1) : "-"}</p><p className="text-xs text-stone-500">{reviewCount} تقييم</p></div>
       </div>
 
+      {query.reported === "1" ? <p className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-emerald-800">تم إرسال البلاغ. شكرًا إنك ساعدتنا نحافظ على التجربة.</p> : null}
       <p className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-amber-900">اتعامل بهدوء، وافحص الحاجة قبل المقايضة.</p>
+      {user && user.id !== typed.id ? <Link href={`/report?username=${encodeURIComponent(username)}&returnTo=${encodeURIComponent(`/users/${username}`)}`} className="inline-block text-sm text-stone-600 hover:underline">بلّغ عن المستخدم</Link> : null}
 
       <div className="space-y-3">
         <h2 className="text-xl font-semibold">آراء الناس بعد المقايضة</h2>
