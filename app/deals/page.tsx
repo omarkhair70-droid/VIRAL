@@ -34,7 +34,7 @@ export default async function DealsPage() {
 
   return (
     <section className="mx-auto max-w-4xl space-y-4 px-4 py-10">
-      <h1 className="text-3xl font-bold">صفقات مقبولة</h1>
+      <h1 className="text-3xl font-bold">صفقاتي</h1><p className="text-sm text-stone-600">جاري التنسيق: لسه بتتفقوا. مستني تأكيد: الطرفين محتاجين يأكدوا الإتمام. تمت المقايضة: الصفقة خلصت واتقفلت.</p>
       <div className="grid gap-2 rounded-xl border bg-white p-3 text-sm sm:grid-cols-5">
         <p>الكل: <span className="font-semibold">{grouped.all.length}</span></p>
         <p>جاري التنسيق: <span className="font-semibold">{grouped.coordinating.length}</span></p>
@@ -42,7 +42,7 @@ export default async function DealsPage() {
         <p>تمت: <span className="font-semibold">{grouped.completed.length}</span></p>
         <p>ملغية/مشكلة: <span className="font-semibold">{grouped.cancelledOrDisputed.length}</span></p>
       </div>
-      {deals.length === 0 ? <p className="rounded-xl border bg-white p-4 text-stone-700">لسه مفيش صفقات مقبولة عندك.</p> : null}
+      {deals.length === 0 ? <div className="rounded-xl border bg-white p-5"><p className="font-semibold">لسه مفيش صفقات عندك.</p><p className="mt-1 text-sm text-stone-600">أول ما عرض يتقبل هتلاقيه هنا وتقدر تتابع حالته.</p><Link href="/items" className="mt-3 inline-flex rounded-lg border px-3 py-2 text-sm">شوف السوق</Link></div> : null}
       {deals.map((deal) => (
         <article key={deal.id} className="rounded-xl border bg-white p-4">
           <p className="text-sm text-stone-500">{new Date(deal.created_at).toLocaleDateString("ar-EG")}</p>

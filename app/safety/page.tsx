@@ -1,22 +1,37 @@
 import { SectionHeading } from "@/components/section-heading";
 
-const blocks = [
-  ["قبل ما تبعت عرض", ["شوف وصف الحاجة كويس.", "اطلب صور واضحة لو محتاج.", "ابعت عرض محترم ومباشر."]],
-  ["قبل ما تقبل عرض", ["اتأكد إن الحالة مكتوبة بصراحة.", "اسأل عن أي تفاصيل ناقصة.", "ما تستعجلش قرارك."]],
-  ["وقت الاتفاق", ["اختاروا مكان عام ومناسب للطرفين.", "خد وقتك في معاينة الحاجة.", "خلي المعلومات الحساسة لآخر خطوة."]],
-  ["لو العرض مش مناسب", ["الرفض اللطيف طبيعي جدًا.", "العرض ما ظبطش مش معناها إن الحاجة مالهاش قيمة."]],
-  ["لو حصلت مشكلة", ["وثّق اللي حصل.", "استخدم أدوات البلاغ لما تبقى متاحة.", "سلامتك أهم من أي صفقة."]]
+const safetySections = [
+  {
+    title: "قبل ما توافق",
+    points: ["اقرأ الوصف كويس.", "اسأل عن العيوب بصراحة.", "شوف الصور بوضوح قبل أي اتفاق."],
+  },
+  {
+    title: "وقت المقابلة",
+    points: ["اختار مكان عام.", "ما تبعتش فلوس مقدمًا.", "خليك معاك حد لو الصفقة كبيرة."],
+  },
+  {
+    title: "بعد المقايضة",
+    points: ["أكد الإتمام من صفحة الصفقة.", "قيّم التجربة بصدق."],
+  },
+  {
+    title: "لو حاجة مش مريحة",
+    points: ["وقف الصفقة.", "لا تكمل تحت ضغط.", "ميزة البلاغات والإدارة جايّة لاحقًا."],
+  },
 ] as const;
 
 export default function SafetyPage() {
   return (
     <section className="mx-auto max-w-5xl px-4 py-10">
-      <SectionHeading title="مفتوحة… بس مش سايبة." subtitle="المقايضة ممتعة، ومع شوية قواعد بسيطة تبقى أأمن وأسهل لكل الناس." />
+      <SectionHeading title="دليل الأمان في بدّلها" subtitle="نصايح بسيطة تساعدك تتفقوا بهدوء وتاخد قرار أريح." />
       <div className="grid gap-4 md:grid-cols-2">
-        {blocks.map(([title, points]) => (
-          <article key={title} className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
-            <h2 className="text-xl font-semibold">{title}</h2>
-            <ul className="mt-3 space-y-2 text-sm text-gray-700">{points.map((point) => <li key={point}>• {point}</li>)}</ul>
+        {safetySections.map((section) => (
+          <article key={section.title} className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
+            <h2 className="text-xl font-semibold">{section.title}</h2>
+            <ul className="mt-3 space-y-2 text-sm text-gray-700">
+              {section.points.map((point) => (
+                <li key={point}>• {point}</li>
+              ))}
+            </ul>
           </article>
         ))}
       </div>

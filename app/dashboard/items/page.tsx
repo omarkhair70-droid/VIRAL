@@ -53,7 +53,8 @@ export default async function DashboardItemsPage({
       </div>
       {items.length === 0 ? (
         <div className="rounded-xl border bg-white p-5">
-          <p className="mb-3">لسه ما عرضتش حاجات.</p>
+          <p className="font-semibold">لسه ما عرضتش حاجات.</p>
+          <p className="mb-3 mt-1 text-sm text-stone-600">ابدأ بحاجة واحدة واضحة، وخليك واضح في الوصف.</p>
           <Link href="/items/new" className="inline-flex rounded-lg bg-clay px-4 py-2 text-white">اعرض أول حاجة</Link>
         </div>
       ) : (

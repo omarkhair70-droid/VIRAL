@@ -134,8 +134,8 @@ export default async function ItemsPage({ searchParams }: { searchParams: Search
       {items.length === 0 ? (
         hasFilters ? (
           <EmptyStatePanel
-            title="مفيش نتائج مطابقة دلوقتي."
-            subtitle="جرّب توسّع البحث أو اعرض الحاجة اللي عندك يمكن حد يدور عليها."
+            title="مفيش نتائج بنفس الفلاتر دي."
+            subtitle="جرّب تخفف الفلاتر أو غيّر كلمات البحث. ولو عندك حاجة مناسبة اعرضها."
             actions={
               <>
                 <Link href="/items" className="rounded-xl border border-stone-300 px-5 py-3">

@@ -91,7 +91,7 @@ export default async function DealDetailPage({ params }: { params: Promise<{ dea
       {(deal.status === "coordinating" || deal.status === "completed_pending_confirmation") ? (
         <section className="rounded-2xl border p-4">
           <h2 className="mb-2 text-xl font-semibold">تأكيد إتمام المقايضة</h2>
-          <p className="text-sm text-stone-700">أكد بس لما تكون استلمت واتأكدت إن كل حاجة تمام.</p>
+          <p className="text-sm text-stone-700">أكد بس لما تكون استلمت الحاجة واتأكدت إنها زي الوصف.</p>
           <div className="mt-3 space-y-1 text-sm">
             <p>أنت: {iConfirmed ? "✅ أكدت" : "⏳ لسه"}</p>
             <p>الطرف التاني: {otherConfirmed ? "✅ أكد" : "⏳ لسه"}</p>
@@ -116,7 +116,7 @@ export default async function DealDetailPage({ params }: { params: Promise<{ dea
       {deal.status === "completed" ? (
         <section className="rounded-2xl border p-4">
           <h2 className="mb-2 text-xl font-semibold">قيّم التجربة</h2>
-          <p className="text-sm text-stone-700">التقييم بيظهر للناس عشان يساعدهم ياخدوا قرار بثقة.</p>
+          <p className="text-sm text-stone-700">التقييم بيظهر في بروفايل الطرف التاني بعد الصفقة.</p>
           {myReview ? (
             <p className="mt-3 text-sm text-emerald-800">أنت قيّمت الطرف التاني.</p>
           ) : (

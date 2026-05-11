@@ -79,7 +79,7 @@ export default async function UserProfilePage({ params }: { params: Promise<{ us
       <p className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-amber-900">اتعامل بهدوء، وافحص الحاجة قبل المقايضة.</p>
 
       <div className="space-y-3">
-        <h2 className="text-xl font-semibold">آخر التقييمات</h2>
+        <h2 className="text-xl font-semibold">آراء الناس بعد المقايضة</h2>
         {latestReviews.length ? (
           <div className="space-y-3">
             {latestReviews.map((review) => {
