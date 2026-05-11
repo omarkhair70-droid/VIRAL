@@ -3,6 +3,27 @@ import { ItemCard } from "@/components/item-card";
 import { SectionHeading } from "@/components/section-heading";
 import { createClient } from "@/lib/supabase/server";
 
+type ItemImageRow = {
+  image_url: string | null;
+  is_primary: boolean | null;
+};
+
+type CategoryRow = {
+  name_ar: string | null;
+};
+
+type ItemListRow = {
+  id: string;
+  title: string;
+  condition: "almost_new" | "good_used" | "minor_issues" | "needs_repair";
+  city: string | null;
+  area: string | null;
+  desire_mode: "specific" | "flexible" | "surprise";
+  desire_text: string | null;
+  categories: CategoryRow | null;
+  item_images: ItemImageRow[] | null;
+};
+
 export default async function ItemsPage() {
   const supabase = await createClient();
   const { data, error } = await supabase
@@ -11,17 +32,26 @@ export default async function ItemsPage() {
     .eq("status", "active")
     .order("created_at", { ascending: false });
 
-  const items = (data ?? []).map((item: any) => ({
-    id: item.id,
-    title: item.title,
-    condition: item.condition,
-    city: item.city,
-    area: item.area,
-    desire_mode: item.desire_mode,
-    desire_text: item.desire_text,
-    categoryName: item.categories?.name_ar ?? null,
-    imageUrl: item.item_images?.find((img: any) => img.is_primary)?.image_url ?? item.item_images?.[0]?.image_url ?? null,
-  }));
+  const rows = (data ?? []) as ItemListRow[];
+
+  const items = rows.map((item) => {
+    const primaryImage =
+      item.item_images?.find((img) => img.is_primary)?.image_url ??
+      item.item_images?.[0]?.image_url ??
+      null;
+
+    return {
+      id: item.id,
+      title: item.title,
+      condition: item.condition,
+      city: item.city,
+      area: item.area,
+      desire_mode: item.desire_mode,
+      desire_text: item.desire_text,
+      categoryName: item.categories?.name_ar ?? null,
+      imageUrl: primaryImage,
+    };
+  });
 
   return (
     <section className="mx-auto max-w-6xl px-4 py-10">
