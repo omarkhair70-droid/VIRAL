@@ -2,6 +2,12 @@ import Link from "next/link";
 import type { Route } from "next";
 import { redirect } from "next/navigation";
 import { PageShell } from "@/components/page-shell";
+import { Alert } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { EmptyState } from "@/components/ui/empty-state";
+import { PageHeading } from "@/components/ui/page-heading";
+import { StatusBadge } from "@/components/ui/status-badge";
 import { createClient } from "@/lib/supabase/server";
 import { markAllNotificationsRead, markNotificationRead } from "./actions";
 
@@ -65,8 +71,8 @@ export default async function NotificationsPage({
 
   return (
     <PageShell title="الإشعارات">
-      <p className="mb-4 text-sm text-stone-700">كل التحديثات المهمة عن عروضك وصفقاتك وبلاغاتك في مكان واحد.</p>
-      {query.updated === "read_all" ? <p className="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-800">تم تعليم كل الإشعارات كمقروءة.</p> : null}
+      <PageHeading title="الإشعارات" subtitle="كل التحديثات المهمة عن عروضك وصفقاتك وبلاغاتك في مكان واحد." />
+      {query.updated === "read_all" ? <Alert variant="success" className="mb-4">تم تعليم كل الإشعارات كمقروءة.</Alert> : null}
 
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2">
@@ -75,28 +81,26 @@ export default async function NotificationsPage({
         </div>
         {unreadCount > 0 ? (
           <form action={markAllNotificationsRead}>
-            <button className="rounded-lg border px-3 py-1.5 text-sm">علّم الكل كمقروء</button>
+            <Button variant="secondary" size="sm">علّم الكل كمقروء</Button>
           </form>
         ) : null}
       </div>
 
       {notifications.length === 0 ? (
-        <div className="rounded-2xl border bg-white p-5 text-center">
-          <p className="text-lg font-semibold">{filter === "unread" ? "مفيش إشعارات جديدة." : "لسه مفيش إشعارات."}</p>
-          {filter === "all" ? <p className="mt-2 text-sm text-stone-600">لما يوصلك عرض أو يحصل تحديث مهم، هيظهر هنا.</p> : null}
-        </div>
+        <EmptyState title={filter === "unread" ? "مفيش إشعارات جديدة." : "لسه مفيش إشعارات."} subtitle={filter === "all" ? "لما يوصلك عرض أو يحصل تحديث مهم، هيظهر هنا." : "جرّب تبدّل على كل الإشعارات."} />
       ) : (
         <div className="space-y-3">
           {notifications.map((notification) => {
             const targetLink = getTargetLink(notification);
             return (
-              <article key={notification.id} className={`rounded-2xl border bg-white p-4 ${!notification.read_at ? "border-amber-300" : ""}`}>
+              <Card key={notification.id} className={!notification.read_at ? "border-amber-300" : ""}>
+                <CardContent>
                 <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
                     {!notification.read_at ? <span className="inline-flex h-2.5 w-2.5 rounded-full bg-amber-500" aria-label="غير مقروء" /> : null}
                     <p className="font-semibold">{notification.title}</p>
                   </div>
-                  <span className="rounded-full bg-stone-100 px-2 py-1 text-xs text-stone-700">{typeLabels[notification.type]}</span>
+                  <StatusBadge variant="muted">{typeLabels[notification.type]}</StatusBadge>
                 </div>
                 {notification.body ? <p className="text-sm text-stone-700">{notification.body}</p> : null}
                 <p className="mt-2 text-xs text-stone-500">{new Date(notification.created_at).toLocaleString("ar-EG")}</p>
@@ -110,7 +114,8 @@ export default async function NotificationsPage({
                     </form>
                   ) : null}
                 </div>
-              </article>
+                </CardContent>
+              </Card>
             );
           })}
         </div>
