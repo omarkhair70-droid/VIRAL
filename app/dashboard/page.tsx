@@ -16,6 +16,12 @@ export default async function DashboardPage() {
         <p className="font-semibold">أهلاً بيك 👋</p>
         <p className="text-stone-700">إنت دلوقتي داخل. تقدر تكمل نشر إعلان جديد أو تراجع عروضك.</p>
       </div>
+      <div className="grid gap-3 sm:grid-cols-2">
+        <a href="/items" className="rounded-xl border bg-white p-4 font-semibold">حاجاتي</a>
+        <a href="/offers/new" className="rounded-xl border bg-white p-4 font-semibold">عروض وصلتني</a>
+        <a href="/offers/new" className="rounded-xl border bg-white p-4 font-semibold">عروض بعتها</a>
+        <a href="/deals" className="rounded-xl border bg-white p-4 font-semibold">صفقات مقبولة</a>
+      </div>
     </PageShell>
   );
 }
