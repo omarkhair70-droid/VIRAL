@@ -17,9 +17,9 @@ export default async function LoginPage({
   const error = params.error;
 
   return (
-    <section className="mx-auto max-w-xl space-y-5 px-4 py-12">
-      <h1 className="text-3xl font-bold">ادخل علشان نعرف نرجعلك بردود العروض.</h1>
-      <p className="text-stone-700">الدخول بجوجل هو الأسرع. والإيميل موجود كاختيار احتياطي.</p>
+    <section className="mx-auto max-w-xl space-y-4 px-4 py-10">
+      <h1 className="text-2xl font-bold md:text-3xl">ادخل علشان نعرف نرجعلك بردود العروض.</h1>
+      <p className="text-stone-700">الدخول بجوجل هو الأسرع. والإيميل متاح كاختيار احتياطي.</p>
 
       {error ? (
         <div className="rounded-xl bg-red-50 p-4 text-red-700">
@@ -38,14 +38,14 @@ export default async function LoginPage({
         </div>
       ) : null}
 
-      <form action={signInWithGoogle} className="space-y-3 rounded-2xl border border-stone-200 p-4">
+      <form action={signInWithGoogle} className="space-y-3 rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
         <input type="hidden" name="next" value={next} />
-        <button type="submit" className="w-full rounded-xl bg-stone-900 px-4 py-2 font-medium text-white">
+        <button type="submit" className="w-full rounded-xl bg-clay px-4 py-2 font-medium text-white">
           الدخول بجوجل
         </button>
       </form>
 
-      <p className="text-center text-sm text-stone-600">أو ادخل بالإيميل</p>
+      <p className="text-center text-sm text-stone-600">أو كمل بالإيميل</p>
 
       <form action={sendMagicLink} className="space-y-3 rounded-2xl border border-stone-200 p-4">
         <input type="hidden" name="next" value={next} />

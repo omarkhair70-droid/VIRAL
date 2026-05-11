@@ -23,7 +23,7 @@ export default function HomePage() {
           <p className="mt-4 text-lg leading-8 text-gray-600">بدّل اللي مش فارق معاك بحاجة تفرق معاك.<br />أو ادخل اتفرّج على صفقات غريبة بتحصل حوالينا.</p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Link href="/discover" className="rounded-xl bg-clay px-5 py-3 text-white">شوف حاجتك ممكن تجيبلك إيه</Link>
-            <Link href="/feed" className="rounded-xl border border-stone-300 px-5 py-3">اتفرّج على الصفقات الغريبة</Link>
+            <Link href="/feed" className="rounded-xl border border-stone-300 px-5 py-3">شوف العروض</Link>
           </div>
           <p className="mt-4 text-sm text-gray-500">سفرة ببنطلون؟ مخدة فايبر بأسياخ كفتة؟<br />مش لازم نفهمها… المهم الطرفين مبسوطين.</p>
         </div>
@@ -37,13 +37,13 @@ export default function HomePage() {
       </section>
 
       <section>
-        <SectionHeading title="الناس بتعرض إيه على إيه دلوقتي؟" />
+        <SectionHeading title="أمثلة على شكل العروض" />
         <div className="grid gap-4 md:grid-cols-3">{demoFeedItems.slice(0, 3).map((item) => <FeedCard key={item.id} item={item} />)}</div>
-        <Link href="/feed" className="mt-5 inline-flex text-clay hover:underline">افتح كل العروض</Link>
+        <Link href="/feed" className="mt-5 inline-flex text-clay hover:underline">افتح صفحة العروض</Link>
       </section>
 
       <section>
-        <SectionHeading title="صفقات مالهاش منطق… بس نفعت." />
+        <SectionHeading title="صفقات غريبة حصلت" />
         <div className="grid gap-4 md:grid-cols-3">{completedSwapExamples.map((item) => <SwapCard key={item.id} swap={item.swap} note={item.note} demoLabel />)}</div>
       </section>
 
