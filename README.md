@@ -69,3 +69,13 @@
 ## Phase 18 Beta Sharing
 - صفحة بيتا عامة للتجربة الأولى: `/beta`.
 - إمكانيات مشاركة/نسخ لينك متاحة في صفحات الإعلان والبروفايل وصفحة بيتا.
+
+
+## Current Product Status
+- المشروع مش Phase 0 فقط anymore.
+- الحالة الحالية: **Controlled beta marketplace**.
+- راجع:
+  - `docs/MASTER_PRODUCT_MAP.md`
+  - `docs/ROADMAP_V2.md`
+  - `docs/PRODUCTION_READINESS.md`
+  - `docs/BETA_OPERATING_MODEL.md`
