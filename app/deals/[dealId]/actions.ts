@@ -20,6 +20,20 @@ function isDuplicateError(message: string | undefined): boolean {
   return (message ?? "").toLowerCase().includes("duplicate");
 }
 
+async function insertNotificationSafely(
+  supabase: Awaited<ReturnType<typeof createClient>> ,
+  payload: {
+    user_id: string;
+    type: "deal_completed" | "system";
+    title: string;
+    body: string;
+    deal_id: string;
+  },
+) {
+  const { error } = await supabase.from("notifications").insert(payload);
+  if (error) console.error("notification insert skipped", error.message);
+}
+
 export async function confirmDealCompleted(formData: FormData) {
   const dealId = String(formData.get("dealId") ?? "").trim();
   if (!dealId) redirect("/deals");
@@ -70,6 +84,10 @@ export async function confirmDealCompleted(formData: FormData) {
       await supabase.from("items").update({ status: "swapped" }).in("id", [deal.requested_item_id, deal.offered_item_id]);
       await supabase.from("offer_events").insert({ offer_id: deal.offer_id, actor_id: user.id, event_type: "completed", old_status: "accepted", new_status: "accepted" });
       await supabase.rpc("increment_successful_swaps_for_users", { user_a: deal.requester_id, user_b: deal.offerer_id });
+      await Promise.all([
+        insertNotificationSafely(supabase, { user_id: deal.requester_id, type: "deal_completed", title: "المقايضة تمت", body: "الطرفين أكدوا الإتمام. تقدروا تسيبوا تقييم لبعض.", deal_id: dealId }),
+        insertNotificationSafely(supabase, { user_id: deal.offerer_id, type: "deal_completed", title: "المقايضة تمت", body: "الطرفين أكدوا الإتمام. تقدروا تسيبوا تقييم لبعض.", deal_id: dealId }),
+      ]);
     }
   } else {
     await supabase
@@ -77,6 +95,15 @@ export async function confirmDealCompleted(formData: FormData) {
       .update({ status: "completed_pending_confirmation" })
       .eq("id", dealId)
       .eq("status", "coordinating");
+
+    const otherParticipantId = user.id === deal.requester_id ? deal.offerer_id : deal.requester_id;
+    await insertNotificationSafely(supabase, {
+      user_id: otherParticipantId,
+      type: "system",
+      title: "الصفقة مستنية تأكيدك",
+      body: "الطرف التاني أكد إن المقايضة تمت. راجع الصفقة وأكد لما تكون جاهز.",
+      deal_id: dealId,
+    });
   }
 
   revalidatePath(`/deals/${dealId}`);
@@ -130,6 +157,14 @@ export async function submitDealReview(formData: FormData) {
     }
     redirect(`/deals/${dealId}?error=review_failed`);
   }
+
+  await insertNotificationSafely(supabase, {
+    user_id: revieweeId,
+    type: "system",
+    title: "وصلك تقييم جديد",
+    body: "فيه تقييم جديد ظهر على بروفايلك بعد المقايضة.",
+    deal_id: dealId,
+  });
 
   revalidatePath(`/deals/${dealId}`);
   revalidatePath("/users/[username]", "page");

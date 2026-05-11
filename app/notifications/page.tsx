@@ -1,0 +1,120 @@
+import Link from "next/link";
+import type { Route } from "next";
+import { redirect } from "next/navigation";
+import { PageShell } from "@/components/page-shell";
+import { createClient } from "@/lib/supabase/server";
+import { markAllNotificationsRead, markNotificationRead } from "./actions";
+
+type NotificationType = "offer_received" | "offer_thinking" | "offer_accepted" | "offer_soft_rejected" | "offer_redirected" | "deal_created" | "deal_completed" | "deal_cancelled" | "report_update" | "system";
+
+type NotificationRow = {
+  id: string;
+  type: NotificationType;
+  title: string;
+  body: string | null;
+  item_id: string | null;
+  offer_id: string | null;
+  deal_id: string | null;
+  read_at: string | null;
+  created_at: string;
+};
+
+const typeLabels: Record<NotificationType, string> = {
+  offer_received: "عرض جديد",
+  offer_thinking: "محتاج تفكير",
+  offer_accepted: "عرض اتقبل",
+  offer_soft_rejected: "العرض ما ظبطش",
+  offer_redirected: "باب تاني",
+  deal_created: "صفقة جديدة",
+  deal_completed: "مقايضة تمت",
+  deal_cancelled: "صفقة اتلغت",
+  report_update: "تحديث بلاغ",
+  system: "تنبيه من النظام",
+};
+
+function getTargetLink(notification: NotificationRow): Route | null {
+  if (notification.deal_id) return `/deals/${notification.deal_id}` as Route;
+  if (notification.offer_id) return `/offers/${notification.offer_id}` as Route;
+  if (notification.item_id) return `/items/${notification.item_id}` as Route;
+  return null;
+}
+
+export default async function NotificationsPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ filter?: string; updated?: string }>;
+}) {
+  const query = (await searchParams) ?? {};
+  const filter = query.filter === "unread" ? "unread" : "all";
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect("/login?next=/notifications");
+
+  const queryBuilder = supabase
+    .from("notifications")
+    .select("id,type,title,body,item_id,offer_id,deal_id,read_at,created_at")
+    .order("created_at", { ascending: false })
+    .limit(50);
+
+  const { data } = filter === "unread" ? await queryBuilder.is("read_at", null) : await queryBuilder;
+  const notifications = (data ?? []) as NotificationRow[];
+  const unreadCount = notifications.filter((notification) => !notification.read_at).length;
+
+  return (
+    <PageShell title="الإشعارات">
+      <p className="mb-4 text-sm text-stone-700">كل التحديثات المهمة عن عروضك وصفقاتك وبلاغاتك في مكان واحد.</p>
+      {query.updated === "read_all" ? <p className="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-800">تم تعليم كل الإشعارات كمقروءة.</p> : null}
+
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <Link href="/notifications" className={`rounded-lg px-3 py-1.5 text-sm ${filter === "all" ? "bg-clay text-white" : "border"}`}>الكل</Link>
+          <Link href="/notifications?filter=unread" className={`rounded-lg px-3 py-1.5 text-sm ${filter === "unread" ? "bg-clay text-white" : "border"}`}>غير مقروءة</Link>
+        </div>
+        {unreadCount > 0 ? (
+          <form action={markAllNotificationsRead}>
+            <button className="rounded-lg border px-3 py-1.5 text-sm">علّم الكل كمقروء</button>
+          </form>
+        ) : null}
+      </div>
+
+      {notifications.length === 0 ? (
+        <div className="rounded-2xl border bg-white p-5 text-center">
+          <p className="text-lg font-semibold">{filter === "unread" ? "مفيش إشعارات جديدة." : "لسه مفيش إشعارات."}</p>
+          {filter === "all" ? <p className="mt-2 text-sm text-stone-600">لما يوصلك عرض أو يحصل تحديث مهم، هيظهر هنا.</p> : null}
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {notifications.map((notification) => {
+            const targetLink = getTargetLink(notification);
+            return (
+              <article key={notification.id} className={`rounded-2xl border bg-white p-4 ${!notification.read_at ? "border-amber-300" : ""}`}>
+                <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    {!notification.read_at ? <span className="inline-flex h-2.5 w-2.5 rounded-full bg-amber-500" aria-label="غير مقروء" /> : null}
+                    <p className="font-semibold">{notification.title}</p>
+                  </div>
+                  <span className="rounded-full bg-stone-100 px-2 py-1 text-xs text-stone-700">{typeLabels[notification.type]}</span>
+                </div>
+                {notification.body ? <p className="text-sm text-stone-700">{notification.body}</p> : null}
+                <p className="mt-2 text-xs text-stone-500">{new Date(notification.created_at).toLocaleString("ar-EG")}</p>
+                <div className="mt-3 flex flex-wrap items-center gap-3">
+                  {targetLink ? <Link href={targetLink} className="text-sm text-clay hover:underline">افتح</Link> : null}
+                  {!notification.read_at ? (
+                    <form action={markNotificationRead}>
+                      <input type="hidden" name="notification_id" value={notification.id} />
+                      <input type="hidden" name="filter" value={filter} />
+                      <button className="text-sm text-stone-700 underline">علّم كمقروء</button>
+                    </form>
+                  ) : null}
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      )}
+    </PageShell>
+  );
+}

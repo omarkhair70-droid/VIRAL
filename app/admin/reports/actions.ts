@@ -8,6 +8,13 @@ const VALID_STATUSES = ["open", "reviewing", "resolved", "dismissed"] as const;
 const VALID_STATUS_FILTERS = ["all", ...VALID_STATUSES] as const;
 const VALID_REASON_FILTERS = ["all", "misleading_item", "inappropriate_content", "spam_offer", "unsafe_behavior", "no_show", "other"] as const;
 
+const reportStatusBodyMap: Record<(typeof VALID_STATUSES)[number], string> = {
+  open: "تم رجوع البلاغ لحالة مفتوح.",
+  reviewing: "بلاغك تحت المراجعة.",
+  resolved: "تم التعامل مع البلاغ.",
+  dismissed: "تم إغلاق البلاغ بعد المراجعة.",
+};
+
 function getText(formData: FormData, key: string): string {
   const value = formData.get(key);
   return typeof value === "string" ? value.trim() : "";
@@ -41,8 +48,24 @@ export async function updateReportStatus(formData: FormData) {
     redirect(buildRedirectPath(statusFilter, reasonFilter, "error"));
   }
 
-  const { error } = await supabase.from("reports").update({ status: nextStatus }).eq("id", reportId);
-  if (error) redirect(buildRedirectPath(statusFilter, reasonFilter, "error"));
+  const { data: report, error } = await supabase
+    .from("reports")
+    .update({ status: nextStatus })
+    .eq("id", reportId)
+    .select("reporter_id,item_id,offer_id,deal_id")
+    .maybeSingle();
+  if (error || !report) redirect(buildRedirectPath(statusFilter, reasonFilter, "error"));
+
+  const { error: notificationError } = await supabase.from("notifications").insert({
+    user_id: report.reporter_id,
+    type: "report_update",
+    title: "تم تحديث حالة بلاغك",
+    body: reportStatusBodyMap[nextStatus as (typeof VALID_STATUSES)[number]],
+    item_id: report.item_id,
+    offer_id: report.offer_id,
+    deal_id: report.deal_id,
+  });
+  if (notificationError) console.error("report notification skipped", notificationError.message);
 
   redirect(buildRedirectPath(statusFilter, reasonFilter, "updated"));
 }

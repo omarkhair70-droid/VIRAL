@@ -131,15 +131,28 @@ export async function acceptOffer(formData: FormData) {
     if (existingDealError) throw existingDealError;
 
     if (!existingDeal) {
-      const { error: dealInsertError } = await ctx.supabase.from("swap_deals").insert({
+      const { data: createdDeal, error: dealInsertError } = await ctx.supabase.from("swap_deals").insert({
         offer_id: ctx.offer.id,
         requested_item_id: ctx.offer.requested_item_id,
         offered_item_id: ctx.offer.offered_item_id,
         requester_id: ctx.offer.receiver_id,
         offerer_id: ctx.offer.sender_id,
         status: "coordinating",
-      });
+      }).select("id").single();
       if (dealInsertError) throw dealInsertError;
+
+      if (createdDeal?.id) {
+        const notifications = [ctx.offer.sender_id, ctx.offer.receiver_id].map((userId) => ({
+          user_id: userId,
+          type: "deal_created" as const,
+          title: "اتفتحت صفحة التنسيق",
+          body: "العرض اتقبل، وكده تقدروا تتابعوا الصفقة من صفحة التنسيق.",
+          offer_id: ctx.offer.id,
+          deal_id: createdDeal.id,
+        }));
+        const { error: dealNotificationError } = await ctx.supabase.from("notifications").insert(notifications);
+        if (dealNotificationError) console.error("deal_created notifications skipped", dealNotificationError.message);
+      }
     }
 
     redirect(`/offers/${ctx.offerId}?response=accepted`);
