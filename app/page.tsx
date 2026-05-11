@@ -32,6 +32,9 @@ export default function HomePage() {
           <Link href="/how-it-works" className="rounded-xl px-5 py-3 text-stone-700 underline-offset-4 hover:underline">
             إزاي بتشتغل؟
           </Link>
+          <Link href="/install" className="rounded-xl px-5 py-3 text-stone-700 underline-offset-4 hover:underline">
+            نزّله كتطبيق
+          </Link>
         </div>
       </section>
 

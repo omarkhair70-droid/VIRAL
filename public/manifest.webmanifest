@@ -1,0 +1,28 @@
+{
+  "name": "بدّلها",
+  "short_name": "بدّلها",
+  "description": "بدّل الحاجة بدل ما تسيبها مركونة.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "dir": "rtl",
+  "lang": "ar-EG",
+  "background_color": "#f8f5ef",
+  "theme_color": "#1f2937",
+  "categories": ["shopping", "lifestyle"],
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

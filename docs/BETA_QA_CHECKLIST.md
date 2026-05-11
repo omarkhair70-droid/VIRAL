@@ -88,3 +88,17 @@
 - Send 5 messages quickly then confirm 6th is rate-limited.
 - Confirm admin can see message report with snippet.
 - Confirm normal user cannot access admin reports.
+
+
+## L) PWA / app-like mobile
+- [ ] Manifest loads at `/manifest.webmanifest`.
+- [ ] Icons load from `/icons/icon.svg` and `/icons/icon-maskable.svg`.
+- [ ] `/install` page opens with install instructions.
+- [ ] Service worker registers without console-breaking errors.
+- [ ] `/offline` page opens.
+- [ ] Mobile header does not overflow horizontally.
+- [ ] Bottom nav does not cover important buttons/forms on mobile.
+- [ ] Logged-in bottom nav links open expected pages.
+- [ ] App opens from home screen if user installs it.
+- [ ] Offline fallback appears on navigation when network is unavailable.
+- [ ] Private pages are not cached/reused for another user session.

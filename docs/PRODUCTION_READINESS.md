@@ -56,3 +56,11 @@ Before broad beta access, confirm all of the following are already applied:
 
 - Deal messages include per-message reporting and basic per-deal rate limit.
 - Known limitation: Rate limiting is simple DB-backed beta protection, not a full abuse prevention system.
+
+
+## 7) PWA and Offline Behavior (Phase 17)
+- PWA setup exists (`manifest.webmanifest`, app icons, service worker registration).
+- Offline fallback is navigation-only and conservative (`/offline`), not full offline data mode.
+- No push notifications yet.
+- No offline writes/background sync.
+- Privacy rule: do not cache authenticated/private pages (dashboard, deals, notifications, admin, auth).

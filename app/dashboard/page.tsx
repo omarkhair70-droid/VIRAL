@@ -42,7 +42,7 @@ export default async function DashboardPage() {
 
   return (
     <PageShell title="حسابي">
-      <p className="mb-4 rounded-xl border border-stone-200 bg-stone-50 p-3 text-sm text-stone-700">ابدأ بعرض حاجة واضحة بصور حقيقية، وبعدها تابع العروض من حسابك.</p>
+      <div className="mb-4 space-y-2"><p className="rounded-xl border border-stone-200 bg-stone-50 p-3 text-sm text-stone-700">ابدأ بعرض حاجة واضحة بصور حقيقية، وبعدها تابع العروض من حسابك.</p><Link href="/install" className="inline-flex rounded-lg border border-stone-300 px-3 py-2 text-sm text-stone-700">نزّل بدّلها على موبايلك</Link></div>
       <div className="grid gap-4 md:grid-cols-2">
         <section className="space-y-2 rounded-xl border bg-white p-4"><p className="text-lg font-semibold">حسابي</p><p>{profile?.display_name ?? "مستخدم"}</p><p className="text-sm text-stone-600">{username ? `@${username}` : "لسه مكملش بياناته"}</p>{!profileComplete ? <p className="rounded-lg bg-amber-50 p-2 text-sm text-amber-900">كمّل بروفايلك عشان الناس تعرف تتعامل معاك بثقة.</p> : null}<Link href="/profile" className="inline-flex rounded-lg border px-3 py-1.5 text-sm">تعديل بروفايلك</Link></section>
         <section className="space-y-2 rounded-xl border bg-white p-4"><p className="text-lg font-semibold">حاجاتي</p><p className="text-2xl font-bold">{activeItemsCount ?? 0}</p><div className="flex gap-2"><Link href="/dashboard/items" className="rounded-lg border px-3 py-1.5 text-sm">إدارة حاجاتي</Link><Link href="/items/new" className="rounded-lg border px-3 py-1.5 text-sm">أضف حاجة جديدة</Link></div></section>
