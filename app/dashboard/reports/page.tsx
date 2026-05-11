@@ -12,10 +12,10 @@ const reasonLabels: Record<string, string> = {
 };
 
 const statusLabels: Record<string, string> = {
-  open: "مفتوح",
-  reviewing: "تحت المراجعة",
-  resolved: "اتحل",
-  dismissed: "اتقفل",
+  open: "مستني مراجعة",
+  reviewing: "قيد المراجعة",
+  resolved: "اتراجع",
+  dismissed: "اتقفل بدون إجراء",
 };
 
 export default async function MyReportsPage() {
@@ -32,6 +32,7 @@ export default async function MyReportsPage() {
     <section className="mx-auto max-w-4xl space-y-4 px-4 py-10">
       <h1 className="text-3xl font-bold">بلاغاتي</h1>
       <p className="text-sm text-stone-600">البلاغات دي خاصة بيك ومش ظاهرة لأي مستخدم تاني.</p>
+      <p className="text-sm text-stone-600">هنا بتشوف البلاغات اللي بعتها وحالتها.</p>
       {reports?.length ? reports.map((report) => (
         <article key={report.id} className="rounded-xl border bg-white p-4">
           <p className="font-semibold">{reasonLabels[report.reason] ?? report.reason}</p>

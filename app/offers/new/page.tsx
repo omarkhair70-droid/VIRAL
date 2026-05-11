@@ -62,9 +62,9 @@ export default async function NewOfferPage({ searchParams }: { searchParams: Pro
 
   return <section className="mx-auto max-w-4xl space-y-5 px-4 py-10">
     <h1 className="text-3xl font-bold">اعرض حاجة عندك</h1>
-    <p>اختار حاجة من حاجاتك، أو نزّل حاجة جديدة بسرعة عشان تعرضها على الإعلان ده.</p>
+    <p>اختار الحاجة اللي هتعرضها، واكتب رسالة قصيرة تساعد صاحب الإعلان يفهم العرض.</p>
     {params.error && errorMap[params.error] ? <p className="rounded-xl bg-red-50 p-3 text-red-700">{errorMap[params.error]}</p> : null}
-    {sourceOffer ? <div className="rounded-xl border border-sky-200 bg-sky-50 p-4"><p className="font-semibold">ابعت عرض تاني</p><p className="text-sm text-sky-900">صاحب الحاجة فتح باب تاني. اختار حاجة مختلفة وابعت عرض جديد.</p>{sourceOffer.public_note ? <p className="mt-2 text-sm">ملاحظة صاحب الحاجة: {sourceOffer.public_note}</p> : null}{sourceOffer.redirect_type ? <p className="mt-1 text-sm text-sky-800">نوع الباب التاني: {redirectMap[sourceOffer.redirect_type] ?? sourceOffer.redirect_type}</p> : null}</div> : null}
+    {sourceOffer ? <div className="rounded-xl border border-sky-200 bg-sky-50 p-4"><p className="font-semibold">ده عرض تاني بعد ما صاحب الحاجة فتح باب تاني.</p><p className="text-sm text-sky-900">اختار حاجة مختلفة عن العرض الأول.</p>{sourceOffer.public_note ? <p className="mt-2 text-sm">ملاحظة صاحب الحاجة: {sourceOffer.public_note}</p> : null}{sourceOffer.redirect_type ? <p className="mt-1 text-sm text-sky-800">نوع الباب التاني: {redirectMap[sourceOffer.redirect_type] ?? sourceOffer.redirect_type}</p> : null}</div> : null}
     <div className="rounded-2xl border p-4">{reqImg ? <img src={reqImg} alt={req.title} className="mb-2 aspect-video w-full rounded-xl object-cover" /> : null}<p className="font-semibold">{req.title}</p><p>{reqCat?.name_ar ?? "بدون تصنيف"}</p><p>{conditionLabels[req.condition]}</p><p>صاحبها: {reqOwner?.display_name ?? "مستخدم"}</p>{req.desire_text ? <p>{req.desire_text}</p> : null}</div>
     <form action={createOffer} className="space-y-5 rounded-2xl border p-4">
       <input type="hidden" name="requested_item_id" value={requestedItemId} />
@@ -72,7 +72,9 @@ export default async function NewOfferPage({ searchParams }: { searchParams: Pro
       <div>
         <p className="mb-2 font-semibold">اختار طريقة العرض</p>
         <label className="mr-4"><input defaultChecked type="radio" name="offer_mode" value="existing_item" /> اختار من حاجاتك</label>
+        <p className="mb-2 mt-1 text-xs text-stone-600">اختار حاجة أنت عارضها بالفعل.</p>
         <label><input type="radio" name="offer_mode" value="new_item" /> نزّل حاجة جديدة كعرض</label>
+        <p className="mt-1 text-xs text-stone-600">هتنزّل حاجة جديدة كعرض، وهتظهر في السوق كمان.</p>
       </div>
       <div><label>الحاجة اللي هتعرضها من الموجود</label><select name="offered_item_id" className="mt-1 w-full rounded-xl border px-3 py-2"><option value="">لازم تختار حاجة تعرضها</option>{(ownItems ?? []).filter((it) => it.id !== requestedItemId && it.id !== sourceOffer?.offered_item_id).map((it) => <option key={it.id} value={it.id}>{it.title}</option>)}</select>{(ownItems ?? []).length === 0 ? <p className="mt-2 text-sm text-stone-600">لسه ماعندكش حاجات معروضة. ممكن تنزّل حاجة جديدة دلوقتي وتبعتها كعرض.</p> : null}</div>
       <div className="space-y-2 rounded-xl border border-dashed p-3"><p className="font-semibold">نزّل حاجة جديدة كعرض</p>
@@ -89,7 +91,7 @@ export default async function NewOfferPage({ searchParams }: { searchParams: Pro
       <p className="rounded-xl bg-blue-50 p-3 text-sm text-blue-900">الحاجة اللي هتنزلها هنا هتبقى إعلان ظاهر في السوق كمان. ده يزوّد فرصها حتى لو العرض ده ما ظبطش.</p>
       </div>
       <div><label className="mb-1 block">اكتب رسالة قصيرة لصاحب الحاجة</label><textarea name="message" placeholder="شايفها صفقة غريبة بس نافعة." className="w-full rounded-xl border px-3 py-2" /></div>
-      <div className="rounded-xl bg-stone-50 p-3">مراجعة: الحاجة اللي هتعرضها ↔ {req.title}</div>
+      <div className="space-y-1 rounded-xl bg-stone-50 p-3 text-sm"><p>أنت بتعرض حاجة من عندك مقابل: {req.title}</p><p>رسالتك مش لازم تكون طويلة، المهم تكون واضحة.</p></div>
       <button className="rounded-xl bg-clay px-5 py-3 text-white">ابعت العرض</button>
     </form>
   </section>;

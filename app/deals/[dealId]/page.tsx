@@ -99,6 +99,7 @@ export default async function DealDetailPage({ params, searchParams }: { params:
   const iConfirmed = confirmedIds.has(user.id);
   const otherConfirmed = confirmedIds.has(otherParticipantId);
   const canSendMessage = deal.status === "coordinating" || deal.status === "completed_pending_confirmation";
+  const stepIndex = deal.status === "coordinating" ? 2 : deal.status === "completed_pending_confirmation" ? 3 : deal.status === "completed" ? 4 : null;
 
   const messages = ((messageRows as DealMessageRow[] | null) ?? []).map((row) => {
     const sender = firstOrNull(row.sender);
@@ -129,10 +130,22 @@ export default async function DealDetailPage({ params, searchParams }: { params:
       </div>
 
       <section className="rounded-2xl border p-4"><h2 className="mb-2 text-xl font-semibold">ملخص الصفقة</h2><p>{offererName} هيبدّل {offered.title} مقابل {requested.title} مع {requesterName}.</p></section>
+      <section className="rounded-2xl border p-4">
+        <h2 className="mb-2 text-xl font-semibold">مراحل الصفقة</h2>
+        {stepIndex ? <ol className="space-y-2 text-sm">
+          {["العرض اتقبل", "اتفقوا في الرسائل", "أكّدوا الإتمام", "سيبوا تقييم"].map((step, index) => <li key={step} className={index + 1 <= stepIndex ? "font-semibold text-emerald-800" : "text-stone-600"}>{index + 1}. {step}</li>)}
+        </ol> : null}
+        {deal.status === "coordinating" ? <p className="mt-3 text-sm text-stone-700">ابدأوا بالاتفاق في الرسائل على التفاصيل والمكان المناسب.</p> : null}
+        {deal.status === "completed_pending_confirmation" ? <p className="mt-3 text-sm text-stone-700">طرف أكد الإتمام. مستنيين تأكيد الطرف التاني.</p> : null}
+        {deal.status === "completed" ? <p className="mt-3 text-sm text-stone-700">المقايضة تمت. دلوقتي التقييم يساعد الناس تثق في التجربة.</p> : null}
+        {deal.status === "cancelled" ? <p className="mt-3 rounded-lg bg-stone-100 p-2 text-sm text-stone-700">الصفقة اتلغت. الرسائل القديمة للرجوع فقط.</p> : null}
+        {deal.status === "disputed" ? <p className="mt-3 rounded-lg bg-amber-50 p-2 text-sm text-amber-900">فيه مشكلة على الصفقة. راجعوا التفاصيل وبلّغ لو محتاج.</p> : null}
+      </section>
 
       <section id="messages" className="space-y-4 rounded-2xl border p-4">
         <h2 className="text-xl font-semibold">رسائل التنسيق</h2>
-        <p className="text-sm text-stone-700">استخدم الرسائل للاتفاق على التفاصيل بهدوء. بلاش تبعت رقمك أو عنوانك بدري، واتقابلوا في مكان عام.</p>
+        <p className="text-sm text-stone-700">الرسائل هنا للتنسيق فقط. مفيش شات لحظي لسه، الرسائل بتظهر بعد الإرسال أو تحديث الصفحة.</p>
+        <p className="text-sm text-stone-700">لو في رسالة مش مريحة، بلّغ عنها.</p>
         {query.message === "sent" ? <p className="rounded-lg border border-emerald-200 bg-emerald-50 p-2 text-sm text-emerald-800">تم إرسال الرسالة.</p> : null}
         {query.messageError ? <p className="rounded-lg border border-rose-200 bg-rose-50 p-2 text-sm text-rose-800">{messageErrorMap[query.messageError] ?? messageErrorMap.send_failed}</p> : null}
         <DealMessageThread messages={messages} currentUserId={user.id} dealId={deal.id} />
@@ -149,7 +162,9 @@ export default async function DealDetailPage({ params, searchParams }: { params:
       {(deal.status === "coordinating" || deal.status === "completed_pending_confirmation") ? (
         <section className="rounded-2xl border p-4">
           <h2 className="mb-2 text-xl font-semibold">تأكيد إتمام المقايضة</h2>
-          <p className="text-sm text-stone-700">أكد بس لما تكون استلمت الحاجة واتأكدت إنها زي الوصف.</p>
+          <p className="text-sm text-stone-700">ما تضغطش تأكيد الإتمام غير بعد ما المقايضة تحصل فعلًا.</p>
+          {!iConfirmed && !otherConfirmed ? <p className="mt-2 text-sm text-stone-700">بعد ما المقايضة تحصل، كل طرف يأكد الإتمام من هنا.</p> : null}
+          {(iConfirmed !== otherConfirmed) ? <p className="mt-2 text-sm text-stone-700">مستنيين تأكيد الطرف التاني. لو المقايضة لسه ما تمت، استنوا.</p> : null}
           <div className="mt-3 space-y-1 text-sm">
             <p>أنت: {iConfirmed ? "✅ أكدت" : "⏳ لسه"}</p>
             <p>الطرف التاني: {otherConfirmed ? "✅ أكد" : "⏳ لسه"}</p>
@@ -168,15 +183,17 @@ export default async function DealDetailPage({ params, searchParams }: { params:
       {deal.status === "completed" ? (
         <section className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
           <p className="font-semibold text-emerald-900">المقايضة تمت بنجاح.</p>
+          <p className="mt-1 text-sm text-emerald-900">الطرفين أكدوا الإتمام.</p>
         </section>
       ) : null}
 
       {deal.status === "completed" ? (
         <section className="rounded-2xl border p-4">
           <h2 className="mb-2 text-xl font-semibold">قيّم التجربة</h2>
-          <p className="text-sm text-stone-700">التقييم بيظهر في بروفايل الطرف التاني بعد الصفقة.</p>
+          <p className="text-sm text-stone-700">سيب تقييم بسيط يساعد الناس تعرف التجربة كانت عاملة إزاي.</p>
+          <p className="text-sm text-stone-700">اكتب عن الالتزام، وضوح الوصف، وسهولة التنسيق.</p>
           {myReview ? (
-            <p className="mt-3 text-sm text-emerald-800">أنت قيّمت الطرف التاني.</p>
+            <p className="mt-3 text-sm text-emerald-800">تقييمك اتسجل. شكرًا إنك ساعدت تبني ثقة في بدّلها.</p>
           ) : (
             <form action={submitDealReview} className="mt-3 space-y-3">
               <input type="hidden" name="dealId" value={deal.id} />
