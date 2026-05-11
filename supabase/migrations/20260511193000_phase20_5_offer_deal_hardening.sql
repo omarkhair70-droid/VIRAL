@@ -18,6 +18,51 @@ to authenticated
 using (requester_id = auth.uid() or offerer_id = auth.uid())
 with check (requester_id = auth.uid() or offerer_id = auth.uid());
 
+
+-- 1.5) Offer insert DB integrity protection.
+create or replace function public.enforce_offer_insert_integrity()
+returns trigger
+language plpgsql
+as $$
+declare
+  v_requested_item public.items%rowtype;
+  v_offered_item public.items%rowtype;
+begin
+  if auth.uid() is null then
+    raise exception 'Authentication required';
+  end if;
+
+  if new.sender_id <> auth.uid() then
+    raise exception 'sender_id must equal auth.uid()';
+  end if;
+
+  if new.sender_id = new.receiver_id then
+    raise exception 'sender and receiver must be different users';
+  end if;
+
+  if new.requested_item_id = new.offered_item_id then
+    raise exception 'requested_item_id and offered_item_id must differ';
+  end if;
+
+  select * into v_requested_item from public.items where id = new.requested_item_id;
+  if not found then raise exception 'Requested item not found'; end if;
+  if v_requested_item.status <> 'active' then raise exception 'Requested item must be active'; end if;
+  if v_requested_item.owner_id <> new.receiver_id then raise exception 'Requested item owner must match receiver'; end if;
+
+  select * into v_offered_item from public.items where id = new.offered_item_id;
+  if not found then raise exception 'Offered item not found'; end if;
+  if v_offered_item.status <> 'active' then raise exception 'Offered item must be active'; end if;
+  if v_offered_item.owner_id <> new.sender_id then raise exception 'Offered item owner must match sender'; end if;
+
+  return new;
+end;
+$$;
+
+drop trigger if exists offers_insert_guard on public.offers;
+create trigger offers_insert_guard
+before insert on public.offers
+for each row execute function public.enforce_offer_insert_integrity();
+
 -- 2) Offer lifecycle DB protection.
 create or replace function public.enforce_offer_lifecycle()
 returns trigger
@@ -33,6 +78,12 @@ begin
   end if;
 
   if new.status = old.status then
+    if new.message is distinct from old.message
+      or new.public_note is distinct from old.public_note
+      or new.redirect_type is distinct from old.redirect_type
+      or new.responded_at is distinct from old.responded_at then
+      raise exception 'Arbitrary same-status offer field mutation is not allowed';
+    end if;
     return new;
   end if;
 
@@ -104,6 +155,11 @@ begin
   end if;
 
   if new.status = old.status then
+    if new.completed_at is distinct from old.completed_at
+      or new.cancelled_at is distinct from old.cancelled_at
+      or new.public_story is distinct from old.public_story then
+      raise exception 'Arbitrary same-status deal field mutation is not allowed';
+    end if;
     return new;
   end if;
 
@@ -134,7 +190,10 @@ as $$
 declare
   v_user_id uuid := auth.uid();
   v_offer public.offers%rowtype;
+  v_requested_item public.items%rowtype;
+  v_offered_item public.items%rowtype;
   v_deal_id uuid;
+  v_reserved_count integer;
 begin
   if v_user_id is null then
     raise exception 'Authentication required';
@@ -155,12 +214,26 @@ begin
     raise exception 'Sender cannot accept own offer';
   end if;
 
-  if not exists (select 1 from public.items where id = v_offer.requested_item_id and status = 'active') then
+  select * into v_requested_item from public.items where id = v_offer.requested_item_id for update;
+  if not found then raise exception 'Requested item not found'; end if;
+
+  select * into v_offered_item from public.items where id = v_offer.offered_item_id for update;
+  if not found then raise exception 'Offered item not found'; end if;
+
+  if v_requested_item.status <> 'active' then
     raise exception 'Requested item not active';
   end if;
 
-  if not exists (select 1 from public.items where id = v_offer.offered_item_id and status = 'active') then
+  if v_offered_item.status <> 'active' then
     raise exception 'Offered item not active';
+  end if;
+
+  if v_requested_item.owner_id <> v_offer.receiver_id then
+    raise exception 'Requested item owner mismatch';
+  end if;
+
+  if v_offered_item.owner_id <> v_offer.sender_id then
+    raise exception 'Offered item owner mismatch';
   end if;
 
   update public.offers
@@ -172,8 +245,9 @@ begin
   where id in (v_offer.requested_item_id, v_offer.offered_item_id)
     and status = 'active';
 
-  if (select count(*) from public.items where id in (v_offer.requested_item_id, v_offer.offered_item_id) and status = 'reserved') <> 2 then
-    raise exception 'Failed to reserve both items';
+  get diagnostics v_reserved_count = row_count;
+  if v_reserved_count <> 2 then
+    raise exception 'Failed to reserve both items atomically';
   end if;
 
   insert into public.swap_deals (offer_id, requested_item_id, offered_item_id, requester_id, offerer_id, status)
