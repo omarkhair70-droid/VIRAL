@@ -19,19 +19,19 @@ export async function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-20 border-b border-gray-200 bg-sand/95 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3">
-        <Link href="/" className="flex flex-col">
-          <span className="text-xl font-bold">بدّلها</span>
+      <div className="mx-auto flex max-w-6xl items-start justify-between gap-3 px-4 py-3 sm:items-center">
+        <Link href="/" className="min-w-0 flex-1">
+          <span className="block truncate text-xl font-bold">بدّلها</span>
           <span className="hidden text-xs text-stone-500 sm:block">بدّل الحاجة بدل ما تسيبها مركونة</span>
         </Link>
 
-        <nav className="flex flex-wrap items-center justify-end gap-2 text-sm">
-          <Link className="rounded-lg px-2 py-1.5" href="/items">السوق</Link>
-          {loggedIn ? <Link className="rounded-lg px-2 py-1.5" href="/items/new">اعرض حاجة</Link> : null}
-          {!loggedIn ? <Link className="rounded-lg px-2 py-1.5" href="/how-it-works">إزاي بتشتغل</Link> : null}
-          {loggedIn ? <Link className="rounded-lg px-2 py-1.5" href="/dashboard">حسابي</Link> : null}
-          {loggedIn ? <Link className="rounded-lg px-2 py-1.5" href="/notifications">الإشعارات{unreadNotificationsCount > 0 ? ` (${unreadNotificationsCount})` : ""}</Link> : null}
-          <Link className="rounded-lg px-2 py-1.5" href="/safety">الأمان</Link>
+        <nav className="flex max-w-full flex-wrap items-center justify-end gap-1.5 text-sm sm:gap-2">
+          <Link className="rounded-lg px-2.5 py-2" href="/items">السوق</Link>
+          {loggedIn ? <Link className="rounded-lg px-2.5 py-2" href="/items/new">اعرض حاجة</Link> : null}
+          {!loggedIn ? <Link className="rounded-lg px-2.5 py-2" href="/how-it-works">إزاي بتشتغل</Link> : null}
+          {loggedIn ? <Link className="rounded-lg px-2.5 py-2" href="/dashboard">حسابي</Link> : null}
+          {loggedIn ? <Link className="rounded-lg px-2.5 py-2" href="/notifications">الإشعارات{unreadNotificationsCount > 0 ? ` (${unreadNotificationsCount})` : ""}</Link> : null}
+          <Link className="rounded-lg px-2.5 py-2" href="/safety">الأمان</Link>
           <AuthButton loggedIn={loggedIn} />
         </nav>
       </div>

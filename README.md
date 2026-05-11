@@ -58,3 +58,9 @@
 - راجع `docs/PRODUCTION_READINESS.md` قبل دعوة مستخدمين بيتا جدد.
 - راجع `docs/BETA_QA_CHECKLIST.md` للتست اليدوي النهائي قبل أي release.
 - راجع `docs/RLS_AUDIT.md` لمراجعة صلاحيات RLS الحالية والمتابعات المقترحة.
+
+
+## PWA / App-like Mobile (Phase 17)
+- بدّلها تدعم التثبيت من المتصفح وتقدر تفتحها من Home Screen كتجربة أقرب للتطبيق.
+- خطوات التثبيت للموبايل: `/install`.
+- الـ service worker محافظ: Offline fallback للتصفح فقط، بدون offline editing أو مزامنة كتابة بيانات.
