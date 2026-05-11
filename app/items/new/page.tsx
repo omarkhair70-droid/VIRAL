@@ -1,3 +1,4 @@
+import { randomUUID } from "crypto";
 import Link from "next/link";
 import { ItemForm } from "@/components/item-form";
 import { createClient } from "@/lib/supabase/server";
@@ -7,6 +8,7 @@ export default async function NewItemPage({ searchParams }: { searchParams: Prom
   const params = await searchParams;
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
+  const draftItemId = randomUUID();
 
   const { data: categories, error: categoriesError } = await supabase
     .from("categories")
@@ -22,7 +24,7 @@ export default async function NewItemPage({ searchParams }: { searchParams: Prom
       {!user ? (
         <p className="rounded-xl bg-amber-50 p-3 text-amber-800">ممكن تجهز الإعلان الأول، ولما تدوس نشر لازم تسجل دخول. <Link href="/login?next=/items/new" className="underline">سجّل دخول</Link></p>
       ) : null}
-      <ItemForm categories={categories ?? []} prefill={params.prefill ?? ""} action={createItem} authRequired={!user} />
+      <ItemForm categories={categories ?? []} prefill={params.prefill ?? ""} action={createItem} authRequired={!user} userId={user?.id ?? null} draftItemId={draftItemId} />
     </section>
   );
 }

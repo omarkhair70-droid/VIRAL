@@ -31,11 +31,13 @@
 - لا تستخدم service role key في المتصفح.
 - trigger ينشئ profile تلقائيًا بعد إنشاء user.
 
-## Storage (Manual Dashboard Step)
+## Storage (Phase 7 Item Images)
 أنشئ bucket باسم `item-images`:
 - Public read: enabled
-- Upload: authenticated users
-- المسار المقترح: `items/{userId}/{itemId}/{filename}`
+- لازم تطبق migration الخاصة بسياسات التخزين: `supabase/migrations/20260511120000_phase7_item_image_storage_policies.sql`
+- مسار الرفع الإجباري: `items/{userId}/{itemId}/{timestamp}-{safeFilename}`
+- الصيغ المدعومة: `image/jpeg`, `image/png`, `image/webp`
+- الحد الأقصى: 4 صور لكل إعلان، وكل صورة أقل من 5MB
 
 ## Commands
 - Dev: `npm run dev`

@@ -1,18 +1,99 @@
 "use client";
 
+import { FormEvent, useMemo, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
+
 type Category = { id: string; name_ar: string };
 
 type Props = {
   categories: Category[];
   prefill: string;
-  action: (formData: FormData) => void;
+  action: (formData: FormData) => Promise<void>;
   authRequired?: boolean;
+  userId: string | null;
+  draftItemId: string;
 };
 
-export function ItemForm({ categories, prefill, action, authRequired = false }: Props) {
+const ALLOWED_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
+const MAX_FILES = 4;
+const MAX_SIZE_BYTES = 5 * 1024 * 1024;
+
+function makeSafeFilename(fileName: string) {
+  return fileName
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9._-]/g, "")
+    .replace(/-+/g, "-")
+    .slice(0, 120);
+}
+
+export function ItemForm({ categories, prefill, action, authRequired = false, userId, draftItemId }: Props) {
+  const supabase = useMemo(() => createClient(), []);
+  const [files, setFiles] = useState<File[]>([]);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const previews = useMemo(() => files.map((file) => URL.createObjectURL(file)), [files]);
+
+  const validateFiles = (selectedFiles: File[]) => {
+    if (selectedFiles.length < 1) return "لازم تختار صورة واحدة على الأقل.";
+    if (selectedFiles.length > MAX_FILES) return "مسموح لحد 4 صور.";
+    for (const file of selectedFiles) {
+      if (!ALLOWED_TYPES.has(file.type)) return "الصورة لازم تكون JPG أو PNG أو WEBP.";
+      if (file.size > MAX_SIZE_BYTES) return "كل صورة لازم تكون أقل من 5 ميجا.";
+    }
+    return null;
+  };
+
+  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setErrorMessage(null);
+
+    if (!userId || authRequired) {
+      setErrorMessage("سجّل دخول عشان ترفع صور الحاجة وتنشر الإعلان.");
+      return;
+    }
+
+    const validationError = validateFiles(files);
+    if (validationError) {
+      setErrorMessage(validationError);
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    const uploadedPaths: string[] = [];
+
+    try {
+      for (const file of files) {
+        const safeName = makeSafeFilename(file.name || "image");
+        const objectPath = `items/${userId}/${draftItemId}/${Date.now()}-${safeName}`;
+        const { error } = await supabase.storage.from("item-images").upload(objectPath, file, {
+          upsert: false,
+          contentType: file.type,
+        });
+
+        if (error) {
+          throw new Error("upload-failed");
+        }
+
+        uploadedPaths.push(objectPath);
+      }
+
+      const formData = new FormData(event.currentTarget);
+      formData.set("item_id", draftItemId);
+      formData.set("uploaded_image_paths_json", JSON.stringify(uploadedPaths));
+      await action(formData);
+    } catch (error) {
+      console.error("Item image upload failed", error);
+      setErrorMessage("حصلت مشكلة أثناء رفع الصور. جرّب تاني.");
+      setIsSubmitting(false);
+    }
+  };
+
   return (
-    <form action={action} className="space-y-4 rounded-2xl border border-stone-200 bg-white p-5">
-      {authRequired ? <p className="rounded-xl bg-amber-50 p-3 text-sm text-amber-800">لازم تسجل دخول عشان تنشر إعلانك.</p> : null}
+    <form onSubmit={onSubmit} className="space-y-4 rounded-2xl border border-stone-200 bg-white p-5">
+      {authRequired ? <p className="rounded-xl bg-amber-50 p-3 text-sm text-amber-800">سجّل دخول عشان ترفع صور الحاجة وتنشر الإعلان.</p> : null}
       <div>
         <label className="mb-1 block text-sm font-medium">عنوان الحاجة</label>
         <input name="title" required defaultValue={prefill} className="w-full rounded-xl border border-stone-300 px-3 py-2" />
@@ -25,9 +106,29 @@ export function ItemForm({ categories, prefill, action, authRequired = false }: 
         </select>
       </div>
       <div>
-        <label className="mb-1 block text-sm font-medium">رابط صورة واضح للحاجة</label>
-        <input name="image_url" type="url" required className="w-full rounded-xl border border-stone-300 px-3 py-2" />
-        <p className="mt-1 text-xs text-stone-500">رفع الصور الحقيقي هيتظبط في مرحلة جاية. دلوقتي استخدم رابط صورة للتجربة.</p>
+        <label className="mb-1 block text-sm font-medium">صور الحاجة</label>
+        <p className="mb-2 text-xs text-stone-500">اختار من 1 إلى 4 صور واضحة. أول صورة هتبقى الصورة الرئيسية.</p>
+        <input
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          multiple
+          onChange={(event) => {
+            const selectedFiles = Array.from(event.target.files ?? []).slice(0, MAX_FILES);
+            const validationError = validateFiles(selectedFiles);
+            setFiles(selectedFiles);
+            setErrorMessage(validationError);
+          }}
+          className="w-full rounded-xl border border-stone-300 px-3 py-2 text-sm"
+          aria-label="اختار صور من جهازك"
+        />
+        <p className="mt-1 text-xs text-stone-500">اختار صور من جهازك</p>
+        {previews.length > 0 ? (
+          <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+            {previews.map((src, idx) => (
+              <img key={src} src={src} alt={`معاينة صورة ${idx + 1}`} className="h-24 w-full rounded-lg object-cover" />
+            ))}
+          </div>
+        ) : null}
       </div>
       <div><label className="mb-1 block text-sm font-medium">وصف إضافي</label><textarea name="description" className="w-full rounded-xl border border-stone-300 px-3 py-2" /></div>
       <div><label className="mb-1 block text-sm font-medium">الحالة</label><select name="condition" required defaultValue="good_used" className="w-full rounded-xl border border-stone-300 px-3 py-2"><option value="almost_new">جديد تقريبًا</option><option value="good_used">مستخدم بحالة كويسة</option><option value="minor_issues">فيه عيوب بسيطة</option><option value="needs_repair">محتاج تصليح / عارف حالته</option></select></div>
@@ -36,8 +137,10 @@ export function ItemForm({ categories, prefill, action, authRequired = false }: 
       <div><label className="mb-1 block text-sm font-medium">إنت عايز إيه؟</label><select name="desire_mode" required defaultValue="flexible" className="w-full rounded-xl border border-stone-300 px-3 py-2"><option value="specific">بدور على حاجة معينة</option><option value="flexible">عندي حاجات في بالي، بس فاجئني</option><option value="surprise">فاجئني تمامًا</option></select></div>
       <div><label className="mb-1 block text-sm font-medium">تفاصيل إضافية عن اللي بدور عليه</label><textarea name="desire_text" className="w-full rounded-xl border border-stone-300 px-3 py-2" /></div>
       <div><label className="mb-1 block text-sm font-medium">كلمات مفتاحية للحاجة اللي محتاجها</label><input name="wanted_tags" placeholder="مثال: مكتب, ديكور, خشب" className="w-full rounded-xl border border-stone-300 px-3 py-2" /></div>
+      {isSubmitting ? <p className="rounded-xl bg-blue-50 p-3 text-sm text-blue-900">جاري رفع الصور...</p> : null}
+      {errorMessage ? <p className="rounded-xl bg-red-50 p-3 text-sm text-red-700">{errorMessage}</p> : null}
       <p className="rounded-xl bg-blue-50 p-3 text-sm text-blue-900">لو العنوان فيه أكتر من حاجة مش مرتبطين: خلّي كل حاجة تاخد فرصتها لوحدها. السفرة إعلان، والدولاب إعلان، والأباجورة إعلان. كده فرصك تزيد.</p>
-      <button className="rounded-xl bg-clay px-5 py-3 text-white">انشرها</button>
+      <button disabled={isSubmitting} className="rounded-xl bg-clay px-5 py-3 text-white disabled:opacity-60">انشرها</button>
     </form>
   );
 }
