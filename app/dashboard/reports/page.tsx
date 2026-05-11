@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
@@ -24,7 +25,7 @@ export default async function MyReportsPage() {
 
   const { data: reports } = await supabase
     .from("reports")
-    .select("id,reason,status,details,created_at")
+    .select("id,reason,status,details,created_at,deal_id,deal_message_id")
     .order("created_at", { ascending: false });
 
   return (
@@ -36,6 +37,8 @@ export default async function MyReportsPage() {
           <p className="font-semibold">{reasonLabels[report.reason] ?? report.reason}</p>
           <p className="text-sm text-stone-600">الحالة: {statusLabels[report.status] ?? report.status}</p>
           <p className="text-sm text-stone-600">التاريخ: {new Date(report.created_at).toLocaleDateString("ar-EG")}</p>
+          {report.deal_message_id ? <p className="text-sm text-stone-600">الهدف: رسالة في صفقة</p> : null}
+          {report.deal_id ? <Link href={`/deals/${report.deal_id}`} className="text-sm underline">فتح الصفقة</Link> : null}
           {report.details ? <p className="mt-2 text-sm text-stone-700">{report.details.slice(0, 140)}</p> : null}
         </article>
       )) : <p className="rounded-xl border bg-white p-4 text-stone-600">لسه مفيش بلاغات.</p>}

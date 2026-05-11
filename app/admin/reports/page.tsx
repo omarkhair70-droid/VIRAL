@@ -12,7 +12,7 @@ const reasonLabels: Record<(typeof REASON_OPTIONS)[number], string> = { all: "ك
 
 type SearchParams = { status?: string; reason?: string; updated?: string; error?: string };
 
-type ReportRow = { id: string; reason: string; status: string; details: string | null; created_at: string; item_id: string | null; offer_id: string | null; deal_id: string | null; reporter_id: string; reported_user_id: string | null };
+type ReportRow = { id: string; reason: string; status: string; details: string | null; created_at: string; item_id: string | null; offer_id: string | null; deal_id: string | null; deal_message_id: string | null; reporter_id: string; reported_user_id: string | null };
 
 export default async function AdminReportsPage({ searchParams }: { searchParams: Promise<SearchParams> }) {
   const params = await searchParams;
@@ -24,7 +24,7 @@ export default async function AdminReportsPage({ searchParams }: { searchParams:
   if (!user) redirect("/login?next=/admin/reports");
   if (!(await isCurrentUserAdmin(supabase))) notFound();
 
-  let query = supabase.from("reports").select("id,reason,status,details,created_at,item_id,offer_id,deal_id,reporter_id,reported_user_id").order("created_at", { ascending: false });
+  let query = supabase.from("reports").select("id,reason,status,details,created_at,item_id,offer_id,deal_id,deal_message_id,reporter_id,reported_user_id").order("created_at", { ascending: false });
   if (statusFilter !== "all") query = query.eq("status", statusFilter);
   if (reasonFilter !== "all") query = query.eq("reason", reasonFilter);
 
@@ -34,6 +34,13 @@ export default async function AdminReportsPage({ searchParams }: { searchParams:
   const profileIds = Array.from(new Set(reports.flatMap((r) => [r.reporter_id, r.reported_user_id ?? ""]).filter(Boolean)));
   const { data: profiles } = profileIds.length ? await supabase.from("profiles").select("id,display_name,username").in("id", profileIds) : { data: [] };
   const profileMap = new Map((profiles ?? []).map((p) => [p.id, p]));
+
+  const messageIds = reports.map((r) => r.deal_message_id).filter((id): id is string => Boolean(id));
+  const { data: messageRows } = messageIds.length
+    ? await supabase.from("deal_messages").select("id,body,sender_id").in("id", messageIds)
+    : { data: [] };
+  const messageMap = new Map((messageRows ?? []).map((m) => [m.id, m]));
+
 
   return (
     <section className="mx-auto max-w-5xl space-y-4 px-4 py-10">
@@ -74,11 +81,13 @@ export default async function AdminReportsPage({ searchParams }: { searchParams:
             <div className="text-sm text-stone-700">
               <p>المبلّغ: {reporter?.display_name ?? reporter?.username ?? "غير متاح"}</p>
               <p>المبلّغ عنه: {reportedUser?.display_name ?? reportedUser?.username ?? "غير متاح"}</p>
+              {report.deal_message_id ? (() => { const message = messageMap.get(report.deal_message_id); const sender = message ? profileMap.get(message.sender_id) : null; return <><p>الهدف: رسالة في صفقة</p><p>النص: {message ? message.body.slice(0, 120) : "الرسالة مش متاحة"}</p>{sender ? <p>المرسل: {sender.display_name ?? sender.username ?? "غير متاح"}</p> : null}</>; })() : null}
             </div>
             <div className="flex flex-wrap gap-3 text-sm">
               {report.item_id ? <Link href={`/items/${report.item_id}`} className="underline">فتح الإعلان</Link> : null}
               {report.offer_id ? <Link href={`/offers/${report.offer_id}`} className="underline">فتح العرض</Link> : null}
               {report.deal_id ? <Link href={`/deals/${report.deal_id}`} className="underline">فتح الصفقة</Link> : null}
+              {report.deal_message_id ? <span className="text-stone-700">رسالة في صفقة</span> : null}
               {reportedUser?.username ? <Link href={`/users/${reportedUser.username}`} className="underline">فتح المستخدم</Link> : null}
               {!report.item_id && !report.offer_id && !report.deal_id && !reportedUser?.username ? <span className="text-stone-500">الهدف مش متاح</span> : null}
             </div>

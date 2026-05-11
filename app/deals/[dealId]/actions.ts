@@ -208,6 +208,18 @@ export async function sendDealMessage(formData: FormData) {
     redirect(`/deals/${dealId}?messageError=not_allowed#messages`);
   }
 
+  const oneMinuteAgoIso = new Date(Date.now() - 60 * 1000).toISOString();
+  const { count: recentMessagesCount } = await supabase
+    .from("deal_messages")
+    .select("id", { count: "exact", head: true })
+    .eq("deal_id", dealId)
+    .eq("sender_id", user.id)
+    .gte("created_at", oneMinuteAgoIso);
+
+  if ((recentMessagesCount ?? 0) >= 5) {
+    redirect(`/deals/${dealId}?messageError=rate_limited#messages`);
+  }
+
   const { error: insertError } = await supabase.from("deal_messages").insert({
     deal_id: dealId,
     sender_id: user.id,

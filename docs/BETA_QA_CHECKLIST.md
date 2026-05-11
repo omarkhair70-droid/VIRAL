@@ -80,3 +80,11 @@
 - [ ] Long message is blocked.
 - [ ] Completed deal shows messages read-only.
 - [ ] Messages do not appear on public profile.
+
+- Report a message from the other participant.
+- Confirm report success message appears.
+- Confirm own messages do not show report link.
+- Confirm non-participant cannot report a message.
+- Send 5 messages quickly then confirm 6th is rate-limited.
+- Confirm admin can see message report with snippet.
+- Confirm normal user cannot access admin reports.

@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 type DealMessage = {
   id: string;
   senderId: string;
@@ -6,7 +8,7 @@ type DealMessage = {
   createdAt: string;
 };
 
-export function DealMessageThread({ messages, currentUserId }: { messages: DealMessage[]; currentUserId: string }) {
+export function DealMessageThread({ messages, currentUserId, dealId }: { messages: DealMessage[]; currentUserId: string; dealId: string }) {
   if (messages.length === 0) {
     return (
       <div className="rounded-xl border border-dashed p-4 text-sm text-stone-600">
@@ -15,6 +17,8 @@ export function DealMessageThread({ messages, currentUserId }: { messages: DealM
       </div>
     );
   }
+
+  const returnTo = `/deals/${dealId}`;
 
   return (
     <div className="space-y-3">
@@ -26,6 +30,14 @@ export function DealMessageThread({ messages, currentUserId }: { messages: DealM
               <p className="text-xs font-semibold text-stone-600">{isMine ? "أنت" : message.senderName}</p>
               <p className="mt-1 whitespace-pre-wrap text-sm text-stone-900">{message.body}</p>
               <p className="mt-2 text-[11px] text-stone-500">{new Date(message.createdAt).toLocaleString("ar-EG")}</p>
+              {!isMine ? (
+                <Link
+                  href={`/report?messageId=${encodeURIComponent(message.id)}&returnTo=${encodeURIComponent(returnTo)}#messages`}
+                  className="mt-1 inline-block text-xs text-stone-500 hover:text-stone-700 hover:underline"
+                >
+                  بلّغ عن الرسالة
+                </Link>
+              ) : null}
             </div>
           </article>
         );
