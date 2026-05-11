@@ -19,7 +19,11 @@ export async function createClient() {
           return cookieStore.getAll();
         },
         setAll(cookiesToSet: CookieToSet[]) {
-          cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options));
+          try {
+            cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options));
+          } catch {
+            // Server Components may not be allowed to set cookies; middleware/proxy handles session refresh.
+          }
         },
       },
     }
