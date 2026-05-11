@@ -32,12 +32,20 @@
 
 
 ## N. UI Design System regression
-- Home CTAs still work.
-- Item publish still works.
-- Item detail offer/report/share still works.
-- Offer response buttons still work.
-- Deal confirm/review/message still work.
-- Notifications mark-read still works.
-- Admin reports status update still works.
-- Mobile bottom nav does not cover main actions.
-- No horizontal overflow on mobile.
+- [ ] Home CTAs still work.
+- [ ] Marketplace search/filter still works.
+- [ ] Item detail offer/report/share still works.
+- [ ] Item publish form still submits.
+- [ ] Item edit still saves.
+- [ ] Dashboard links still work.
+- [ ] Received/sent offer tabs still work.
+- [ ] Offer response buttons still work.
+- [ ] Deal messages still send.
+- [ ] Deal confirmation still works.
+- [ ] Review submit still works.
+- [ ] Notifications mark-read still works.
+- [ ] Report submit still works.
+- [ ] Admin report status update still works.
+- [ ] Profile setup/edit still works.
+- [ ] Mobile bottom nav does not cover buttons.
+- [ ] No horizontal overflow on mobile.

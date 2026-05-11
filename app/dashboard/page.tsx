@@ -1,6 +1,10 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { PageShell } from "@/components/page-shell";
+import { Alert } from "@/components/ui/alert";
+import { ButtonLink } from "@/components/ui/button";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { PageHeading } from "@/components/ui/page-heading";
 import { isCurrentUserAdmin } from "@/lib/admin";
 import { createClient } from "@/lib/supabase/server";
 
@@ -42,9 +46,10 @@ export default async function DashboardPage() {
 
   return (
     <PageShell title="حسابي">
-      <div className="mb-4 space-y-2"><p className="rounded-xl border border-stone-200 bg-stone-50 p-3 text-sm text-stone-700">ابدأ بعرض حاجة واضحة بصور حقيقية، وبعدها تابع العروض من حسابك.</p><Link href="/install" className="inline-flex rounded-lg border border-stone-300 px-3 py-2 text-sm text-stone-700">نزّل بدّلها على موبايلك</Link></div>
+      <PageHeading title="حسابي" subtitle="تابع عروضك وصفقاتك وعدّل بروفايلك من مكان واحد." />
+      <div className="mb-4 space-y-2"><Alert>ابدأ بعرض حاجة واضحة بصور حقيقية، وبعدها تابع العروض من حسابك.</Alert><ButtonLink href="/install" variant="secondary" size="sm">نزّل بدّلها على موبايلك</ButtonLink></div>
       <div className="grid gap-4 md:grid-cols-2">
-        <section className="space-y-2 rounded-xl border bg-white p-4"><p className="text-lg font-semibold">حسابي</p><p>{profile?.display_name ?? "مستخدم"}</p><p className="text-sm text-stone-600">{username ? `@${username}` : "لسه مكملش بياناته"}</p>{!profileComplete ? <p className="rounded-lg bg-amber-50 p-2 text-sm text-amber-900">كمّل بروفايلك عشان الناس تعرف تتعامل معاك بثقة.</p> : null}<Link href="/profile" className="inline-flex rounded-lg border px-3 py-1.5 text-sm">تعديل بروفايلك</Link></section>
+        <Card><CardHeader><CardTitle className="text-lg">حسابي</CardTitle></CardHeader><CardContent><p>{profile?.display_name ?? "مستخدم"}</p><p className="text-sm text-stone-600">{username ? `@${username}` : "لسه مكملش بياناته"}</p>{!profileComplete ? <Alert variant="warning">كمّل بروفايلك عشان الناس تعرف تتعامل معاك بثقة.</Alert> : null}</CardContent><CardFooter><ButtonLink href="/profile" variant="secondary" size="sm">تعديل بروفايلك</ButtonLink></CardFooter></Card>
         <section className="space-y-2 rounded-xl border bg-white p-4"><p className="text-lg font-semibold">حاجاتي</p><p className="text-2xl font-bold">{activeItemsCount ?? 0}</p><div className="flex gap-2"><Link href="/dashboard/items" className="rounded-lg border px-3 py-1.5 text-sm">إدارة حاجاتي</Link><Link href="/items/new" className="rounded-lg border px-3 py-1.5 text-sm">أضف حاجة جديدة</Link></div></section>
         <section className="space-y-2 rounded-xl border bg-white p-4"><p className="text-lg font-semibold">عروض وصلتني</p><p className="text-sm text-stone-700">إجمالي العروض: {received.length}</p><p className="text-sm text-stone-700">محتاج رد منك: {received.filter((status) => status === "pending" || status === "thinking").length}</p><Link href="/dashboard/offers/received" className="inline-flex rounded-lg border px-3 py-1.5 text-sm">افتح العروض</Link></section>
         <section className="space-y-2 rounded-xl border bg-white p-4"><p className="text-lg font-semibold">عروض بعتها</p><p className="text-sm text-stone-700">إجمالي العروض: {sent.length}</p><p className="text-sm text-stone-700">متابعة (pending/thinking/accepted): {sent.filter((status) => status === "accepted" || status === "thinking" || status === "pending").length}</p><Link href="/dashboard/offers/sent" className="inline-flex rounded-lg border px-3 py-1.5 text-sm">افتح العروض</Link></section>

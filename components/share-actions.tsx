@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { Alert } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 
 type ShareActionsProps = {
   urlPath: string;
@@ -57,26 +59,28 @@ export function ShareActions({ urlPath, title, text, label }: ShareActionsProps)
       {label ? <p className="text-sm font-medium text-stone-700">{label}</p> : null}
       <div className="flex flex-wrap items-center gap-2">
         {canShare ? (
-          <button
+          <Button
             type="button"
             onClick={onShare}
-            className="rounded-full border border-stone-300 bg-white px-3 py-1.5 text-sm text-stone-700 hover:bg-stone-50"
+            variant="secondary"
+            size="sm"
             aria-label="شارك الإعلان"
           >
             شارك
-          </button>
+          </Button>
         ) : null}
-        <button
+        <Button
           type="button"
           onClick={onCopy}
-          className="rounded-full border border-stone-300 bg-white px-3 py-1.5 text-sm text-stone-700 hover:bg-stone-50"
+          variant="secondary"
+          size="sm"
           aria-label="انسخ لينك الصفحة"
         >
           انسخ اللينك
-        </button>
+        </Button>
         {copied ? <span className="text-xs text-emerald-700">اتنسخ</span> : null}
       </div>
-      {copyError ? <p className="text-xs text-amber-700">انسخ اللينك من شريط العنوان</p> : null}
+      {copyError ? <Alert variant="warning" className="text-xs">انسخ اللينك من شريط العنوان</Alert> : null}
     </div>
   );
 }

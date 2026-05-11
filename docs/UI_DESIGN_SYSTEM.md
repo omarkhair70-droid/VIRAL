@@ -44,3 +44,8 @@
 - No childish playful UI.
 - No fake urgency.
 - No overloaded CTAs.
+
+## F) Adoption status
+- **Phase 21 (completed):** Home and Marketplace migrated to shared UI primitives.
+- **Phase 21B (completed):** Core app surfaces migrated (account hub, item detail, deals, notifications, reports, and admin reports) to shared primitives without behavior changes.
+- **Remaining migration candidates:** low-priority static/support pages and any legacy isolated components not yet touched in core flows.
