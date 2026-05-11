@@ -2,6 +2,13 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
+type MaybeArray<T> = T | T[] | null | undefined;
+
+function firstOrNull<T>(value: MaybeArray<T>): T | null {
+  if (!value) return null;
+  return Array.isArray(value) ? value[0] ?? null : value;
+}
+
 type ItemImageRow = {
   image_url: string | null;
   is_primary: boolean | null;
@@ -21,7 +28,7 @@ type OwnerProfileRow = {
   successful_swaps_count: number | null;
 };
 
-type ItemDetailRow = {
+type ItemDetailRawRow = {
   id: string;
   owner_id: string;
   title: string;
@@ -33,14 +40,14 @@ type ItemDetailRow = {
   desire_mode: "specific" | "flexible" | "surprise";
   desire_text: string | null;
   created_at: string;
-  categories: CategoryRow | null;
+  categories: MaybeArray<CategoryRow>;
   item_images: ItemImageRow[] | null;
   item_wanted_tags: WantedTagRow[] | null;
-  profiles: OwnerProfileRow | null;
+  profiles: MaybeArray<OwnerProfileRow>;
 };
 
-const conditionLabels: Record<ItemDetailRow["condition"], string> = { almost_new: "جديد تقريبًا", good_used: "مستخدم بحالة كويسة", minor_issues: "فيه عيوب بسيطة", needs_repair: "محتاج تصليح / عارف حالته" };
-const desireLabels: Record<ItemDetailRow["desire_mode"], string> = { specific: "بدور على حاجة معينة", flexible: "عندي حاجات في بالي، بس فاجئني", surprise: "فاجئني تمامًا" };
+const conditionLabels: Record<ItemDetailRawRow["condition"], string> = { almost_new: "جديد تقريبًا", good_used: "مستخدم بحالة كويسة", minor_issues: "فيه عيوب بسيطة", needs_repair: "محتاج تصليح / عارف حالته" };
+const desireLabels: Record<ItemDetailRawRow["desire_mode"], string> = { specific: "بدور على حاجة معينة", flexible: "عندي حاجات في بالي، بس فاجئني", surprise: "فاجئني تمامًا" };
 
 export default async function ItemDetailPage({ params }: { params: Promise<{ itemId: string }> }) {
   const { itemId } = await params;
@@ -56,13 +63,14 @@ export default async function ItemDetailPage({ params }: { params: Promise<{ ite
 
   if (error || !item) notFound();
 
-  const typedItem = item as ItemDetailRow;
+  const typedItem = item as unknown as ItemDetailRawRow;
 
   const imageUrl =
     typedItem.item_images?.find((img) => img.is_primary)?.image_url ??
     typedItem.item_images?.[0]?.image_url ??
     null;
-  const owner = typedItem.profiles;
+  const category = firstOrNull(typedItem.categories);
+  const owner = firstOrNull(typedItem.profiles);
 
   return (
     <section className="mx-auto max-w-4xl space-y-4 px-4 py-10">
@@ -71,7 +79,7 @@ export default async function ItemDetailPage({ params }: { params: Promise<{ ite
         <img src={imageUrl} alt={typedItem.title} className="aspect-video w-full rounded-2xl object-cover" />
       ) : null}
       <h1 className="text-3xl font-bold">{typedItem.title}</h1>
-      <p>{typedItem.categories?.name_ar ?? "بدون تصنيف"}</p>
+      <p>{category?.name_ar ?? "بدون تصنيف"}</p>
       <p>{conditionLabels[typedItem.condition]}</p>
       {typedItem.condition_notes ? <p>{typedItem.condition_notes}</p> : null}
       {typedItem.description ? <p>{typedItem.description}</p> : null}

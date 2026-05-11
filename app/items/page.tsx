@@ -3,6 +3,13 @@ import { ItemCard } from "@/components/item-card";
 import { SectionHeading } from "@/components/section-heading";
 import { createClient } from "@/lib/supabase/server";
 
+type MaybeArray<T> = T | T[] | null | undefined;
+
+function firstOrNull<T>(value: MaybeArray<T>): T | null {
+  if (!value) return null;
+  return Array.isArray(value) ? value[0] ?? null : value;
+}
+
 type ItemImageRow = {
   image_url: string | null;
   is_primary: boolean | null;
@@ -12,7 +19,7 @@ type CategoryRow = {
   name_ar: string | null;
 };
 
-type ItemListRow = {
+type ItemListRawRow = {
   id: string;
   title: string;
   condition: "almost_new" | "good_used" | "minor_issues" | "needs_repair";
@@ -20,7 +27,7 @@ type ItemListRow = {
   area: string | null;
   desire_mode: "specific" | "flexible" | "surprise";
   desire_text: string | null;
-  categories: CategoryRow | null;
+  categories: MaybeArray<CategoryRow>;
   item_images: ItemImageRow[] | null;
 };
 
@@ -32,13 +39,15 @@ export default async function ItemsPage() {
     .eq("status", "active")
     .order("created_at", { ascending: false });
 
-  const rows = (data ?? []) as ItemListRow[];
+  const rows = (data ?? []) as unknown as ItemListRawRow[];
 
   const items = rows.map((item) => {
     const primaryImage =
       item.item_images?.find((img) => img.is_primary)?.image_url ??
       item.item_images?.[0]?.image_url ??
       null;
+
+    const category = firstOrNull(item.categories);
 
     return {
       id: item.id,
@@ -48,7 +57,7 @@ export default async function ItemsPage() {
       area: item.area,
       desire_mode: item.desire_mode,
       desire_text: item.desire_text,
-      categoryName: item.categories?.name_ar ?? null,
+      categoryName: category?.name_ar ?? null,
       imageUrl: primaryImage,
     };
   });
