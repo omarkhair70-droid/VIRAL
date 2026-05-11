@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 type Category = { id: string; name_ar: string };
@@ -8,7 +9,7 @@ type Category = { id: string; name_ar: string };
 type Props = {
   categories: Category[];
   prefill: string;
-  action: (formData: FormData) => Promise<void>;
+  action: (formData: FormData) => Promise<{ ok: true; itemId: string } | { ok: false; error: "validation" | "publish" }>;
   authRequired?: boolean;
   userId: string | null;
   draftItemId: string;
@@ -32,6 +33,8 @@ export function ItemForm({ categories, prefill, action, authRequired = false, us
   const [files, setFiles] = useState<File[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submissionStage, setSubmissionStage] = useState<"idle" | "uploading" | "publishing">("idle");
+  const router = useRouter();
 
   const previews = useMemo(() => files.map((file) => URL.createObjectURL(file)), [files]);
 
@@ -61,6 +64,7 @@ export function ItemForm({ categories, prefill, action, authRequired = false, us
     }
 
     setIsSubmitting(true);
+    setSubmissionStage("uploading");
 
     const uploadedPaths: string[] = [];
 
@@ -82,6 +86,7 @@ export function ItemForm({ categories, prefill, action, authRequired = false, us
     } catch (error) {
       console.error("Item image upload failed", error);
       setErrorMessage("حصلت مشكلة أثناء رفع الصور. جرّب تاني.");
+      setSubmissionStage("idle");
       setIsSubmitting(false);
       return;
     }
@@ -89,7 +94,19 @@ export function ItemForm({ categories, prefill, action, authRequired = false, us
     const formData = new FormData(event.currentTarget);
     formData.set("item_id", draftItemId);
     formData.set("uploaded_image_paths_json", JSON.stringify(uploadedPaths));
-    await action(formData);
+
+    setSubmissionStage("publishing");
+    const result = await action(formData);
+
+    if (result.ok) {
+      router.push(`/items/${result.itemId}`);
+      router.refresh();
+      return;
+    }
+
+    setErrorMessage("مش قادرين ننشر الإعلان دلوقتي. جرّب تاني.");
+    setSubmissionStage("idle");
+    setIsSubmitting(false);
   };
 
   return (
@@ -138,7 +155,11 @@ export function ItemForm({ categories, prefill, action, authRequired = false, us
       <div><label className="mb-1 block text-sm font-medium">إنت عايز إيه؟</label><select name="desire_mode" required defaultValue="flexible" className="w-full rounded-xl border border-stone-300 px-3 py-2"><option value="specific">بدور على حاجة معينة</option><option value="flexible">عندي حاجات في بالي، بس فاجئني</option><option value="surprise">فاجئني تمامًا</option></select></div>
       <div><label className="mb-1 block text-sm font-medium">تفاصيل إضافية عن اللي بدور عليه</label><textarea name="desire_text" className="w-full rounded-xl border border-stone-300 px-3 py-2" /></div>
       <div><label className="mb-1 block text-sm font-medium">كلمات مفتاحية للحاجة اللي محتاجها</label><input name="wanted_tags" placeholder="مثال: مكتب, ديكور, خشب" className="w-full rounded-xl border border-stone-300 px-3 py-2" /></div>
-      {isSubmitting ? <p className="rounded-xl bg-blue-50 p-3 text-sm text-blue-900">جاري رفع الصور...</p> : null}
+      {isSubmitting ? (
+        <p className="rounded-xl bg-blue-50 p-3 text-sm text-blue-900">
+          {submissionStage === "publishing" ? "جاري نشر الإعلان..." : "جاري رفع الصور..."}
+        </p>
+      ) : null}
       {errorMessage ? <p className="rounded-xl bg-red-50 p-3 text-sm text-red-700">{errorMessage}</p> : null}
       <p className="rounded-xl bg-blue-50 p-3 text-sm text-blue-900">لو العنوان فيه أكتر من حاجة مش مرتبطين: خلّي كل حاجة تاخد فرصتها لوحدها. السفرة إعلان، والدولاب إعلان، والأباجورة إعلان. كده فرصك تزيد.</p>
       <button disabled={isSubmitting} className="rounded-xl bg-clay px-5 py-3 text-white disabled:opacity-60">انشرها</button>
