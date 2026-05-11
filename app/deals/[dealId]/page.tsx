@@ -45,6 +45,7 @@ const messageErrorMap: Record<string, string> = {
   too_long: "الرسالة طويلة زيادة.",
   not_allowed: "مش مسموح تبعت رسالة في الصفقة دي.",
   send_failed: "مش قادرين نبعت الرسالة دلوقتي. جرّب تاني.",
+  rate_limited: "استنى دقيقة قبل ما تبعت رسائل تانية.",
 };
 
 export default async function DealDetailPage({ params, searchParams }: { params: Promise<{ dealId: string }>; searchParams?: Promise<{ reported?: string; message?: string; messageError?: string }> }) {
@@ -131,14 +132,14 @@ export default async function DealDetailPage({ params, searchParams }: { params:
 
       <section id="messages" className="space-y-4 rounded-2xl border p-4">
         <h2 className="text-xl font-semibold">رسائل التنسيق</h2>
-        <p className="text-sm text-stone-700">استخدم الرسائل للاتفاق على التفاصيل بهدوء. بلاش تبعت بيانات حساسة بدري.</p>
+        <p className="text-sm text-stone-700">استخدم الرسائل للاتفاق على التفاصيل بهدوء. بلاش تبعت رقمك أو عنوانك بدري، واتقابلوا في مكان عام.</p>
         {query.message === "sent" ? <p className="rounded-lg border border-emerald-200 bg-emerald-50 p-2 text-sm text-emerald-800">تم إرسال الرسالة.</p> : null}
         {query.messageError ? <p className="rounded-lg border border-rose-200 bg-rose-50 p-2 text-sm text-rose-800">{messageErrorMap[query.messageError] ?? messageErrorMap.send_failed}</p> : null}
-        <DealMessageThread messages={messages} currentUserId={user.id} />
+        <DealMessageThread messages={messages} currentUserId={user.id} dealId={deal.id} />
         {canSendMessage ? (
           <DealMessageForm dealId={deal.id} />
         ) : (
-          <p className="rounded-xl border border-stone-200 bg-stone-50 p-3 text-sm text-stone-700">الرسائل اتقفلت لأن حالة الصفقة اتغيرت.</p>
+          <p className="rounded-xl border border-stone-200 bg-stone-50 p-3 text-sm text-stone-700">الرسائل اتقفلت لأن حالة الصفقة اتغيرت. تقدر ترجع للرسائل القديمة بس.</p>
         )}
         {otherParticipantProfile?.display_name || otherParticipantProfile?.username ? (
           <p className="text-xs text-stone-500">بتنسّق حاليًا مع {otherParticipantProfile.display_name ?? otherParticipantProfile.username}.</p>

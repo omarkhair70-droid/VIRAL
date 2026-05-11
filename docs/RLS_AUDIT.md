@@ -84,3 +84,7 @@ Scope reviewed from current migrations in `supabase/migrations`.
 - **Read:** Public select.
 - **Insert/Update:** Not exposed in app UI.
 - **Risk/Follow-up:** Safe as static/discovery content.
+
+- reports.deal_message_id stores per-message report context for deal chat safety.
+- deal_messages_admin_select policy allows admin-only read for reviewing reported message snippets.
+- Future moderation may add hide/delete actions, but Phase 16 only records reports.

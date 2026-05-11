@@ -53,3 +53,6 @@ Before broad beta access, confirm all of the following are already applied:
 - Check Supabase Auth/Database/Storage usage trends.
 - Monitor image upload failure rate.
 - Monitor RLS denied/permission errors in logs.
+
+- Deal messages include per-message reporting and basic per-deal rate limit.
+- Known limitation: Rate limiting is simple DB-backed beta protection, not a full abuse prevention system.
