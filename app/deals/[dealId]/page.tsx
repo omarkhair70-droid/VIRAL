@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
+import { DealMessageForm } from "@/components/deals/deal-message-form";
+import { DealMessageThread } from "@/components/deals/deal-message-thread";
 import { createClient } from "@/lib/supabase/server";
 import { confirmDealCompleted, submitDealReview } from "./actions";
 
@@ -15,11 +17,13 @@ type ItemJoin = {
   item_images: Array<{ image_url: string | null; is_primary: boolean | null }> | null;
 };
 
+type DealStatus = "coordinating" | "completed_pending_confirmation" | "completed" | "cancelled" | "disputed";
+
 type DealRow = {
   id: string;
   created_at: string;
   offer_id: string;
-  status: "coordinating" | "completed_pending_confirmation" | "completed" | "cancelled" | "disputed";
+  status: DealStatus;
   requester_id: string;
   offerer_id: string;
   requester: MaybeArray<{ display_name: string | null; username: string | null }>;
@@ -28,7 +32,22 @@ type DealRow = {
   requested_item: MaybeArray<ItemJoin>;
 };
 
-export default async function DealDetailPage({ params, searchParams }: { params: Promise<{ dealId: string }>; searchParams?: Promise<{ reported?: string }> }) {
+type DealMessageRow = {
+  id: string;
+  sender_id: string;
+  body: string;
+  created_at: string;
+  sender: MaybeArray<{ display_name: string | null; username: string | null }>;
+};
+
+const messageErrorMap: Record<string, string> = {
+  empty: "اكتب رسالة الأول.",
+  too_long: "الرسالة طويلة زيادة.",
+  not_allowed: "مش مسموح تبعت رسالة في الصفقة دي.",
+  send_failed: "مش قادرين نبعت الرسالة دلوقتي. جرّب تاني.",
+};
+
+export default async function DealDetailPage({ params, searchParams }: { params: Promise<{ dealId: string }>; searchParams?: Promise<{ reported?: string; message?: string; messageError?: string }> }) {
   const { dealId } = await params;
   const query = (await searchParams) ?? {};
   const supabase = await createClient();
@@ -62,15 +81,34 @@ export default async function DealDetailPage({ params, searchParams }: { params:
   const offererName = offererProfile?.display_name ?? "مستخدم";
   const requesterName = requesterProfile?.display_name ?? "صاحب الإعلان";
   const otherParticipantId = user.id === deal.requester_id ? deal.offerer_id : deal.requester_id;
+  const otherParticipantProfile = user.id === deal.requester_id ? offererProfile : requesterProfile;
 
-  const [{ data: confirmations }, { data: myReview }] = await Promise.all([
+  const [{ data: confirmations }, { data: myReview }, { data: messageRows }] = await Promise.all([
     supabase.from("deal_confirmations").select("user_id").eq("deal_id", deal.id),
     supabase.from("reviews").select("id").eq("deal_id", deal.id).eq("reviewer_id", user.id).eq("reviewee_id", otherParticipantId).maybeSingle(),
+    supabase
+      .from("deal_messages")
+      .select("id,sender_id,body,created_at,sender:profiles!deal_messages_sender_id_fkey(display_name,username)")
+      .eq("deal_id", deal.id)
+      .order("created_at", { ascending: true })
+      .limit(100),
   ]);
 
   const confirmedIds = new Set((confirmations ?? []).map((row) => row.user_id));
   const iConfirmed = confirmedIds.has(user.id);
   const otherConfirmed = confirmedIds.has(otherParticipantId);
+  const canSendMessage = deal.status === "coordinating" || deal.status === "completed_pending_confirmation";
+
+  const messages = ((messageRows as DealMessageRow[] | null) ?? []).map((row) => {
+    const sender = firstOrNull(row.sender);
+    return {
+      id: row.id,
+      senderId: row.sender_id,
+      senderName: sender?.display_name ?? sender?.username ?? "مستخدم",
+      body: row.body,
+      createdAt: row.created_at,
+    };
+  });
 
   return (
     <section className="mx-auto max-w-5xl space-y-6 px-4 py-10">
@@ -90,6 +128,23 @@ export default async function DealDetailPage({ params, searchParams }: { params:
       </div>
 
       <section className="rounded-2xl border p-4"><h2 className="mb-2 text-xl font-semibold">ملخص الصفقة</h2><p>{offererName} هيبدّل {offered.title} مقابل {requested.title} مع {requesterName}.</p></section>
+
+      <section id="messages" className="space-y-4 rounded-2xl border p-4">
+        <h2 className="text-xl font-semibold">رسائل التنسيق</h2>
+        <p className="text-sm text-stone-700">استخدم الرسائل للاتفاق على التفاصيل بهدوء. بلاش تبعت بيانات حساسة بدري.</p>
+        {query.message === "sent" ? <p className="rounded-lg border border-emerald-200 bg-emerald-50 p-2 text-sm text-emerald-800">تم إرسال الرسالة.</p> : null}
+        {query.messageError ? <p className="rounded-lg border border-rose-200 bg-rose-50 p-2 text-sm text-rose-800">{messageErrorMap[query.messageError] ?? messageErrorMap.send_failed}</p> : null}
+        <DealMessageThread messages={messages} currentUserId={user.id} />
+        {canSendMessage ? (
+          <DealMessageForm dealId={deal.id} />
+        ) : (
+          <p className="rounded-xl border border-stone-200 bg-stone-50 p-3 text-sm text-stone-700">الرسائل اتقفلت لأن حالة الصفقة اتغيرت.</p>
+        )}
+        {otherParticipantProfile?.display_name || otherParticipantProfile?.username ? (
+          <p className="text-xs text-stone-500">بتنسّق حاليًا مع {otherParticipantProfile.display_name ?? otherParticipantProfile.username}.</p>
+        ) : null}
+      </section>
+
       {(deal.status === "coordinating" || deal.status === "completed_pending_confirmation") ? (
         <section className="rounded-2xl border p-4">
           <h2 className="mb-2 text-xl font-semibold">تأكيد إتمام المقايضة</h2>
