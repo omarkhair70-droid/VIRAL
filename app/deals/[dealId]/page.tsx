@@ -28,8 +28,9 @@ type DealRow = {
   requested_item: MaybeArray<ItemJoin>;
 };
 
-export default async function DealDetailPage({ params }: { params: Promise<{ dealId: string }> }) {
+export default async function DealDetailPage({ params, searchParams }: { params: Promise<{ dealId: string }>; searchParams?: Promise<{ reported?: string }> }) {
   const { dealId } = await params;
+  const query = (await searchParams) ?? {};
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect(`/login?next=/deals/${dealId}`);
@@ -75,6 +76,7 @@ export default async function DealDetailPage({ params }: { params: Promise<{ dea
     <section className="mx-auto max-w-5xl space-y-6 px-4 py-10">
       <h1 className="text-3xl font-bold">تنسيق المقايضة</h1>
       <span className="inline-flex rounded-full bg-amber-100 px-3 py-1 text-sm font-semibold text-amber-900">{statusMap[deal.status]}</span>
+      {query.reported === "1" ? <p className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-emerald-800">تم إرسال البلاغ. شكرًا إنك ساعدتنا نحافظ على التجربة.</p> : null}
 
       <div className="grid gap-4 md:grid-cols-[1fr_auto_1fr]">
         <article className="rounded-2xl border bg-white p-4"><p className="mb-2 text-sm text-stone-500">الحاجة المعروضة</p><h2 className="font-semibold">{offered.title}</h2></article>
@@ -137,6 +139,7 @@ export default async function DealDetailPage({ params }: { params: Promise<{ dea
       ) : null}
 
       <div className="flex flex-wrap gap-3"><Link href={`/offers/${deal.offer_id}`} className="rounded-xl border px-4 py-2">افتح العرض الأصلي</Link><Link href={`/items/${offered.id}`} className="rounded-xl border px-4 py-2">افتح الحاجة المعروضة</Link><Link href={`/items/${requested.id}`} className="rounded-xl border px-4 py-2">افتح الحاجة المطلوبة</Link><Link href="/offers/new" className="rounded-xl bg-clay px-4 py-2 text-white">ارجع للعروض</Link></div>
+      <Link href={`/report?dealId=${deal.id}&returnTo=${encodeURIComponent(`/deals/${deal.id}`)}`} className="inline-block text-sm text-stone-600 hover:underline">بلّغ عن الصفقة</Link>
     </section>
   );
 }

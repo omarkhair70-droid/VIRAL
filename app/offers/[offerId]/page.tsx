@@ -17,7 +17,7 @@ const timelineMap: Record<string, string> = { created: "العرض اتبعت", 
 const redirectMap: Record<string, string> = { offer_another_item: "اعرض حاجة تانية", ask_for_different_item: "بدور على نوع مختلف", update_preferences: "وضّح اختياراتك أكتر" };
 const errorMap: Record<string, string> = { not_allowed: "مش مسموح ترد على العرض ده.", invalid_status: "العرض ده اترد عليه بالفعل.", response_failed: "مش قادرين نحدّث العرض دلوقتي. جرّب تاني.", invalid_redirect_type: "لازم تختار نوع الباب التاني." };
 
-export default async function OfferDetail({ params, searchParams }: { params: Promise<{ offerId: string }>; searchParams?: Promise<{ error?: string; response?: string }> }) {
+export default async function OfferDetail({ params, searchParams }: { params: Promise<{ offerId: string }>; searchParams?: Promise<{ error?: string; response?: string; reported?: string }> }) {
   const { offerId } = await params;
   const query = (await searchParams) ?? {};
   const supabase = await createClient();
@@ -62,6 +62,7 @@ export default async function OfferDetail({ params, searchParams }: { params: Pr
     <OfferStatusBadge status={offer.status} />
     {query.error && errorMap[query.error] ? <p className="rounded-xl border border-red-200 bg-red-50 p-3 text-red-800">{errorMap[query.error]}</p> : null}
     {query.response ? <p className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-emerald-800">تم تحديث حالة العرض.</p> : null}
+    {query.reported === "1" ? <p className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-emerald-800">تم إرسال البلاغ. شكرًا إنك ساعدتنا نحافظ على التجربة.</p> : null}
     <div className="grid gap-4 md:grid-cols-[1fr_auto_1fr]"><OfferItemCard itemId={offered.id} title={offered.title} imageUrl={offImg} category={firstOrNull(offered.categories)?.name_ar ?? null} conditionLabel={conditionLabels[offered.condition]} ownerName={offOwner} /><div className="self-center text-center text-3xl">↔</div><OfferItemCard itemId={requested.id} title={requested.title} imageUrl={reqImg} category={firstOrNull(requested.categories)?.name_ar ?? null} conditionLabel={conditionLabels[requested.condition]} ownerName={reqOwner} /></div>
     <p className="text-stone-700">{offProfile?.username ? <Link href={`/users/${offProfile.username}`} className="hover:underline">{offOwner}</Link> : offOwner} عرض {offered.title} مقابل {requested.title} لصاحب الإعلان {reqProfile?.username ? <Link href={`/users/${reqProfile.username}`} className="hover:underline">{reqOwner}</Link> : reqOwner}.</p>
     {offer.message ? <div className="rounded-xl border p-3"><p className="font-semibold">رسالة العرض:</p><p>«{offer.message}»</p></div> : null}
@@ -95,6 +96,6 @@ export default async function OfferDetail({ params, searchParams }: { params: Pr
       )
     ) : null}
 
-    <div className="flex flex-wrap gap-3"><Link href={`/items/${requested.id}`} className="rounded-xl border px-4 py-2">افتح الحاجة المطلوبة</Link><Link href={`/items/${offered.id}`} className="rounded-xl border px-4 py-2">افتح الحاجة المعروضة</Link><Link href="/feed" className="rounded-xl bg-clay px-4 py-2 text-white">ارجع للعروض</Link></div>
+    <div className="flex flex-wrap gap-3"><Link href={`/items/${requested.id}`} className="rounded-xl border px-4 py-2">افتح الحاجة المطلوبة</Link><Link href={`/items/${offered.id}`} className="rounded-xl border px-4 py-2">افتح الحاجة المعروضة</Link><Link href="/feed" className="rounded-xl bg-clay px-4 py-2 text-white">ارجع للعروض</Link></div>{isParticipant ? <Link href={`/report?offerId=${offer.id}&returnTo=${encodeURIComponent(`/offers/${offer.id}`)}`} className="inline-block text-sm text-stone-600 hover:underline">بلّغ عن العرض</Link> : null}
   </section>;
 }
