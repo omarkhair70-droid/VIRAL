@@ -6,16 +6,55 @@ import { createClient } from "@/lib/supabase/server";
 type ItemCondition = "almost_new" | "good_used" | "minor_issues" | "needs_repair";
 type DesireMode = "specific" | "flexible" | "surprise";
 
+type ParentOffer = {
+  id: string;
+  status: string;
+  sender_id: string;
+  receiver_id: string;
+  requested_item_id: string;
+  offered_item_id: string;
+};
+
 export async function createOffer(formData: FormData) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   const requestedItemId = String(formData.get("requested_item_id") || "").trim();
+  const parentOfferId = String(formData.get("parent_offer_id") || "").trim() || null;
+
   if (!user) redirect(`/login?next=/offers/new?requestedItemId=${encodeURIComponent(requestedItemId)}`);
   if (!requestedItemId) redirect("/offers/new?error=missing_requested");
 
+  let parentOffer: ParentOffer | null = null;
+  if (parentOfferId) {
+    const { data: parent } = await supabase
+      .from("offers")
+      .select("id,status,sender_id,receiver_id,requested_item_id,offered_item_id")
+      .eq("id", parentOfferId)
+      .maybeSingle();
+
+    parentOffer = (parent as ParentOffer | null) ?? null;
+    if (!parentOffer) redirect(`/offers/new?fromOffer=${encodeURIComponent(parentOfferId)}&error=invalid_parent`);
+    if (parentOffer.sender_id !== user.id || parentOffer.status !== "redirected") {
+      redirect(`/offers/new?fromOffer=${encodeURIComponent(parentOfferId)}&error=not_followup_allowed`);
+    }
+    if (requestedItemId !== parentOffer.requested_item_id) {
+      redirect(`/offers/new?fromOffer=${encodeURIComponent(parentOfferId)}&error=invalid_parent`);
+    }
+  }
+
   const { data: requestedItem } = await supabase.from("items").select("id,owner_id,status,title,offer_count").eq("id", requestedItemId).maybeSingle();
-  if (!requestedItem || requestedItem.status !== "active") redirect(`/offers/new?requestedItemId=${requestedItemId}&error=unavailable`);
-  if (requestedItem.owner_id === user.id) redirect(`/offers/new?requestedItemId=${requestedItemId}&error=own_item`);
+  if (!requestedItem || requestedItem.status !== "active") {
+    const base = parentOfferId ? `/offers/new?fromOffer=${encodeURIComponent(parentOfferId)}` : `/offers/new?requestedItemId=${requestedItemId}`;
+    redirect(`${base}&error=unavailable`);
+  }
+  if (requestedItem.owner_id === user.id) {
+    const base = parentOfferId ? `/offers/new?fromOffer=${encodeURIComponent(parentOfferId)}` : `/offers/new?requestedItemId=${requestedItemId}`;
+    redirect(`${base}&error=own_item`);
+  }
+
+  if (parentOffer && requestedItem.owner_id !== parentOffer.receiver_id) {
+    redirect(`/offers/new?fromOffer=${encodeURIComponent(parentOffer.id)}&error=invalid_parent`);
+  }
 
   const offerMode = String(formData.get("offer_mode") || "existing_item");
   const message = String(formData.get("message") || "").trim() || null;
@@ -49,17 +88,50 @@ export async function createOffer(formData: FormData) {
   }
 
   if (offeredItemId === requestedItemId) redirect(`/offers/new?requestedItemId=${requestedItemId}&error=invalid_offered`);
-  const { data: offer } = await supabase.from("offers").insert({ requested_item_id: requestedItemId, offered_item_id: offeredItemId, sender_id: user.id, receiver_id: requestedItem.owner_id, status: "pending", message }).select("id").single();
+
+  if (parentOffer) {
+    if (offeredItemId === parentOffer.offered_item_id) {
+      redirect(`/offers/new?fromOffer=${encodeURIComponent(parentOffer.id)}&error=same_offered_item`);
+    }
+
+    const { data: duplicate } = await supabase.from("offers").select("id").eq("parent_offer_id", parentOffer.id).eq("offered_item_id", offeredItemId).in("status", ["pending", "thinking", "accepted"]).maybeSingle();
+    if (duplicate) {
+      redirect(`/offers/new?fromOffer=${encodeURIComponent(parentOffer.id)}&error=duplicate_followup`);
+    }
+  }
+
+  let offer: { id: string } | null = null;
+  if (parentOffer) {
+    const { data } = await supabase.from("offers").insert({ requested_item_id: parentOffer.requested_item_id, offered_item_id: offeredItemId, sender_id: user.id, receiver_id: parentOffer.receiver_id, status: "pending", message, parent_offer_id: parentOffer.id }).select("id").single();
+    offer = data;
+  } else {
+    const { data } = await supabase.from("offers").insert({ requested_item_id: requestedItemId, offered_item_id: offeredItemId, sender_id: user.id, receiver_id: requestedItem.owner_id, status: "pending", message }).select("id").single();
+    offer = data;
+  }
+
   if (!offer) redirect(`/offers/new?requestedItemId=${requestedItemId}&error=offer_failed`);
-  await supabase.from("offer_events").insert({ offer_id: offer.id, actor_id: user.id, event_type: "created", old_status: null, new_status: "pending", note: null });
+  await supabase.from("offer_events").insert({ offer_id: offer.id, actor_id: user.id, event_type: "created", old_status: null, new_status: "pending", note: parentOffer ? "عرض جديد بعد فتح باب تاني" : null });
   if (typeof requestedItem.offer_count === "number") await supabase.from("items").update({ offer_count: requestedItem.offer_count + 1 }).eq("id", requestedItemId);
-  await createNotification(supabase, {
-    targetUserId: requestedItem.owner_id,
-    notificationType: "offer_received",
-    notificationTitle: "وصلك عرض جديد",
-    notificationBody: `فيه حد عرض حاجة على ${requestedItem.title}`,
-    targetItemId: requestedItemId,
-    targetOfferId: offer.id,
-  });
+
+  if (parentOffer) {
+    await createNotification(supabase, {
+      targetUserId: parentOffer.receiver_id,
+      notificationType: "offer_received",
+      notificationTitle: "وصلك عرض تاني",
+      notificationBody: "صاحب العرض بعت اختيار جديد بعد ما فتحت باب تاني.",
+      targetItemId: requestedItemId,
+      targetOfferId: offer.id,
+    });
+  } else {
+    await createNotification(supabase, {
+      targetUserId: requestedItem.owner_id,
+      notificationType: "offer_received",
+      notificationTitle: "وصلك عرض جديد",
+      notificationBody: `فيه حد عرض حاجة على ${requestedItem.title}`,
+      targetItemId: requestedItemId,
+      targetOfferId: offer.id,
+    });
+  }
+
   redirect(`/offers/${offer.id}`);
 }

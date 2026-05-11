@@ -47,3 +47,17 @@
 - [ ] dashboard item/actions still work
 - [ ] no mobile overflow
 - [ ] bottom nav does not cover form submit buttons
+
+
+## O. Redirected offer follow-up
+- [ ] receiver redirects offer with public note.
+- [ ] sender sees “ابعت عرض تاني” CTA.
+- [ ] sender can create follow-up with different item.
+- [ ] follow-up has `parent_offer_id`.
+- [ ] receiver gets notification.
+- [ ] follow-up appears as pending offer.
+- [ ] sender cannot reuse same original offered item.
+- [ ] non-sender cannot create follow-up.
+- [ ] follow-up blocked if requested item unavailable.
+- [ ] duplicate active follow-up blocked.
+- [ ] normal offer creation still works.

@@ -35,3 +35,9 @@ Scope reviewed from current migrations in `supabase/migrations` including Phase 
 ## Remaining known security risks
 - `item-images` bucket is public-read by product choice.
 - User-upload safety depends on copy/education + future moderation/cleanup tooling.
+
+
+## Phase 22A follow-up offer integrity
+- `enforce_offer_insert_integrity` now validates `parent_offer_id` when present.
+- Follow-up insert requires redirected parent, same sender/receiver/requested item, different offered item, pending status, active/owned items.
+- Added partial unique index `offers_unique_active_followup` on `(parent_offer_id, offered_item_id)` for active statuses (`pending`,`thinking`,`accepted`) to block duplicate active follow-ups.
