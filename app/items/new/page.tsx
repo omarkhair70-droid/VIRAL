@@ -1,5 +1,7 @@
 import { randomUUID } from "crypto";
 import Link from "next/link";
+import { Alert } from "@/components/ui/alert";
+import { PageHeading } from "@/components/ui/page-heading";
 import { ItemForm } from "@/components/item-form";
 import { createClient } from "@/lib/supabase/server";
 import { createItem } from "./actions";
@@ -18,11 +20,11 @@ export default async function NewItemPage({ searchParams }: { searchParams: Prom
 
   return (
     <section className="mx-auto max-w-3xl space-y-5 px-4 py-10">
-      <h1 className="text-3xl font-bold">اعرض حاجة للمقايضة</h1>
-      {params.error ? <p className="rounded-xl bg-red-50 p-3 text-red-700">مش قادرين نكمل دلوقتي. جرّب تاني كمان شوية.</p> : null}
-      {categoriesError ? <p className="rounded-xl bg-red-50 p-3 text-red-700">مش قادرين نحمّل التصنيفات دلوقتي. جرّب تاني كمان شوية.</p> : null}
+      <PageHeading title="اعرض حاجة للمقايضة" subtitle="جهّز بيانات إعلانك بشكل واضح عشان توصل لناس مناسبة." />
+      {params.error ? <Alert variant="danger">مش قادرين نكمل دلوقتي. جرّب تاني كمان شوية.</Alert> : null}
+      {categoriesError ? <Alert variant="danger">مش قادرين نحمّل التصنيفات دلوقتي. جرّب تاني كمان شوية.</Alert> : null}
       {!user ? (
-        <p className="rounded-xl bg-amber-50 p-3 text-amber-800">ممكن تجهز الإعلان الأول، ولما تدوس نشر لازم تسجل دخول. <Link href="/login?next=/items/new" className="underline">سجّل دخول</Link></p>
+        <Alert variant="warning">ممكن تجهز الإعلان الأول، ولما تدوس نشر لازم تسجل دخول. <Link href="/login?next=/items/new" className="underline">سجّل دخول</Link></Alert>
       ) : null}
       <ItemForm categories={categories ?? []} prefill={params.prefill ?? ""} action={createItem} authRequired={!user} userId={user?.id ?? null} draftItemId={draftItemId} />
     </section>

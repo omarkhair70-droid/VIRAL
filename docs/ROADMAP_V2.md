@@ -81,3 +81,6 @@
 **Phase 21B Update (May 11, 2026):** Phase 21B expanded design-system adoption across core product surfaces.
 
 - Phase 21C completed transaction-surface UI adoption.
+
+
+- Phase 21D completed UI-system adoption across item/deal/profile/report transaction surfaces.
