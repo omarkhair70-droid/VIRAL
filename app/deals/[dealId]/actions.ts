@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { createNotification } from "@/lib/notifications";
 import { createClient } from "@/lib/supabase/server";
 
 type DealStatus = "coordinating" | "completed_pending_confirmation" | "completed" | "cancelled" | "disputed";
@@ -21,17 +22,22 @@ function isDuplicateError(message: string | undefined): boolean {
 }
 
 async function insertNotificationSafely(
-  supabase: Awaited<ReturnType<typeof createClient>> ,
+  supabase: Awaited<ReturnType<typeof createClient>>,
   payload: {
-    user_id: string;
-    type: "deal_completed" | "system";
+    userId: string;
+    notificationType: "deal_completed" | "system";
     title: string;
     body: string;
-    deal_id: string;
+    dealId: string;
   },
 ) {
-  const { error } = await supabase.from("notifications").insert(payload);
-  if (error) console.error("notification insert skipped", error.message);
+  await createNotification(supabase, {
+    targetUserId: payload.userId,
+    notificationType: payload.notificationType,
+    notificationTitle: payload.title,
+    notificationBody: payload.body,
+    targetDealId: payload.dealId,
+  });
 }
 
 export async function confirmDealCompleted(formData: FormData) {
@@ -85,8 +91,8 @@ export async function confirmDealCompleted(formData: FormData) {
       await supabase.from("offer_events").insert({ offer_id: deal.offer_id, actor_id: user.id, event_type: "completed", old_status: "accepted", new_status: "accepted" });
       await supabase.rpc("increment_successful_swaps_for_users", { user_a: deal.requester_id, user_b: deal.offerer_id });
       await Promise.all([
-        insertNotificationSafely(supabase, { user_id: deal.requester_id, type: "deal_completed", title: "المقايضة تمت", body: "الطرفين أكدوا الإتمام. تقدروا تسيبوا تقييم لبعض.", deal_id: dealId }),
-        insertNotificationSafely(supabase, { user_id: deal.offerer_id, type: "deal_completed", title: "المقايضة تمت", body: "الطرفين أكدوا الإتمام. تقدروا تسيبوا تقييم لبعض.", deal_id: dealId }),
+        insertNotificationSafely(supabase, { userId: deal.requester_id, notificationType: "deal_completed", title: "المقايضة تمت", body: "الطرفين أكدوا الإتمام. تقدروا تسيبوا تقييم لبعض.", dealId: dealId }),
+        insertNotificationSafely(supabase, { userId: deal.offerer_id, notificationType: "deal_completed", title: "المقايضة تمت", body: "الطرفين أكدوا الإتمام. تقدروا تسيبوا تقييم لبعض.", dealId: dealId }),
       ]);
     }
   } else {
@@ -98,11 +104,11 @@ export async function confirmDealCompleted(formData: FormData) {
 
     const otherParticipantId = user.id === deal.requester_id ? deal.offerer_id : deal.requester_id;
     await insertNotificationSafely(supabase, {
-      user_id: otherParticipantId,
-      type: "system",
+      userId: otherParticipantId,
+      notificationType: "system",
       title: "الصفقة مستنية تأكيدك",
       body: "الطرف التاني أكد إن المقايضة تمت. راجع الصفقة وأكد لما تكون جاهز.",
-      deal_id: dealId,
+      dealId: dealId,
     });
   }
 
@@ -159,11 +165,11 @@ export async function submitDealReview(formData: FormData) {
   }
 
   await insertNotificationSafely(supabase, {
-    user_id: revieweeId,
-    type: "system",
+    userId: revieweeId,
+    notificationType: "system",
     title: "وصلك تقييم جديد",
     body: "فيه تقييم جديد ظهر على بروفايلك بعد المقايضة.",
-    deal_id: dealId,
+    dealId: dealId,
   });
 
   revalidatePath(`/deals/${dealId}`);

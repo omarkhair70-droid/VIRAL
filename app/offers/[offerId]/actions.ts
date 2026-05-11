@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { createNotification } from "@/lib/notifications";
 import { createClient } from "@/lib/supabase/server";
 
 type OfferStatus = "pending" | "thinking" | "accepted" | "soft_rejected" | "redirected" | "withdrawn" | "expired" | "cancelled_after_accept";
@@ -64,16 +65,13 @@ async function insertEventAndNotify(params: {
   });
   if (eventError) throw eventError;
 
-  const { error: notificationError } = await supabase.from("notifications").insert({
-    user_id: params.senderId,
-    type: params.notificationType,
-    title: params.notificationTitle,
-    body: params.notificationBody,
-    offer_id: params.offerId,
+  await createNotification(supabase, {
+    targetUserId: params.senderId,
+    notificationType: params.notificationType,
+    notificationTitle: params.notificationTitle,
+    notificationBody: params.notificationBody,
+    targetOfferId: params.offerId,
   });
-  if (notificationError) {
-    console.error("notification insert skipped", notificationError.message);
-  }
 }
 
 export async function markOfferThinking(formData: FormData) {
@@ -142,16 +140,24 @@ export async function acceptOffer(formData: FormData) {
       if (dealInsertError) throw dealInsertError;
 
       if (createdDeal?.id) {
-        const notifications = [ctx.offer.sender_id, ctx.offer.receiver_id].map((userId) => ({
-          user_id: userId,
-          type: "deal_created" as const,
-          title: "اتفتحت صفحة التنسيق",
-          body: "العرض اتقبل، وكده تقدروا تتابعوا الصفقة من صفحة التنسيق.",
-          offer_id: ctx.offer.id,
-          deal_id: createdDeal.id,
-        }));
-        const { error: dealNotificationError } = await ctx.supabase.from("notifications").insert(notifications);
-        if (dealNotificationError) console.error("deal_created notifications skipped", dealNotificationError.message);
+        await Promise.all([
+          createNotification(ctx.supabase, {
+            targetUserId: ctx.offer.sender_id,
+            notificationType: "deal_created",
+            notificationTitle: "اتفتحت صفحة التنسيق",
+            notificationBody: "العرض اتقبل، وكده تقدروا تتابعوا الصفقة من صفحة التنسيق.",
+            targetOfferId: ctx.offer.id,
+            targetDealId: createdDeal.id,
+          }),
+          createNotification(ctx.supabase, {
+            targetUserId: ctx.offer.receiver_id,
+            notificationType: "deal_created",
+            notificationTitle: "اتفتحت صفحة التنسيق",
+            notificationBody: "العرض اتقبل، وكده تقدروا تتابعوا الصفقة من صفحة التنسيق.",
+            targetOfferId: ctx.offer.id,
+            targetDealId: createdDeal.id,
+          }),
+        ]);
       }
     }
 

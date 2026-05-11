@@ -2,6 +2,7 @@
 
 import { notFound, redirect } from "next/navigation";
 import { isCurrentUserAdmin } from "@/lib/admin";
+import { createNotification } from "@/lib/notifications";
 import { createClient } from "@/lib/supabase/server";
 
 const VALID_STATUSES = ["open", "reviewing", "resolved", "dismissed"] as const;
@@ -56,16 +57,15 @@ export async function updateReportStatus(formData: FormData) {
     .maybeSingle();
   if (error || !report) redirect(buildRedirectPath(statusFilter, reasonFilter, "error"));
 
-  const { error: notificationError } = await supabase.from("notifications").insert({
-    user_id: report.reporter_id,
-    type: "report_update",
-    title: "تم تحديث حالة بلاغك",
-    body: reportStatusBodyMap[nextStatus as (typeof VALID_STATUSES)[number]],
-    item_id: report.item_id,
-    offer_id: report.offer_id,
-    deal_id: report.deal_id,
+  await createNotification(supabase, {
+    targetUserId: report.reporter_id,
+    notificationType: "report_update",
+    notificationTitle: "تم تحديث حالة بلاغك",
+    notificationBody: reportStatusBodyMap[nextStatus as (typeof VALID_STATUSES)[number]],
+    targetItemId: report.item_id,
+    targetOfferId: report.offer_id,
+    targetDealId: report.deal_id,
   });
-  if (notificationError) console.error("report notification skipped", notificationError.message);
 
   redirect(buildRedirectPath(statusFilter, reasonFilter, "updated"));
 }
