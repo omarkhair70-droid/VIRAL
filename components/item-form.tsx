@@ -133,7 +133,7 @@ export function ItemForm({ categories, prefill, action, authRequired = false, us
       </div>
       <div>
         <label className="mb-1 block text-sm font-medium">صور الحاجة</label>
-        <p className="mb-2 text-xs text-stone-500">اختار من 1 إلى 4 صور واضحة. أول صورة هتبقى الصورة الرئيسية.</p>
+        <p className="mb-2 text-xs text-stone-500">اختار من 1 إلى 4 صور واضحة. الصيغ المدعومة: JPG / PNG / WEBP. أول صورة هتبقى الصورة الرئيسية.</p>
         <input
           type="file"
           accept="image/jpeg,image/png,image/webp"
@@ -145,9 +145,9 @@ export function ItemForm({ categories, prefill, action, authRequired = false, us
             setErrorMessage(validationError);
           }}
           className="w-full rounded-xl border border-stone-300 px-3 py-2 text-sm"
-          aria-label="اختار صور من جهازك"
+          aria-label="لو صورة من الموبايل مش راضية تترفع، جرّب Screenshot أو صورة JPG."
         />
-        <p className="mt-1 text-xs text-stone-500">اختار صور من جهازك</p>
+        <p className="mt-1 text-xs text-stone-500">لو صورة من الموبايل مش راضية تترفع، جرّب Screenshot أو صورة JPG.</p>
         {previews.length > 0 ? (
           <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
             {previews.map((src, idx) => (
@@ -158,11 +158,11 @@ export function ItemForm({ categories, prefill, action, authRequired = false, us
       </div>
       <div><label className="mb-1 block text-sm font-medium">وصف إضافي</label><textarea name="description" className="w-full rounded-xl border border-stone-300 px-3 py-2" /></div>
       <div><label className="mb-1 block text-sm font-medium">الحالة</label><select name="condition" required defaultValue="good_used" className="w-full rounded-xl border border-stone-300 px-3 py-2"><option value="almost_new">جديد تقريبًا</option><option value="good_used">مستخدم بحالة كويسة</option><option value="minor_issues">فيه عيوب بسيطة</option><option value="needs_repair">محتاج تصليح / عارف حالته</option></select></div>
-      <div><label className="mb-1 block text-sm font-medium">فيه حاجة لازم الطرف التاني يعرفها؟</label><textarea name="condition_notes" className="w-full rounded-xl border border-stone-300 px-3 py-2" /></div>
+      <div><label className="mb-1 block text-sm font-medium">ملاحظات الحالة (مهم جدًا)</label><textarea name="condition_notes" className="w-full rounded-xl border border-stone-300 px-3 py-2" /></div>
       <div className="grid gap-3 sm:grid-cols-2"><input name="city" placeholder="المدينة" className="rounded-xl border border-stone-300 px-3 py-2" /><input name="area" placeholder="المنطقة" className="rounded-xl border border-stone-300 px-3 py-2" /></div>
       <div><label className="mb-1 block text-sm font-medium">إنت عايز إيه؟</label><select name="desire_mode" required defaultValue="flexible" className="w-full rounded-xl border border-stone-300 px-3 py-2"><option value="specific">بدور على حاجة معينة</option><option value="flexible">عندي حاجات في بالي، بس فاجئني</option><option value="surprise">فاجئني تمامًا</option></select></div>
-      <div><label className="mb-1 block text-sm font-medium">تفاصيل إضافية عن اللي بدور عليه</label><textarea name="desire_text" className="w-full rounded-xl border border-stone-300 px-3 py-2" /></div>
-      <div><label className="mb-1 block text-sm font-medium">كلمات مفتاحية للحاجة اللي محتاجها</label><input name="wanted_tags" placeholder="مثال: مكتب, ديكور, خشب" className="w-full rounded-xl border border-stone-300 px-3 py-2" /></div>
+      <div><label className="mb-1 block text-sm font-medium">تفاصيل إضافية عن اللي بدور عليه (مثال: مقاس، نوع، حالة)</label><textarea name="desire_text" className="w-full rounded-xl border border-stone-300 px-3 py-2" /></div>
+      <div><label className="mb-1 block text-sm font-medium">كلمات مفتاحية للحاجة اللي محتاجها (افصل بينهم بفاصلة)</label><input name="wanted_tags" placeholder="مثال: مكتب, ديكور, خشب" className="w-full rounded-xl border border-stone-300 px-3 py-2" /></div>
       {isSubmitting ? (
         <p className="rounded-xl bg-blue-50 p-3 text-sm text-blue-900">
           {submissionStage === "publishing" ? "جاري نشر الإعلان..." : "جاري رفع الصور..."}

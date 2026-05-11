@@ -3,14 +3,16 @@ import { SectionHeading } from "@/components/section-heading";
 export default function HowItWorksPage() {
   return (
     <section className="mx-auto max-w-4xl space-y-8 px-4 py-10">
-      <SectionHeading title="إزاي المقايضة بتمشي؟" subtitle="الموضوع بسيط، بس كل خطوة بتخلي الصفقة أوضح وأريح للطرفين." />
-      <div className="space-y-4 rounded-3xl border border-stone-200 bg-white p-7 shadow-sm text-gray-700">
-        <p><strong>1. نزّل حاجة واحدة:</strong> كل حاجة تاخد فرصتها لوحدها. السفرة إعلان، والدولاب إعلان، والأباجورة إعلان.</p>
-        <p><strong>2. استقبل عروض:</strong> الناس تعرض عليك حاجات من عندها، والمنطقي والغريب لهم نفس الفرصة.</p>
-        <p><strong>3. اختار ردك:</strong> ممكن توافق، ترفض بلطف، أو تفتح باب تاني لعرض مختلف.</p>
-        <p><strong>4. اتفقوا بأمان:</strong> في MVP مافيش شات قبل القبول. بعد القبول، التفاصيل الخاصة تبقى بينكم.</p>
-        <p><strong>5. الصفقة تتحول لحكاية:</strong> العروض العامة جزء من حياة المنتج، لأنها بتبين القيمة اللي الناس شايفاها في الحاجات.</p>
+      <SectionHeading title="إزاي بتشتغل؟" subtitle="خطوات المقايضة في بدّلها زي ما هي موجودة دلوقتي في المنتج." />
+      <div className="space-y-4 rounded-3xl border border-stone-200 bg-white p-7 text-gray-700 shadow-sm">
+        <p><strong>1. اعرض حاجة بصور:</strong> خليك واضح في الوصف، وصوّر الحاجة من أكتر من زاوية.</p>
+        <p><strong>2. الناس تبعتلك عروض:</strong> كل واحد يقترح حاجة من عنده بدل الحاجة اللي عارضها.</p>
+        <p><strong>3. ترد على العرض:</strong> قبول / تفكير / ما ظبطتش / افتح باب تاني.</p>
+        <p><strong>4. لو العرض اتقبل:</strong> تتفتح صفحة تنسيق للصفقة.</p>
+        <p><strong>5. الطرفين يأكدوا الإتمام:</strong> كل طرف يأكد بعد الاستلام والمعاينة.</p>
+        <p><strong>6. كل طرف يقيّم التاني:</strong> قيّموا بعض بعد المقايضة عشان الثقة تبان في البروفايل.</p>
       </div>
+      <p className="rounded-xl border border-stone-200 bg-stone-50 p-4 text-sm text-stone-700">ميزات زي البلاغات المتقدمة والإشعارات الكاملة: <strong>جاي لاحقًا</strong>.</p>
     </section>
   );
 }
