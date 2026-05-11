@@ -80,6 +80,7 @@ export default async function AdminReportsPage({ searchParams }: { searchParams:
               {report.offer_id ? <Link href={`/offers/${report.offer_id}`} className="underline">فتح العرض</Link> : null}
               {report.deal_id ? <Link href={`/deals/${report.deal_id}`} className="underline">فتح الصفقة</Link> : null}
               {reportedUser?.username ? <Link href={`/users/${reportedUser.username}`} className="underline">فتح المستخدم</Link> : null}
+              {!report.item_id && !report.offer_id && !report.deal_id && !reportedUser?.username ? <span className="text-stone-500">الهدف مش متاح</span> : null}
             </div>
             <form action={updateReportStatus} className="flex flex-wrap items-center gap-2">
               <input type="hidden" name="report_id" value={report.id} />

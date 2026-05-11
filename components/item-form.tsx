@@ -133,7 +133,7 @@ export function ItemForm({ categories, prefill, action, authRequired = false, us
       </div>
       <div>
         <label className="mb-1 block text-sm font-medium">صور الحاجة</label>
-        <p className="mb-2 text-xs text-stone-500">اختار من 1 إلى 4 صور واضحة. الصيغ المدعومة: JPG / PNG / WEBP. أول صورة هتبقى الصورة الرئيسية.</p>
+        <p className="mb-2 text-xs text-stone-500">اختار من 1 إلى 4 صور واضحة. الصيغ المدعومة: JPG / PNG / WEBP. الحد الأقصى 5MB لكل صورة. أول صورة هتبقى الصورة الرئيسية.</p>
         <input
           type="file"
           accept="image/jpeg,image/png,image/webp"
