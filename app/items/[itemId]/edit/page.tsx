@@ -1,4 +1,5 @@
 import { notFound, redirect } from "next/navigation";
+import { PageHeading } from "@/components/ui/page-heading";
 import { ItemEditForm } from "@/components/item-edit-form";
 import { createClient } from "@/lib/supabase/server";
 import { updateItem } from "./actions";
@@ -18,5 +19,5 @@ export default async function EditItemPage({ params }: { params: Promise<{ itemI
 
   const { data: tags } = await supabase.from("item_wanted_tags").select("tag").eq("item_id", item.id);
 
-  return <section className="mx-auto max-w-3xl px-4 py-10"><h1 className="mb-4 text-2xl font-bold">تعديل الإعلان</h1><ItemEditForm action={updateItem} categories={categories ?? []} item={{ ...item, wanted_tags: (tags ?? []).map((tag) => tag.tag).join(", ") }} /></section>;
+  return <section className="mx-auto max-w-3xl space-y-6 px-4 py-10"><PageHeading title="تعديل الإعلان" /><ItemEditForm action={updateItem} categories={categories ?? []} item={{ ...item, wanted_tags: (tags ?? []).map((tag) => tag.tag).join(", ") }} /></section>;
 }

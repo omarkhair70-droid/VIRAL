@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Alert } from "@/components/ui/alert";
+import { ButtonLink } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { PageHeading } from "@/components/ui/page-heading";
 import { notFound } from "next/navigation";
 import { ShareActions } from "@/components/share-actions";
 import { ImageFrame } from "@/components/ui/image-frame";
@@ -117,13 +121,13 @@ export default async function ItemDetailPage({ params, searchParams }: { params:
   const owner = firstOrNull(typed.profiles);
 
   return (
-    <section className="mx-auto grid max-w-5xl gap-6 px-4 py-10 md:grid-cols-[1.1fr_1fr]">
-      {query.reported === "1" ? (
-        <p className="md:col-span-2 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-emerald-800">تم إرسال البلاغ. شكرًا إنك ساعدتنا نحافظ على التجربة.</p>
-      ) : null}
+    <section className="mx-auto max-w-5xl space-y-6 px-4 py-10">
+      <PageHeading title={typed.title} subtitle="تفاصيل الإعلان وصاحب الإعلان وخيارات الأمان." />
+      <div className="grid gap-6 md:grid-cols-[1.1fr_1fr]">
+      {query.reported === "1" ? <Alert variant="success" className="md:col-span-2">تم إرسال البلاغ. شكرًا إنك ساعدتنا نحافظ على التجربة.</Alert> : null}
       <div className="space-y-4">
         <ImageFrame imageUrl={img} title={typed.title} />
-        <div className="rounded-2xl border border-stone-200 bg-white p-4">
+        <Card className="p-4">
           <div className="mb-3 flex flex-wrap gap-2">
             <StatusPill>{firstOrNull(typed.categories)?.name_ar ?? "بدون تصنيف"}</StatusPill>
             <StatusPill tone="warning">{conditionLabels[typed.condition]}</StatusPill>
@@ -131,11 +135,11 @@ export default async function ItemDetailPage({ params, searchParams }: { params:
           <h1 className="text-3xl font-bold">{typed.title}</h1>
           {typed.description ? <p className="mt-3 text-stone-700">{typed.description}</p> : null}
           {typed.condition_notes ? <p className="mt-2 text-sm text-stone-600">{typed.condition_notes}</p> : null}
-        </div>
+        </Card>
       </div>
 
       <div className="space-y-4">
-        <div className="rounded-2xl border border-stone-200 bg-white p-4">
+        <Card className="p-4">
           <p className="font-semibold">تفاصيل الإعلان</p>
           <p className="mt-2 text-sm text-stone-600">{[typed.city, typed.area].filter(Boolean).join(" - ") || "الموقع غير مضاف"}</p>
           <p className="mt-2 text-sm text-stone-700">{desireLabels[typed.desire_mode]}</p>
@@ -149,9 +153,9 @@ export default async function ItemDetailPage({ params, searchParams }: { params:
               ))}
             </div>
           ) : null}
-        </div>
+        </Card>
 
-        <div className="rounded-2xl border border-stone-200 bg-white p-4">
+        <Card className="p-4">
           <p className="font-semibold">صاحب الإعلان</p>
           {owner?.username ? (
             <Link href={`/users/${owner.username}`} className="mt-1 inline-block font-medium hover:underline">
@@ -162,33 +166,33 @@ export default async function ItemDetailPage({ params, searchParams }: { params:
           )}
           <p className="text-sm text-stone-600">{owner?.city ?? ""}</p>
           <p className="text-sm text-stone-600">مقايضات ناجحة: {owner?.successful_swaps_count ?? 0}</p>
-        </div>
+        </Card>
 
-        <div className="rounded-2xl border border-stone-200 bg-white p-4">
+        <Card className="p-4">
           <ShareActions
             label={user?.id === typed.owner_id ? "شارك إعلانك" : "شارك الإعلان"}
             title={typed.title}
             text="شوف الإعلان ده على بدّلها — بدّل الحاجة بدل ما تسيبها مركونة."
             urlPath={`/items/${typed.id}`}
           />
-        </div>
+        </Card>
 
         {user?.id === typed.owner_id ? (
-          <div className="rounded-xl bg-amber-50 p-3 text-amber-800">دي حاجتك أنت.</div>
+          <Alert variant="warning">دي حاجتك أنت.</Alert>
         ) : (
-          <Link href={`/offers/new?requestedItemId=${typed.id}`} className="inline-block rounded-xl bg-clay px-5 py-3 text-white">
+          <ButtonLink href={`/offers/new?requestedItemId=${typed.id}`}>
             اعرض حاجة عندك
-          </Link>
+          </ButtonLink>
         )}
 
         {user?.id === typed.owner_id ? (
           <div className="flex gap-2">
-            <Link href={`/items/${typed.id}/edit`} className="inline-block rounded-xl border px-4 py-2">
+            <Link href={`/items/${typed.id}/edit`} className="inline-flex min-h-11 items-center justify-center rounded-xl border border-warmBorder bg-white px-4 py-2.5 text-sm font-medium text-ink transition hover:bg-sand">
               عدّل الإعلان
             </Link>
-            <Link href="/dashboard/items" className="inline-block rounded-xl border px-4 py-2">
+            <ButtonLink href="/dashboard/items" variant="secondary">
               إدارة حاجاتي
-            </Link>
+            </ButtonLink>
           </div>
         ) : null}
         {user && user.id !== typed.owner_id ? (
@@ -198,6 +202,7 @@ export default async function ItemDetailPage({ params, searchParams }: { params:
         ) : null}
         <p className="text-xs text-stone-500">اتنشر يوم {new Date(typed.created_at).toLocaleDateString("ar-EG")}</p>
       </div>
+          </div>
     </section>
   );
 }
