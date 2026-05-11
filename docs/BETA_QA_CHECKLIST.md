@@ -49,3 +49,21 @@
 - [ ] Profile setup/edit still works.
 - [ ] Mobile bottom nav does not cover buttons.
 - [ ] No horizontal overflow on mobile.
+
+- [ ] item detail offer/report/share still works
+- [ ] item publish still submits with image
+- [ ] item edit still saves
+- [ ] archive/reactivate still works
+- [ ] received/sent offer tabs still work
+- [ ] offer response buttons still work
+- [ ] accepted offer still opens/reserves deal flow
+- [ ] deal messages still send
+- [ ] message report link still works
+- [ ] deal confirmation still works
+- [ ] review submit still works
+- [ ] report submit still works
+- [ ] profile setup/edit still works
+- [ ] public profile reviews still show
+- [ ] dashboard item/actions still work
+- [ ] no mobile overflow
+- [ ] bottom nav does not cover form submit buttons
