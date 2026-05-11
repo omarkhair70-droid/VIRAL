@@ -25,6 +25,7 @@ export default async function DashboardPage() {
   const username = profile?.username ?? null;
   const displayName = profile?.display_name ?? "مستخدم";
   const profileComplete = Boolean(username && profile?.city && profile?.area && profile?.bio);
+  const setupNext = encodeURIComponent("/dashboard");
 
   const received = (receivedOffers ?? []).map((offer) => offer.status as OfferStatus);
   const sent = (sentOffers ?? []).map((offer) => offer.status as OfferStatus);
@@ -39,7 +40,17 @@ export default async function DashboardPage() {
           <p className="text-lg font-semibold">حسابي</p>
           <p>{displayName}</p>
           <p className="text-sm text-stone-600">{username ? `@${username}` : "لسه مكملش بياناته"}</p>
-          {!profileComplete ? <p className="rounded-lg bg-amber-50 p-2 text-sm text-amber-900">كمّل بروفايلك عشان الناس تعرف تتعامل معاك بثقة.</p> : null}
+          {!profileComplete ? (
+            <p className="rounded-lg bg-amber-50 p-2 text-sm text-amber-900">
+              {!username ? (
+                <Link href={`/profile/setup?next=${setupNext}`} className="underline">
+                  كمّل بروفايلك عشان الناس تعرف تتعامل معاك بثقة.
+                </Link>
+              ) : (
+                "كمّل بروفايلك عشان الناس تعرف تتعامل معاك بثقة."
+              )}
+            </p>
+          ) : null}
           <Link href="/profile" className="inline-flex rounded-lg border px-3 py-1.5 text-sm">تعديل بروفايلك</Link>
         </section>
 

@@ -1,11 +1,6 @@
 import { NextResponse } from "next/server";
+import { normalizeNextPath } from "@/lib/normalize-next-path";
 import { createClient } from "@/lib/supabase/server";
-
-function normalizeNextPath(next: string | null) {
-  if (!next || !next.startsWith("/")) return "/dashboard";
-  if (next.startsWith("//")) return "/dashboard";
-  return next;
-}
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
@@ -15,6 +10,19 @@ export async function GET(request: Request) {
   if (code) {
     const supabase = await createClient();
     await supabase.auth.exchangeCodeForSession(code);
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (user) {
+      const { data: profile } = await supabase.from("profiles").select("username").eq("id", user.id).maybeSingle();
+      const username = profile?.username?.trim();
+
+      if (!username) {
+        return NextResponse.redirect(`${origin}/profile/setup?next=${encodeURIComponent(next)}`);
+      }
+    }
   }
 
   return NextResponse.redirect(`${origin}${next}`);
