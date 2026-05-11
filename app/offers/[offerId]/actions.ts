@@ -104,61 +104,37 @@ export async function markOfferThinking(formData: FormData) {
 export async function acceptOffer(formData: FormData) {
   try {
     const ctx = await validateOfferResponse(formData);
-    const note = String(formData.get("note") ?? "");
-    const { error } = await ctx.supabase.from("offers").update({ status: "accepted", responded_at: new Date().toISOString() }).eq("id", ctx.offerId);
-    if (error) throw error;
-    await insertEventAndNotify({
-      supabase: ctx.supabase,
-      offerId: ctx.offerId,
-      userId: ctx.userId,
-      oldStatus: ctx.offer.status,
-      newStatus: "accepted",
-      eventType: "accepted",
-      note,
-      senderId: ctx.offer.sender_id,
-      notificationType: "offer_accepted",
-      notificationTitle: "العرض اتقبل",
-      notificationBody: "صاحب الحاجة قبل العرض.",
-    });
 
-    const { data: existingDeal, error: existingDealError } = await ctx.supabase
-      .from("swap_deals")
-      .select("id")
-      .eq("offer_id", ctx.offer.id)
-      .maybeSingle();
-    if (existingDealError) throw existingDealError;
+    const { data: dealId, error: rpcError } = await ctx.supabase.rpc("accept_offer", { p_offer_id: ctx.offerId });
+    if (rpcError) throw rpcError;
 
-    if (!existingDeal) {
-      const { data: createdDeal, error: dealInsertError } = await ctx.supabase.from("swap_deals").insert({
-        offer_id: ctx.offer.id,
-        requested_item_id: ctx.offer.requested_item_id,
-        offered_item_id: ctx.offer.offered_item_id,
-        requester_id: ctx.offer.receiver_id,
-        offerer_id: ctx.offer.sender_id,
-        status: "coordinating",
-      }).select("id").single();
-      if (dealInsertError) throw dealInsertError;
-
-      if (createdDeal?.id) {
-        await Promise.all([
-          createNotification(ctx.supabase, {
-            targetUserId: ctx.offer.sender_id,
-            notificationType: "deal_created",
-            notificationTitle: "اتفتحت صفحة التنسيق",
-            notificationBody: "العرض اتقبل، وكده تقدروا تتابعوا الصفقة من صفحة التنسيق.",
-            targetOfferId: ctx.offer.id,
-            targetDealId: createdDeal.id,
-          }),
-          createNotification(ctx.supabase, {
-            targetUserId: ctx.offer.receiver_id,
-            notificationType: "deal_created",
-            notificationTitle: "اتفتحت صفحة التنسيق",
-            notificationBody: "العرض اتقبل، وكده تقدروا تتابعوا الصفقة من صفحة التنسيق.",
-            targetOfferId: ctx.offer.id,
-            targetDealId: createdDeal.id,
-          }),
-        ]);
-      }
+    if (dealId) {
+      await Promise.all([
+        createNotification(ctx.supabase, {
+          targetUserId: ctx.offer.sender_id,
+          notificationType: "offer_accepted",
+          notificationTitle: "العرض اتقبل",
+          notificationBody: "صاحب الحاجة قبل العرض.",
+          targetOfferId: ctx.offer.id,
+          targetDealId: dealId,
+        }),
+        createNotification(ctx.supabase, {
+          targetUserId: ctx.offer.sender_id,
+          notificationType: "deal_created",
+          notificationTitle: "اتفتحت صفحة التنسيق",
+          notificationBody: "العرض اتقبل، وكده تقدروا تتابعوا الصفقة من صفحة التنسيق.",
+          targetOfferId: ctx.offer.id,
+          targetDealId: dealId,
+        }),
+        createNotification(ctx.supabase, {
+          targetUserId: ctx.offer.receiver_id,
+          notificationType: "deal_created",
+          notificationTitle: "اتفتحت صفحة التنسيق",
+          notificationBody: "العرض اتقبل، وكده تقدروا تتابعوا الصفقة من صفحة التنسيق.",
+          targetOfferId: ctx.offer.id,
+          targetDealId: dealId,
+        }),
+      ]);
     }
 
     redirect(`/offers/${ctx.offerId}?response=accepted`);

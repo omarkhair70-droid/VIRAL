@@ -133,7 +133,7 @@ export function ItemForm({ categories, prefill, action, authRequired = false, us
       </div>
       <div>
         <label className="mb-1 block text-sm font-medium">صور الحاجة</label>
-        <p className="mb-2 text-xs text-stone-500">اختار من 1 إلى 4 صور واضحة. الصيغ المدعومة: JPG / PNG / WEBP. الحد الأقصى 5MB لكل صورة. أول صورة هتبقى الصورة الرئيسية.</p>
+        <p className="mb-2 text-xs text-stone-500">اختار من 1 إلى 4 صور واضحة. الصيغ المدعومة: JPG / PNG / WEBP. الحد الأقصى 5MB لكل صورة. أول صورة هتبقى الصورة الرئيسية. الصور المعروضة في السوق عامة (Public) — ما ترفعش أي بيانات خاصة أو حساسة.</p>
         <input
           type="file"
           accept="image/jpeg,image/png,image/webp"
@@ -145,9 +145,9 @@ export function ItemForm({ categories, prefill, action, authRequired = false, us
             setErrorMessage(validationError);
           }}
           className="w-full rounded-xl border border-stone-300 px-3 py-2 text-sm"
-          aria-label="لو صورة من الموبايل مش راضية تترفع، جرّب Screenshot أو صورة JPG."
+          aria-label="لو صورة من الموبايل مش راضية تترفع، جرّب Screenshot أو صورة JPG. تنبيه: ما ترفعش أرقام موبايل/عناوين/بطاقات هوية/مستندات خاصة."
         />
-        <p className="mt-1 text-xs text-stone-500">لو صورة من الموبايل مش راضية تترفع، جرّب Screenshot أو صورة JPG.</p>
+        <p className="mt-1 text-xs text-stone-500">لو صورة من الموبايل مش راضية تترفع، جرّب Screenshot أو صورة JPG. تنبيه: ما ترفعش أرقام موبايل/عناوين/بطاقات هوية/مستندات خاصة.</p>
         {previews.length > 0 ? (
           <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
             {previews.map((src, idx) => (

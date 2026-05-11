@@ -70,38 +70,17 @@ export async function confirmDealCompleted(formData: FormData) {
     redirect(`/deals/${dealId}?error=confirm_failed`);
   }
 
-  const { count: confirmationsCount } = await supabase
-    .from("deal_confirmations")
-    .select("id", { count: "exact", head: true })
-    .eq("deal_id", dealId);
+  const { data: dealCompleted, error: completeRpcError } = await supabase.rpc("complete_deal_if_ready", { p_deal_id: dealId });
+  if (completeRpcError) {
+    redirect(`/deals/${dealId}?error=confirm_failed`);
+  }
 
-  if ((confirmationsCount ?? 0) >= 2) {
-    const { data: completedUpdate, error: completeError } = await supabase
-      .from("swap_deals")
-      .update({ status: "completed", completed_at: new Date().toISOString() })
-      .eq("id", dealId)
-      .in("status", ["coordinating", "completed_pending_confirmation"])
-      .select("id")
-      .maybeSingle();
-
-    if (completeError) redirect(`/deals/${dealId}?error=confirm_failed`);
-
-    if (completedUpdate) {
-      await supabase.from("items").update({ status: "swapped" }).in("id", [deal.requested_item_id, deal.offered_item_id]);
-      await supabase.from("offer_events").insert({ offer_id: deal.offer_id, actor_id: user.id, event_type: "completed", old_status: "accepted", new_status: "accepted" });
-      await supabase.rpc("increment_successful_swaps_for_users", { user_a: deal.requester_id, user_b: deal.offerer_id });
-      await Promise.all([
-        insertNotificationSafely(supabase, { userId: deal.requester_id, notificationType: "deal_completed", title: "المقايضة تمت", body: "الطرفين أكدوا الإتمام. تقدروا تسيبوا تقييم لبعض.", dealId: dealId }),
-        insertNotificationSafely(supabase, { userId: deal.offerer_id, notificationType: "deal_completed", title: "المقايضة تمت", body: "الطرفين أكدوا الإتمام. تقدروا تسيبوا تقييم لبعض.", dealId: dealId }),
-      ]);
-    }
+  if (dealCompleted) {
+    await Promise.all([
+      insertNotificationSafely(supabase, { userId: deal.requester_id, notificationType: "deal_completed", title: "المقايضة تمت", body: "الطرفين أكدوا الإتمام. تقدروا تسيبوا تقييم لبعض.", dealId: dealId }),
+      insertNotificationSafely(supabase, { userId: deal.offerer_id, notificationType: "deal_completed", title: "المقايضة تمت", body: "الطرفين أكدوا الإتمام. تقدروا تسيبوا تقييم لبعض.", dealId: dealId }),
+    ]);
   } else {
-    await supabase
-      .from("swap_deals")
-      .update({ status: "completed_pending_confirmation" })
-      .eq("id", dealId)
-      .eq("status", "coordinating");
-
     const otherParticipantId = user.id === deal.requester_id ? deal.offerer_id : deal.requester_id;
     await insertNotificationSafely(supabase, {
       userId: otherParticipantId,

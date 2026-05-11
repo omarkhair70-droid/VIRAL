@@ -1,115 +1,31 @@
-# Beta QA Checklist (Phase 14 Final)
+# Beta QA Checklist (Phase 20.5 Security Freeze)
 
-## A) Auth
-- [ ] Google login works.
-- [ ] Logout works and session is cleared.
-- [ ] Stale cookie check: login in browser A, logout from browser B, verify protected actions re-check auth.
-- [ ] First-time user is redirected to profile setup and can complete it.
+## Offers / RLS / Lifecycle
+- [ ] Sender cannot accept own sent offer.
+- [ ] Receiver cannot change `requested_item_id`/`offered_item_id`.
+- [ ] Malicious participant cannot force illegal offer status transition.
+- [ ] Accepting offer sets offer status to `accepted`.
+- [ ] Accepting offer reserves both requested + offered items.
+- [ ] Accepted/reserved items no longer behave as freely active listing inventory.
 
-## B) Profiles
-- [ ] Edit profile fields and save.
-- [ ] Public profile page renders correctly.
-- [ ] User email is not shown publicly.
+## Deals / RLS / Lifecycle
+- [ ] Malicious participant cannot mutate immutable deal identity fields.
+- [ ] Deal cannot become `completed` without both confirmations.
+- [ ] Second confirmation transitions deal to `completed`.
+- [ ] Completed deal updates both items to `swapped`.
+- [ ] Completed deal is terminal (cannot revert to coordinating).
 
-## C) Items
-- [ ] Publish item with valid JPG/PNG/WEBP images.
-- [ ] Try unsupported image type and confirm helpful error message appears.
-- [ ] Edit item details.
-- [ ] Archive then reactivate item.
-- [ ] Search/filter items from `/items`.
-- [ ] Archived item does not appear in public listing.
+## Visibility / data safety
+- [ ] Archived/removed items stay hidden from public surfaces.
+- [ ] Public images still load from `item-images` bucket.
+- [ ] Item publish UI shows warning to avoid private/sensitive images.
 
-## D) Offers
-- [ ] Send offer from account B on account A item.
-- [ ] Receiver sees incoming offer.
-- [ ] Sender sees sent offer.
-- [ ] Offer status transitions work: pending/thinking/reject/redirect/accept.
+## Regression checks
+- [ ] Existing offer pages still work.
+- [ ] Existing deal pages still work.
+- [ ] Reports flow still works.
+- [ ] Admin reports review still works.
+- [ ] Notifications still build/send/read/mark-as-read.
 
-## E) Deals
-- [ ] Accepted offer creates deal.
-- [ ] Each side can open the deal.
-- [ ] One side confirms completion.
-- [ ] Other side gets pending confirmation notification.
-- [ ] Both sides confirm completion.
-- [ ] Deal status becomes completed.
-- [ ] Both items become swapped.
-
-## F) Reviews
-- [ ] Each side can submit one review only.
-- [ ] Duplicate review attempts are blocked.
-- [ ] Reviews appear on reviewee public profile.
-
-## G) Reports
-- [ ] Submit report against item/profile/offer/deal.
-- [ ] Reporter can view own submitted reports.
-- [ ] Admin can view all reports.
-- [ ] Non-admin cannot access `/admin/reports`.
-- [ ] Admin can change report status.
-- [ ] Reporter receives status update notification.
-
-## H) Notifications
-- [ ] Unread count appears on dashboard/notifications surfaces.
-- [ ] Notifications page opens and lists latest entries.
-- [ ] Mark one notification as read.
-- [ ] Mark all notifications as read.
-- [ ] Another account cannot read your notifications.
-
-## I) Mobile Smoke
-- [ ] Homepage layout and CTA readability.
-- [ ] Header/navigation wraps correctly.
-- [ ] Publish item flow is usable.
-- [ ] Item detail is readable and actions are accessible.
-- [ ] Dashboard stats/actions are usable.
-- [ ] Notifications page is usable.
-- [ ] Deal page completion actions are usable.
-
-## J) Abuse / Edge Cases
-- [ ] User cannot send offer on own item.
-- [ ] User cannot report own item.
-- [ ] User cannot access another user deal directly.
-- [ ] Unauthenticated access to protected pages redirects to login with `next`.
-- [ ] Invalid UUID / bad route does not crash app (graceful not-found/error handling).
-
-## K) Deal messages
-- [ ] Accepted deal shows message section.
-- [ ] Participant A sends message.
-- [ ] Participant B sees message.
-- [ ] Participant B gets notification.
-- [ ] Non-participant cannot access deal/messages.
-- [ ] Empty message is blocked.
-- [ ] Long message is blocked.
-- [ ] Completed deal shows messages read-only.
-- [ ] Messages do not appear on public profile.
-
-- Report a message from the other participant.
-- Confirm report success message appears.
-- Confirm own messages do not show report link.
-- Confirm non-participant cannot report a message.
-- Send 5 messages quickly then confirm 6th is rate-limited.
-- Confirm admin can see message report with snippet.
-- Confirm normal user cannot access admin reports.
-
-
-## L) PWA / app-like mobile
-- [ ] Manifest loads at `/manifest.webmanifest`.
-- [ ] Icons load from `/icons/icon.svg` and `/icons/icon-maskable.svg`.
-- [ ] `/install` page opens with install instructions.
-- [ ] Service worker registers without console-breaking errors.
-- [ ] `/offline` page opens.
-- [ ] Mobile header does not overflow horizontally.
-- [ ] Bottom nav does not cover important buttons/forms on mobile.
-- [ ] Logged-in bottom nav links open expected pages.
-- [ ] App opens from home screen if user installs it.
-- [ ] Offline fallback appears on navigation when network is unavailable.
-- [ ] Private pages are not cached/reused for another user session.
-
-
-## M) Sharing / beta launch
-- [ ] `/beta` opens for logged-out user.
-- [ ] Beta CTA buttons navigate to expected routes.
-- [ ] Item page shows share/copy actions.
-- [ ] Public profile page shows share/copy actions.
-- [ ] Copy link works on desktop browser.
-- [ ] Native share works on supported mobile browser.
-- [ ] Item metadata does not expose archived/private item data.
-- [ ] Profile metadata does not expose email/auth id.
+## Build
+- [ ] `npm run build` passes.

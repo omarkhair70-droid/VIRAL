@@ -1,90 +1,37 @@
-# RLS Audit Summary (Phase 14)
+# RLS Audit Summary (Phase 20.5)
 
-Scope reviewed from current migrations in `supabase/migrations`.
+Scope reviewed from current migrations in `supabase/migrations` including Phase 20.5 hardening.
 
-## Global Notes
-- RLS is enabled on core user data tables.
-- No anonymous writes are allowed in current app flows.
-- Admin moderation actions beyond report status updates are intentionally not implemented in this phase.
+## Key hardening changes
+- Replaced broad participant update posture with lifecycle-enforced update posture for:
+  - `offers` (`offers_participant_update` -> `offers_participant_lifecycle_update`)
+  - `swap_deals` (`deals_participant_update` -> `deals_participant_lifecycle_update`)
+- Added DB triggers/functions:
+  - `enforce_offer_lifecycle` + `offers_lifecycle_guard`
+  - `enforce_swap_deal_lifecycle` + `swap_deals_lifecycle_guard`
+- Added RPCs:
+  - `accept_offer(uuid)` (atomic accept + reserve both items + deal + event)
+  - `complete_deal_if_ready(uuid)` (confirmation-gated completion)
 
----
+## Offers posture
+- Sender insert only.
+- Participant update still limited by RLS, but lifecycle trigger now blocks illegal transitions and identity-field mutation.
+- Immutable after insert: `requested_item_id`, `offered_item_id`, `sender_id`, `receiver_id`, `parent_offer_id`.
+- Allowed transitions enforced in DB:
+  - `pending -> thinking` (receiver only)
+  - `pending/thinking -> accepted|soft_rejected|redirected` (receiver only)
+  - `pending/thinking -> withdrawn` (sender only)
+  - `accepted -> cancelled_after_accept` (participant only)
+  - terminal states blocked from arbitrary mutation
 
-## profiles
-- **Read:** Public select for non-banned profiles.
-- **Insert:** Authenticated user can insert own profile only.
-- **Update:** Authenticated user can update own profile only.
-- **Risk/Follow-up:** Public profile data is intentionally visible; keep sensitive fields out of table.
+## Swap deals posture
+- Participant update still RLS-limited, plus lifecycle trigger validation.
+- Immutable after insert: `offer_id`, `requested_item_id`, `offered_item_id`, `requester_id`, `offerer_id`.
+- Completion integrity:
+  - `completed` requires 2 confirmations at DB level.
+  - `completed` terminal.
+  - legal transitions only from coordinating/pending-confirmation states.
 
-## items
-- **Read:** Public for `active/reserved/swapped`; owner select for own items (including archived) exists via Phase 8 policy.
-- **Insert:** Authenticated owner only (`owner_id = auth.uid()`).
-- **Update:** Owner only.
-- **Risk/Follow-up:** Archived items are hidden publicly, visible to owner.
-
-## item_images / item_wanted_tags
-- **Read:** Public when parent item is publicly visible.
-- **Insert/Update/Delete:** Item owner only.
-- **Risk/Follow-up:** Storage policies must remain aligned with DB ownership model.
-
-## offers
-- **Read:** Currently broad select policy (`offers_public_select`).
-- **Insert:** Sender only.
-- **Update:** Offer participants only (sender/receiver).
-- **Risk/Follow-up:** `offers_public_select` may need tightening later if privacy concerns increase.
-
-## offer_events
-- **Read:** Currently broad select policy (`offer_events_public_select`).
-- **Insert:** Offer participants only.
-- **Update:** Not used in app flow.
-- **Risk/Follow-up:** `offer_events_public_select` may need tightening later.
-
-## swap_deals
-- **Read:** Deal participants only.
-- **Insert:** Accept-flow constrained insert policy exists (Phase 5).
-- **Update:** Deal participants only.
-- **Risk/Follow-up:** Good baseline for privacy.
-
-
-## deal_messages
-- **Read:** Deal participants only (`deal_messages_participant_select`).
-- **Insert:** Authenticated deal participant only with `sender_id = auth.uid()` (`deal_messages_participant_insert`).
-- **Update/Delete:** Not exposed in current app flow.
-- **Risk/Follow-up:** Message reporting/moderation may be added later.
-
-## deal_confirmations
-- **Read:** Deal participants only.
-- **Insert:** Authenticated participant can confirm self only (`user_id = auth.uid()`).
-- **Update:** Not required in normal flow.
-- **Risk/Follow-up:** Unique `(deal_id, user_id)` prevents duplicates.
-
-## reviews
-- **Read:** Public.
-- **Insert:** Completed-deal participant insert policy (Phase 10).
-- **Update:** Not needed in current UX.
-- **Risk/Follow-up:** Public visibility is intentional for trust.
-
-## reports
-- **Read:** Reporter can read own reports; admins can read all.
-- **Insert:** Reporter self insert only.
-- **Update:** Admin-only report status updates.
-- **Risk/Follow-up:** Admin action surface is intentionally limited to report status.
-
-## notifications
-- **Read:** Notification owner only.
-- **Insert:** Through server-side app flow / RPC.
-- **Update:** Notification owner only (mark read).
-- **Risk/Follow-up:** Keep server actions from leaking cross-user IDs.
-
-## admin_users
-- **Read:** Authenticated user can read own admin row.
-- **Insert/Update:** Manual DB management outside app UI.
-- **Risk/Follow-up:** This table is the admin gatekeeper; restrict manual access.
-
-## discovery_examples
-- **Read:** Public select.
-- **Insert/Update:** Not exposed in app UI.
-- **Risk/Follow-up:** Safe as static/discovery content.
-
-- reports.deal_message_id stores per-message report context for deal chat safety.
-- deal_messages_admin_select policy allows admin-only read for reviewing reported message snippets.
-- Future moderation may add hide/delete actions, but Phase 16 only records reports.
+## Remaining known security risks
+- `item-images` bucket is public-read by product choice.
+- User-upload safety depends on copy/education + future moderation/cleanup tooling.

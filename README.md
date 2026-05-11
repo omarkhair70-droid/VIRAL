@@ -1,87 +1,74 @@
-# Swap Marketplace (Phase 0 Foundation)
+# VIRAL / بدّلها
 
-منصة تبادل اجتماعي عربية أولاً.
+منصة marketplace عربية للتبادل المباشر بين الأفراد (item-for-item swap)، حالياً في **Controlled Beta Marketplace MVP**.
 
-> يمكن الحاجة اللي مركونة عندك هي بالظبط اللي حد تاني بيدور عليها.
+## Current Status
+**Phase 20.5 (Security + Source of Truth Freeze)**
+- ليست مرحلة branding جديدة.
+- ليست UI polish.
+- ليست features تجارية جديدة.
+- التركيز الحالي: أمان البيانات، lifecycle integrity، وتوحيد الـ source of truth.
 
-## Phase 0 Scope
-- تأسيس Next.js App Router + Tailwind + TypeScript.
-- إعداد Supabase SSR auth بالكوكيز.
-- إنشاء schema + RLS + seed data.
-- صفحات placeholder فقط.
+## Implemented (Current Beta)
+- Auth + profile setup/edit
+- Item listing + image uploads
+- Discovery/feed/public pages
+- Offers creation + owner response lifecycle
+- Accepted deal coordination
+- Deal confirmations + completion flow
+- Reviews
+- Reports
+- Admin report review
+- Notifications center
+- Deal-scoped messages
+- PWA install + conservative offline fallback
+- Sharing/social metadata
+- Brand identity foundation docs/assets
 
-## Intentionally NOT Included
-لا يوجد نشر منتجات فعلي، إرسال عروض، تنسيق صفقات، دفع، شحن، دردشة، AI matching، أو multi-way swap في المرحلة دي.
+## Not Implemented (Out of Scope)
+- Payments
+- Delivery/logistics
+- Escrow
+- Advanced AI matching
+- Multi-way swaps
+- Native mobile app
+- Heavy monetization
+- Public launch readiness
 
 ## Setup
-1. `npm install`
-2. انسخ `.env.example` إلى `.env.local` واضبط القيم.
-3. أنشئ مشروع Supabase.
-4. نفذ migration:
-   - `supabase db push` (أو شغّل SQL من `supabase/migrations/...`)
-5. شغّل المشروع:
+1. Install deps:
+   - `npm install`
+2. Create local env:
+   - copy `.env.example` -> `.env.local`
+3. Required env vars:
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
+4. Run database migrations:
+   - `supabase db push`
+   - or apply SQL files in `supabase/migrations/` in order.
+5. Run app:
    - `npm run dev`
 
-## Environment Variables
-- `NEXT_PUBLIC_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
+## Supabase / Storage Requirements
+- Bucket name: `item-images`
+- Bucket posture: **Public read enabled** (marketplace listing photos are publicly accessible)
+- Storage path format: `items/{userId}/{itemId}/{timestamp}-{safeFilename}`
+- Allowed types: JPG/PNG/WEBP
+- Max: 4 images/item, 5MB each
 
-## Supabase Notes
-- استخدم `@supabase/ssr` فقط.
-- لا تستخدم service role key في المتصفح.
-- trigger ينشئ profile تلقائيًا بعد إنشاء user.
+### Public Image Safety Warning (Beta)
+Because `item-images` is public-read:
+- Do **not** upload private/sensitive photos.
+- Do **not** upload phone numbers, home/work addresses, IDs, passports, licenses, or private documents.
+- Upload/publish is currently two-step; if upload succeeds and publish fails, orphan files can remain in storage until cleanup tooling is added.
 
-## Storage (Phase 7 Item Images)
-أنشئ bucket باسم `item-images`:
-- Public read: enabled
-- لازم تطبق migration الخاصة بسياسات التخزين: `supabase/migrations/20260511120000_phase7_item_image_storage_policies.sql`
-- مسار الرفع الإجباري: `items/{userId}/{itemId}/{timestamp}-{safeFilename}`
-- الصيغ المدعومة: `image/jpeg`, `image/png`, `image/webp`
-- الحد الأقصى: 4 صور لكل إعلان، وكل صورة أقل من 5MB
-
-## Commands
+## Build/Test Commands
 - Dev: `npm run dev`
 - Lint: `npm run lint`
 - Build: `npm run build`
 
-## Vercel Deploy Notes
-- أضف env vars في Vercel Project Settings.
-- تأكد إن Supabase URL + publishable key متاحين لكل البيئات.
-
-## Next Phases (High-level)
-- Phase 1: item listing flow + lightweight discover UX.
-- Phase 2: offers lifecycle + events.
-- Phase 3: deal coordination + confirmations + reviews.
-
-
-## Phase 14 Production Hardening
-- راجع `docs/PRODUCTION_READINESS.md` قبل دعوة مستخدمين بيتا جدد.
-- راجع `docs/BETA_QA_CHECKLIST.md` للتست اليدوي النهائي قبل أي release.
-- راجع `docs/RLS_AUDIT.md` لمراجعة صلاحيات RLS الحالية والمتابعات المقترحة.
-
-
-## PWA / App-like Mobile (Phase 17)
-- بدّلها تدعم التثبيت من المتصفح وتقدر تفتحها من Home Screen كتجربة أقرب للتطبيق.
-- خطوات التثبيت للموبايل: `/install`.
-- الـ service worker محافظ: Offline fallback للتصفح فقط، بدون offline editing أو مزامنة كتابة بيانات.
-
-
-## Phase 18 Beta Sharing
-- صفحة بيتا عامة للتجربة الأولى: `/beta`.
-- إمكانيات مشاركة/نسخ لينك متاحة في صفحات الإعلان والبروفايل وصفحة بيتا.
-
-
-## Current Product Status
-- المشروع مش Phase 0 فقط anymore.
-- الحالة الحالية: **Controlled beta marketplace**.
-- راجع:
-  - `docs/MASTER_PRODUCT_MAP.md`
-  - `docs/ROADMAP_V2.md`
-  - `docs/PRODUCTION_READINESS.md`
-  - `docs/BETA_OPERATING_MODEL.md`
-
-
-## Brand System
-- `docs/BRAND_IDENTITY_SYSTEM.md`
-- `docs/COPY_BANK.md`
-- `docs/BRAND_AUDIT.md`
+## Beta Docs (Source of Truth)
+- Current system state: `docs/CURRENT_STATE.md`
+- RLS/security posture: `docs/RLS_AUDIT.md`
+- Production readiness gaps: `docs/PRODUCTION_READINESS.md`
+- Manual QA checklist: `docs/BETA_QA_CHECKLIST.md`
