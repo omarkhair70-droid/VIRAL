@@ -20,8 +20,8 @@ type DealRow = {
   offer_id: string;
   requester_id: string;
   offerer_id: string;
-  requester: MaybeArray<{ display_name: string | null }>;
-  offerer: MaybeArray<{ display_name: string | null }>;
+  requester: MaybeArray<{ display_name: string | null; username: string | null }>;
+  offerer: MaybeArray<{ display_name: string | null; username: string | null }>;
   offered_item: MaybeArray<ItemJoin>;
   requested_item: MaybeArray<ItemJoin>;
 };
@@ -34,7 +34,7 @@ export default async function DealDetailPage({ params }: { params: Promise<{ dea
 
   const { data } = await supabase
     .from("swap_deals")
-    .select("id,created_at,offer_id,requester_id,offerer_id,requester:profiles!swap_deals_requester_id_fkey(display_name),offerer:profiles!swap_deals_offerer_id_fkey(display_name),offered_item:items!swap_deals_offered_item_id_fkey(id,title,item_images(image_url,is_primary)),requested_item:items!swap_deals_requested_item_id_fkey(id,title,item_images(image_url,is_primary))")
+    .select("id,created_at,offer_id,requester_id,offerer_id,requester:profiles!swap_deals_requester_id_fkey(display_name,username),offerer:profiles!swap_deals_offerer_id_fkey(display_name,username),offered_item:items!swap_deals_offered_item_id_fkey(id,title,item_images(image_url,is_primary)),requested_item:items!swap_deals_requested_item_id_fkey(id,title,item_images(image_url,is_primary))")
     .eq("id", dealId)
     .maybeSingle();
 
@@ -46,8 +46,10 @@ export default async function DealDetailPage({ params }: { params: Promise<{ dea
   const requested = firstOrNull(deal.requested_item);
   if (!offered || !requested) notFound();
 
-  const offererName = firstOrNull(deal.offerer)?.display_name ?? "مستخدم";
-  const requesterName = firstOrNull(deal.requester)?.display_name ?? "صاحب الإعلان";
+  const offererProfile = firstOrNull(deal.offerer);
+  const requesterProfile = firstOrNull(deal.requester);
+  const offererName = offererProfile?.display_name ?? "مستخدم";
+  const requesterName = requesterProfile?.display_name ?? "صاحب الإعلان";
 
   return (
     <section className="mx-auto max-w-5xl space-y-6 px-4 py-10">
@@ -62,7 +64,7 @@ export default async function DealDetailPage({ params }: { params: Promise<{ dea
       </div>
 
       <div className="rounded-2xl border bg-stone-50 p-4 text-sm text-stone-700">
-        <p>المشاركين: {offererName} و {requesterName}</p>
+        <p>المشاركين: {offererProfile?.username ? <Link href={`/users/${offererProfile.username}`} className="hover:underline">{offererName}</Link> : offererName} و {requesterProfile?.username ? <Link href={`/users/${requesterProfile.username}`} className="hover:underline">{requesterName}</Link> : requesterName}</p>
         <p>تاريخ القبول: {new Date(deal.created_at).toLocaleDateString("ar-EG")}</p>
       </div>
 
