@@ -25,3 +25,13 @@ Manual end-to-end checks before inviting first beta users:
 17. Report a public user profile.
 18. Verify report success message appears after submit.
 19. Verify reports are not publicly visible.
+
+## Phase 12.5 — Admin Reports Review
+
+- Admin user must be manually inserted into `public.admin_users` in Supabase.
+- Add current user to `public.admin_users` manually.
+- Open `/admin/reports` as admin.
+- Confirm all reports are visible.
+- Change report status to `reviewing`.
+- Change report status to `resolved`.
+- Log in as non-admin and confirm `/admin/reports` is not accessible.
