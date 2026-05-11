@@ -11,16 +11,38 @@ type Row = {
   categories: MaybeArray<{name_ar:string|null}>; item_images: Array<{image_url:string|null;is_primary:boolean|null}>|null; profiles: MaybeArray<{display_name:string|null}>;
 };
 
-const conditionLabels = { almost_new: "جديد تقريبًا", good_used: "مستخدم بحالة كويسة", minor_issues: "فيه عيوب بسيطة", needs_repair: "محتاج تصليح / عارف حالته" };
+type SourceOffer = { id: string; status: string; sender_id: string; receiver_id: string; requested_item_id: string; offered_item_id: string; public_note: string | null; redirect_type: string | null };
 
-export default async function NewOfferPage({ searchParams }: { searchParams: Promise<{ requestedItemId?: string; error?: string }> }) {
+const conditionLabels = { almost_new: "جديد تقريبًا", good_used: "مستخدم بحالة كويسة", minor_issues: "فيه عيوب بسيطة", needs_repair: "محتاج تصليح / عارف حالته" };
+const redirectMap: Record<string, string> = { offer_another_item: "اعرض حاجة تانية", ask_for_different_item: "بدور على نوع مختلف", update_preferences: "وضّح اختياراتك أكتر" };
+const errorMap: Record<string, string> = { invalid_parent: "مش قادرين نفتح العرض الأصلي. جرّب من صفحة العرض نفسه.", not_followup_allowed: "العرض ده مش متاح تبعت منه عرض تاني.", same_offered_item: "لازم تختار حاجة مختلفة عن العرض الأصلي.", duplicate_followup: "العرض التاني بنفس الحاجة متبعت بالفعل ولسه نشط.", unavailable: "الحاجة المطلوبة مش متاحة للعروض دلوقتي." };
+
+export default async function NewOfferPage({ searchParams }: { searchParams: Promise<{ requestedItemId?: string; fromOffer?: string; error?: string }> }) {
   const params = await searchParams;
-  const requestedItemId = params.requestedItemId?.trim();
+  const fromOffer = params.fromOffer?.trim();
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect(`/login?next=/offers/new?requestedItemId=${encodeURIComponent(requestedItemId ?? "")}`);
+    const nextQuery = fromOffer ? `fromOffer=${encodeURIComponent(fromOffer)}` : `requestedItemId=${encodeURIComponent(params.requestedItemId?.trim() ?? "")}`;
+    redirect(`/login?next=/offers/new?${nextQuery}`);
+  }
+
+  let sourceOffer: SourceOffer | null = null;
+  let requestedItemId = params.requestedItemId?.trim() ?? "";
+
+  if (fromOffer) {
+    const { data } = await supabase
+      .from("offers")
+      .select("id,status,sender_id,receiver_id,requested_item_id,offered_item_id,public_note,redirect_type")
+      .eq("id", fromOffer)
+      .maybeSingle();
+
+    sourceOffer = (data as SourceOffer | null) ?? null;
+    if (!sourceOffer || sourceOffer.sender_id !== user.id || sourceOffer.status !== "redirected") {
+      return <section className="mx-auto max-w-3xl space-y-4 p-8"><p className="rounded-xl border border-red-200 bg-red-50 p-3 text-red-800">{errorMap[params.error ?? ""] ?? "مش متاح تبعت عرض تاني من هنا."}</p><div className="flex gap-3"><Link className="underline" href="/items">ارجع للسوق</Link>{fromOffer ? <Link className="underline" href={`/offers/${fromOffer}`}>افتح العرض</Link> : null}</div></section>;
+    }
+    requestedItemId = sourceOffer.requested_item_id;
   }
 
   if (!requestedItemId) return <section className="mx-auto max-w-3xl p-8">مش لاقيين الحاجة اللي عايز تعرض عليها.</section>;
@@ -41,16 +63,18 @@ export default async function NewOfferPage({ searchParams }: { searchParams: Pro
   return <section className="mx-auto max-w-4xl space-y-5 px-4 py-10">
     <h1 className="text-3xl font-bold">اعرض حاجة عندك</h1>
     <p>اختار حاجة من حاجاتك، أو نزّل حاجة جديدة بسرعة عشان تعرضها على الإعلان ده.</p>
-    {params.error ? <p className="rounded-xl bg-red-50 p-3 text-red-700">مش قادرين نبعت العرض دلوقتي. جرّب تاني.</p> : null}
+    {params.error && errorMap[params.error] ? <p className="rounded-xl bg-red-50 p-3 text-red-700">{errorMap[params.error]}</p> : null}
+    {sourceOffer ? <div className="rounded-xl border border-sky-200 bg-sky-50 p-4"><p className="font-semibold">ابعت عرض تاني</p><p className="text-sm text-sky-900">صاحب الحاجة فتح باب تاني. اختار حاجة مختلفة وابعت عرض جديد.</p>{sourceOffer.public_note ? <p className="mt-2 text-sm">ملاحظة صاحب الحاجة: {sourceOffer.public_note}</p> : null}{sourceOffer.redirect_type ? <p className="mt-1 text-sm text-sky-800">نوع الباب التاني: {redirectMap[sourceOffer.redirect_type] ?? sourceOffer.redirect_type}</p> : null}</div> : null}
     <div className="rounded-2xl border p-4">{reqImg ? <img src={reqImg} alt={req.title} className="mb-2 aspect-video w-full rounded-xl object-cover" /> : null}<p className="font-semibold">{req.title}</p><p>{reqCat?.name_ar ?? "بدون تصنيف"}</p><p>{conditionLabels[req.condition]}</p><p>صاحبها: {reqOwner?.display_name ?? "مستخدم"}</p>{req.desire_text ? <p>{req.desire_text}</p> : null}</div>
     <form action={createOffer} className="space-y-5 rounded-2xl border p-4">
       <input type="hidden" name="requested_item_id" value={requestedItemId} />
+      {sourceOffer ? <input type="hidden" name="parent_offer_id" value={sourceOffer.id} /> : null}
       <div>
         <p className="mb-2 font-semibold">اختار طريقة العرض</p>
         <label className="mr-4"><input defaultChecked type="radio" name="offer_mode" value="existing_item" /> اختار من حاجاتك</label>
         <label><input type="radio" name="offer_mode" value="new_item" /> نزّل حاجة جديدة كعرض</label>
       </div>
-      <div><label>الحاجة اللي هتعرضها من الموجود</label><select name="offered_item_id" className="mt-1 w-full rounded-xl border px-3 py-2"><option value="">لازم تختار حاجة تعرضها</option>{(ownItems ?? []).filter((it) => it.id !== requestedItemId).map((it) => <option key={it.id} value={it.id}>{it.title}</option>)}</select>{(ownItems ?? []).length === 0 ? <p className="mt-2 text-sm text-stone-600">لسه ماعندكش حاجات معروضة. ممكن تنزّل حاجة جديدة دلوقتي وتبعتها كعرض.</p> : null}</div>
+      <div><label>الحاجة اللي هتعرضها من الموجود</label><select name="offered_item_id" className="mt-1 w-full rounded-xl border px-3 py-2"><option value="">لازم تختار حاجة تعرضها</option>{(ownItems ?? []).filter((it) => it.id !== requestedItemId && it.id !== sourceOffer?.offered_item_id).map((it) => <option key={it.id} value={it.id}>{it.title}</option>)}</select>{(ownItems ?? []).length === 0 ? <p className="mt-2 text-sm text-stone-600">لسه ماعندكش حاجات معروضة. ممكن تنزّل حاجة جديدة دلوقتي وتبعتها كعرض.</p> : null}</div>
       <div className="space-y-2 rounded-xl border border-dashed p-3"><p className="font-semibold">نزّل حاجة جديدة كعرض</p>
       <input name="title" placeholder="عنوان الحاجة" className="w-full rounded-xl border px-3 py-2" />
       <select name="category_id" className="w-full rounded-xl border px-3 py-2"><option value="">اختار تصنيف</option>{(categories ?? []).map((c) => <option value={c.id} key={c.id}>{c.name_ar}</option>)}</select>

@@ -21,7 +21,7 @@ export default async function SentOffersPage({ searchParams }: { searchParams: P
 
   const { data } = await supabase
     .from("offers")
-    .select("id,status,created_at,requested_item:items!offers_requested_item_id_fkey(title),offered_item:items!offers_offered_item_id_fkey(title),receiver:profiles!offers_receiver_id_fkey(display_name)")
+    .select("id,status,created_at,parent_offer_id,requested_item:items!offers_requested_item_id_fkey(title),offered_item:items!offers_offered_item_id_fkey(title),receiver:profiles!offers_receiver_id_fkey(display_name)")
     .eq("sender_id", user.id)
     .order("created_at", { ascending: false });
 
@@ -31,6 +31,7 @@ export default async function SentOffersPage({ searchParams }: { searchParams: P
     created_at: offer.created_at,
     requestedTitle: firstOrNull(offer.requested_item as MaybeArray<{ title: string }>)?.title ?? "-",
     offeredTitle: firstOrNull(offer.offered_item as MaybeArray<{ title: string }>)?.title ?? "-",
+    parent_offer_id: offer.parent_offer_id,
     otherName: firstOrNull(offer.receiver as MaybeArray<{ display_name: string | null }>)?.display_name ?? "مستخدم",
   })).filter((offer) => (tab === "all" ? true : offer.status === tab));
 

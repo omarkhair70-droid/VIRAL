@@ -13,6 +13,7 @@ Controlled beta marketplace MVP with hardened offers/deals lifecycle protections
 - Accepting offer reserves both involved items.
 - Deal completion cannot become `completed` before both confirmations.
 - `offers` and `swap_deals` lifecycle triggers exist and block invalid transitions.
+- Redirected offers support linked follow-up creation with DB integrity checks and duplicate-active-follow-up prevention.
 
 ## Beta limitations (known)
 - Public listing images are public URLs.

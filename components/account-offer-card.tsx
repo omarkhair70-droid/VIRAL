@@ -10,7 +10,7 @@ export function AccountOfferCard({
   sideLabel,
   ctaLabel,
 }: {
-  offer: { id: string; status: OfferStatus; created_at: string; offeredTitle: string; requestedTitle: string; otherName: string };
+  offer: { id: string; status: OfferStatus; created_at: string; offeredTitle: string; requestedTitle: string; otherName: string; parent_offer_id?: string | null };
   sideLabel: string;
   ctaLabel: string;
 }) {
@@ -22,6 +22,7 @@ export function AccountOfferCard({
       </div>
       <p className="text-sm text-stone-600">{sideLabel}: {offer.otherName}</p>
       <p className="mt-2 font-medium">{offer.offeredTitle} مقابل {offer.requestedTitle}</p>
+      {offer.parent_offer_id ? <p className="mt-1 text-xs text-sky-700">عرض تاني بعد فتح باب تاني</p> : null}
       <ButtonLink href={`/offers/${offer.id}` as Route} variant="secondary" size="sm" className="mt-3">{ctaLabel}</ButtonLink>
     </Card>
   );

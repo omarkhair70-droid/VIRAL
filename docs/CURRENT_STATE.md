@@ -12,6 +12,7 @@ VIRAL (بدّلها) is an Arabic-first item swap marketplace MVP where users li
 - Listing items with images
 - Discovery/feed/public item/profile pages
 - Offer send/respond flow
+- Redirected offer follow-up loop (sender can send linked follow-up offer via `parent_offer_id`)
 - Deal creation and coordination
 - Deal confirmation-based completion
 - Reviews after completed swaps
