@@ -50,6 +50,7 @@ export function ItemForm({ categories, prefill, action, authRequired = false, us
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const form = event.currentTarget;
     setErrorMessage(null);
 
     if (!userId || authRequired) {
@@ -91,22 +92,29 @@ export function ItemForm({ categories, prefill, action, authRequired = false, us
       return;
     }
 
-    const formData = new FormData(event.currentTarget);
-    formData.set("item_id", draftItemId);
-    formData.set("uploaded_image_paths_json", JSON.stringify(uploadedPaths));
+    try {
+      const formData = new FormData(form);
+      formData.set("item_id", draftItemId);
+      formData.set("uploaded_image_paths_json", JSON.stringify(uploadedPaths));
 
-    setSubmissionStage("publishing");
-    const result = await action(formData);
+      setSubmissionStage("publishing");
+      const result = await action(formData);
 
-    if (result.ok) {
-      router.push(`/items/${result.itemId}`);
-      router.refresh();
-      return;
+      if (result.ok) {
+        router.push(`/items/${result.itemId}`);
+        router.refresh();
+        return;
+      }
+
+      setErrorMessage("مش قادرين ننشر الإعلان دلوقتي. جرّب تاني.");
+      setSubmissionStage("idle");
+      setIsSubmitting(false);
+    } catch (error) {
+      console.error("Item publish failed", error);
+      setErrorMessage("مش قادرين ننشر الإعلان دلوقتي. جرّب تاني.");
+      setSubmissionStage("idle");
+      setIsSubmitting(false);
     }
-
-    setErrorMessage("مش قادرين ننشر الإعلان دلوقتي. جرّب تاني.");
-    setSubmissionStage("idle");
-    setIsSubmitting(false);
   };
 
   return (
