@@ -1,8 +1,10 @@
-import Link from "next/link";
+
 import { ItemCard } from "@/components/item-card";
 import { ItemSearchFilters } from "@/components/item-search-filters";
-import { SectionHeading } from "@/components/section-heading";
-import { EmptyStatePanel } from "@/components/ui/empty-state-panel";
+import { Alert } from "@/components/ui/alert";
+import { ButtonLink } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
+import { PageHeading } from "@/components/ui/page-heading";
 import { createClient } from "@/lib/supabase/server";
 
 type MaybeArray<T> = T | T[] | null | undefined;
@@ -119,48 +121,29 @@ export default async function ItemsPage({ searchParams }: { searchParams: Search
 
   return (
     <section className="mx-auto max-w-6xl px-4 py-10">
-      <SectionHeading
-        title={hasFilters ? "نتائج البحث" : "السوق"}
-        subtitle={hasFilters ? `لقينا ${items.length} إعلان مناسب` : "إعلانات حقيقية من ناس بتدور على مقايضة مفيدة."}
-      />
+      <PageHeading title={hasFilters ? "نتائج البحث" : "السوق"} subtitle={hasFilters ? `لقينا ${items.length} إعلان مناسب` : "إعلانات حقيقية من ناس بتدور على مقايضة مفيدة."} />
 
       <ItemSearchFilters
         categories={(categoriesData ?? []).map((row) => ({ id: row.id, name_ar: row.name_ar, slug: row.slug }))}
         values={{ q, category, city, condition: condition ?? "", sort }}
       />
 
-      {error ? <p className="rounded-xl bg-red-50 p-3 text-red-700">مش قادرين نحمّل السوق دلوقتي. جرّب تاني.</p> : null}
+      {error ? <Alert variant="danger">مش قادرين نحمّل السوق دلوقتي. جرّب تاني.</Alert> : null}
 
       {items.length === 0 ? (
         hasFilters ? (
-          <EmptyStatePanel
+          <EmptyState
             title="مفيش نتائج بنفس الفلاتر دي."
             subtitle="جرّب تخفف الفلاتر أو غيّر كلمات البحث. ولو عندك حاجة مناسبة اعرضها."
-            actions={
-              <>
-                <Link href="/items" className="rounded-xl border border-stone-300 px-5 py-3">
-                  امسح الفلاتر
-                </Link>
-                <Link href="/items/new" className="rounded-xl bg-clay px-5 py-3 text-white">
-                  اعرض حاجة
-                </Link>
-              </>
-            }
+            secondaryAction={<ButtonLink href="/items" variant="secondary">امسح الفلاتر</ButtonLink>}
+            action={<ButtonLink href="/items/new">اعرض حاجة</ButtonLink>}
           />
         ) : (
-          <EmptyStatePanel
+          <EmptyState
             title="السوق الحقيقي لسه بيتبني."
             subtitle="ابدأ بأول حاجة عندك، أو شوف الناس عارضة إيه."
-            actions={
-              <>
-                <Link href="/items/new" className="rounded-xl bg-clay px-5 py-3 text-white">
-                  اعرض حاجة
-                </Link>
-                <Link href="/feed" className="rounded-xl border border-stone-300 px-5 py-3">
-                  شوف العروض
-                </Link>
-              </>
-            }
+            action={<ButtonLink href="/items/new">اعرض حاجة</ButtonLink>}
+            secondaryAction={<ButtonLink href="/feed" variant="secondary">شوف العروض</ButtonLink>}
           />
         )
       ) : (
