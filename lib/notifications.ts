@@ -1,19 +1,6 @@
-type NotificationType = "offer_received" | "offer_thinking" | "offer_accepted" | "offer_soft_rejected" | "offer_redirected" | "deal_created" | "deal_completed" | "deal_cancelled" | "report_update" | "system";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
-type RpcCapableClient = {
-  rpc: (
-    fn: string,
-    params: {
-      target_user_id: string;
-      notification_type: NotificationType;
-      notification_title: string;
-      notification_body?: string | null;
-      target_item_id?: string | null;
-      target_offer_id?: string | null;
-      target_deal_id?: string | null;
-    },
-  ) => Promise<{ error: { message: string } | null }>;
-};
+type NotificationType = "offer_received" | "offer_thinking" | "offer_accepted" | "offer_soft_rejected" | "offer_redirected" | "deal_created" | "deal_completed" | "deal_cancelled" | "report_update" | "system";
 
 type CreateNotificationParams = {
   targetUserId: string;
@@ -25,7 +12,7 @@ type CreateNotificationParams = {
   targetDealId?: string | null;
 };
 
-export async function createNotification(supabase: RpcCapableClient, params: CreateNotificationParams): Promise<void> {
+export async function createNotification(supabase: SupabaseClient, params: CreateNotificationParams): Promise<void> {
   const { error } = await supabase.rpc("create_notification", {
     target_user_id: params.targetUserId,
     notification_type: params.notificationType,
