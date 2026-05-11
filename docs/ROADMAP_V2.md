@@ -75,3 +75,6 @@
 - Public leaderboard
 - Rewards/referrals
 - Complex moderation automation
+
+
+**Phase 20 Update (May 11, 2026):** Phase 20 formalizes brand identity tokens, copy system, and initial brand assets.

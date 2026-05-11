@@ -1,5 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="بدّلها">
-  <rect width="512" height="512" rx="120" fill="#1f2937" />
-  <circle cx="256" cy="256" r="184" fill="#f59e0b" opacity="0.2" />
-  <text x="256" y="305" text-anchor="middle" font-size="220" font-family="Tahoma, Arial, sans-serif" fill="#f8f5ef">ب</text>
+  <rect width="512" height="512" rx="116" fill="#f8f5ef" />
+  <rect x="56" y="56" width="400" height="400" rx="108" fill="#c86f3d" />
+  <circle cx="256" cy="256" r="142" fill="#9f4f29" opacity="0.24" />
+  <text x="256" y="322" text-anchor="middle" font-size="236" font-family="Tahoma, Arial, sans-serif" fill="#fffaf2">ب</text>
 </svg>

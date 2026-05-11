@@ -6,7 +6,15 @@ export default {
     extend: {
       colors: {
         sand: "#f8f5ef",
-        clay: "#c86f3d"
+        clay: "#c86f3d",
+        ink: "#1f2937",
+        muted: "#6b6258",
+        cream: "#fffaf2",
+        warmBorder: "#e7d8c7",
+        clayDark: "#9f4f29",
+        successSoft: "#ecfdf5",
+        warningSoft: "#fffbeb",
+        dangerSoft: "#fef2f2"
       }
     },
   },

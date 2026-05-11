@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { AuthButton } from "@/components/auth-button";
 import { createClient } from "@/lib/supabase/server";
@@ -18,11 +19,14 @@ export async function SiteHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-20 border-b border-gray-200 bg-sand/95 backdrop-blur">
+    <header className="sticky top-0 z-20 border-b border-warmBorder bg-sand/95 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-start justify-between gap-3 px-4 py-3 sm:items-center">
         <Link href="/" className="min-w-0 flex-1">
-          <span className="block truncate text-xl font-bold">بدّلها</span>
-          <span className="hidden text-xs text-stone-500 sm:block">بدّل الحاجة بدل ما تسيبها مركونة</span>
+          <span className="flex items-center gap-2">
+            <Image src="/brand/baddelha-mark.svg" alt="شعار بدّلها" width={28} height={28} className="shrink-0" />
+            <span className="block truncate text-xl font-bold text-ink">بدّلها</span>
+          </span>
+          <span className="hidden text-xs text-muted sm:block">بدّل الحاجة بدل ما تسيبها مركونة.</span>
         </Link>
 
         <nav className="flex max-w-full flex-wrap items-center justify-end gap-1.5 text-sm sm:gap-2">
