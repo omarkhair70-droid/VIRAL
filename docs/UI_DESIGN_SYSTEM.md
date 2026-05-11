@@ -49,3 +49,9 @@
 - **Phase 21 (completed):** Home and Marketplace migrated to shared UI primitives.
 - **Phase 21B (completed):** Core app surfaces migrated (account hub, item detail, deals, notifications, reports, and admin reports) to shared primitives without behavior changes.
 - **Remaining migration candidates:** low-priority static/support pages and any legacy isolated components not yet touched in core flows.
+
+## Phase 21C Adoption Update
+- Phase 21: Home + Marketplace foundation.
+- Phase 21B: Beta/Dashboard/Notifications/Admin Reports/ShareActions.
+- Phase 21C: Transaction surfaces (item detail, item forms, deal pages/messages, offer/item cards, report/profile/public profile pages, dashboard transaction subpages).
+- Remaining migration: minor edge-case utility screens outside main transaction flow.

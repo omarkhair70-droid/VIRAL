@@ -1,14 +1,16 @@
+import { StatusBadge } from "@/components/ui/status-badge";
+
 export function OfferStatusBadge({ status }: { status: string }) {
-  const map: Record<string, { label: string; cls: string }> = {
-    pending: { label: "لسه مستني رد", cls: "bg-amber-100 text-amber-800" },
-    thinking: { label: "صاحب الحاجة محتاج يفكر", cls: "bg-yellow-100 text-yellow-800" },
-    accepted: { label: "العرض اتقبل", cls: "bg-emerald-100 text-emerald-800" },
-    soft_rejected: { label: "العرض ما ظبطش", cls: "bg-stone-200 text-stone-700" },
-    redirected: { label: "اتفتح باب تاني", cls: "bg-sky-100 text-sky-800" },
-    withdrawn: { label: "العرض اتسحب", cls: "bg-stone-100 text-stone-700" },
-    expired: { label: "العرض انتهى", cls: "bg-stone-100 text-stone-700" },
-    cancelled_after_accept: { label: "اتلغى بعد القبول", cls: "bg-stone-100 text-stone-700" },
+  const map: Record<string, { label: string; variant: "warning" | "success" | "active" | "muted" }> = {
+    pending: { label: "لسه مستني رد", variant: "warning" },
+    thinking: { label: "صاحب الحاجة محتاج يفكر", variant: "active" },
+    accepted: { label: "العرض اتقبل", variant: "success" },
+    soft_rejected: { label: "العرض ما ظبطش", variant: "muted" },
+    redirected: { label: "اتفتح باب تاني", variant: "active" },
+    withdrawn: { label: "العرض اتسحب", variant: "muted" },
+    expired: { label: "العرض انتهى", variant: "muted" },
+    cancelled_after_accept: { label: "اتلغى بعد القبول", variant: "muted" },
   };
-  const meta = map[status] ?? { label: status, cls: "bg-stone-100 text-stone-700" };
-  return <span className={`rounded-full px-3 py-1 text-sm ${meta.cls}`}>{meta.label}</span>;
+  const meta = map[status] ?? { label: status, variant: "muted" as const };
+  return <StatusBadge variant={meta.variant}>{meta.label}</StatusBadge>;
 }

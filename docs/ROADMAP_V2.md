@@ -79,3 +79,5 @@
 
 **Phase 20 Update (May 11, 2026):** Phase 20 formalizes brand identity tokens, copy system, and initial brand assets.
 **Phase 21B Update (May 11, 2026):** Phase 21B expanded design-system adoption across core product surfaces.
+
+- Phase 21C completed transaction-surface UI adoption.
