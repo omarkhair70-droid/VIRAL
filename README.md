@@ -79,3 +79,9 @@
   - `docs/ROADMAP_V2.md`
   - `docs/PRODUCTION_READINESS.md`
   - `docs/BETA_OPERATING_MODEL.md`
+
+
+## Brand System
+- `docs/BRAND_IDENTITY_SYSTEM.md`
+- `docs/COPY_BANK.md`
+- `docs/BRAND_AUDIT.md`

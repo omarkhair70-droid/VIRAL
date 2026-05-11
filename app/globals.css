@@ -2,11 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  background: #f8f5ef;
-  color: #1f2937;
+:root {
+  --color-sand: #f8f5ef;
+  --color-clay: #c86f3d;
+  --color-clay-dark: #9f4f29;
+  --color-ink: #1f2937;
+  --color-muted: #6b6258;
+  --color-cream: #fffaf2;
+  --color-warm-border: #e7d8c7;
 }
 
+body {
+  background: var(--color-sand);
+  color: var(--color-ink);
+}
 
 html, body {
   max-width: 100%;
