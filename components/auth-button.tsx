@@ -18,7 +18,7 @@ export function AuthButton({ loggedIn }: { loggedIn: boolean }) {
       className="rounded-xl border border-gray-300 px-4 py-2"
       disabled={pending}
     >
-      {pending ? "..." : "تسجيل خروج"}
+      {pending ? "..." : "خروج"}
     </button>
   );
 }
