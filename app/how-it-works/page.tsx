@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { SectionHeading } from "@/components/section-heading";
 
 export default function HowItWorksPage() {
@@ -13,6 +14,7 @@ export default function HowItWorksPage() {
         <p><strong>6. كل طرف يقيّم التاني:</strong> قيّموا بعض بعد المقايضة عشان الثقة تبان في البروفايل.</p>
       </div>
       <p className="rounded-xl border border-stone-200 bg-stone-50 p-4 text-sm text-stone-700">ميزات زي البلاغات المتقدمة والإشعارات الكاملة: <strong>جاي لاحقًا</strong>.</p>
+      <p className="text-sm text-stone-600">لو أول مرة تستخدم بدّلها، <Link href="/beta" className="underline underline-offset-4 hover:no-underline">ابدأ من صفحة النسخة التجريبية</Link>.</p>
     </section>
   );
 }

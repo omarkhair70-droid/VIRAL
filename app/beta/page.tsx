@@ -1,0 +1,10 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { ShareActions } from "@/components/share-actions";
+
+export const metadata: Metadata = {
+  title: "بدّلها Beta",
+  description: "بدّل الحاجة بدل ما تسيبها مركونة.",
+};
+
+export default function BetaPage() { return <section className="mx-auto max-w-4xl space-y-6 px-4 py-10"><div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm"><h1 className="text-3xl font-bold">جرّب بدّلها في النسخة التجريبية</h1><p className="mt-3 text-stone-700">بدّل الحاجة بدل ما تسيبها مركونة. اعرض اللي عندك، استقبل عروض، واتفق بأمان.</p><div className="mt-4"><ShareActions title="بدّلها Beta" text="جرب منصة بدّل الحاجة بدل ما تسيبها مركونة." urlPath="/beta" label="ابعتها لحد يجربها معاك" /></div></div><article className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm"><h2 className="text-xl font-semibold">بتعمل إيه؟</h2><ul className="mt-3 list-inside list-disc space-y-1 text-stone-700"><li>اعرض حاجة عندك بصور واضحة.</li><li>الناس تبعتلك عروض مقايضة.</li><li>لما تقبل عرض، تتفتح صفحة تنسيق.</li><li>بعد المقايضة، الطرفين يقيّموا بعض.</li></ul></article><article className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm"><h2 className="text-xl font-semibold">ليه Beta؟</h2><ul className="mt-3 list-inside list-disc space-y-1 text-stone-700"><li>بنجرب مع أول مستخدمين.</li><li>ممكن تلاقي حاجات لسه بتتحسن.</li><li>رأيك هيساعدنا نطوّر التجربة.</li></ul></article><article className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm"><h2 className="text-xl font-semibold">قواعد بسيطة</h2><ul className="mt-3 list-inside list-disc space-y-1 text-stone-700"><li>خليك واضح في الوصف.</li><li>اتقابل في مكان عام.</li><li>ما تبعتش بيانات حساسة بدري.</li><li>بلّغ عن أي حاجة مش مريحة.</li></ul></article><div className="flex flex-wrap gap-3"><Link href="/items/new" className="rounded-xl bg-clay px-5 py-3 text-white">ابدأ واعرض حاجة</Link><Link href="/items" className="rounded-xl border border-stone-300 px-5 py-3">شوف السوق</Link><Link href="/how-it-works" className="rounded-xl border border-stone-300 px-5 py-3">إزاي بتشتغل؟</Link></div></section>; }
