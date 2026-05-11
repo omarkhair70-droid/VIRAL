@@ -10,8 +10,8 @@ function normalizeNextPath(next: string | null | undefined) {
   return next;
 }
 
-function getBaseUrl() {
-  const hdrs = headers();
+async function getBaseUrl() {
+  const hdrs = await headers();
   const host = hdrs.get("x-forwarded-host") ?? hdrs.get("host");
   const protocol = hdrs.get("x-forwarded-proto") ?? "http";
 
@@ -31,7 +31,7 @@ export async function sendMagicLink(formData: FormData) {
     redirect(`/login?next=${encodeURIComponent(next)}&error=empty_email`);
   }
 
-  const redirectTo = `${getBaseUrl()}/auth/callback?next=${encodeURIComponent(next)}`;
+  const redirectTo = `${await getBaseUrl()}/auth/callback?next=${encodeURIComponent(next)}`;
   const { error } = await supabase.auth.signInWithOtp({
     email,
     options: { emailRedirectTo: redirectTo },
