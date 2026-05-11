@@ -8,7 +8,7 @@ import { acceptOffer, markOfferThinking, redirectOffer, softRejectOffer } from "
 type MaybeArray<T> = T | T[] | null | undefined;
 function firstOrNull<T>(value: MaybeArray<T>): T | null { if (!value) return null; return Array.isArray(value) ? value[0] ?? null : value; }
 
-type ItemJoin = { id: string; title: string; condition: "almost_new"|"good_used"|"minor_issues"|"needs_repair"; item_images: Array<{image_url:string|null;is_primary:boolean|null}>|null; profiles: MaybeArray<{display_name:string|null}>; categories: MaybeArray<{name_ar:string|null}> };
+type ItemJoin = { id: string; title: string; condition: "almost_new"|"good_used"|"minor_issues"|"needs_repair"; item_images: Array<{image_url:string|null;is_primary:boolean|null}>|null; profiles: MaybeArray<{display_name:string|null;username:string|null}>; categories: MaybeArray<{name_ar:string|null}> };
 type OfferRow = { id: string; status: string; message: string | null; public_note: string | null; redirect_type: string | null; created_at: string; sender_id: string; receiver_id: string; requested_item_id: string; offered_item_id: string; requested_item: MaybeArray<ItemJoin>; offered_item: MaybeArray<ItemJoin>; offer_events: Array<{id:string;event_type:string;created_at:string}>|null; };
 type DealRow = { id: string; requester_id: string; offerer_id: string };
 const conditionLabels = { almost_new: "جديد تقريبًا", good_used: "مستخدم بحالة كويسة", minor_issues: "فيه عيوب بسيطة", needs_repair: "محتاج تصليح / عارف حالته" };
@@ -25,7 +25,7 @@ export default async function OfferDetail({ params, searchParams }: { params: Pr
 
   const { data } = await supabase
     .from("offers")
-    .select("id,status,message,public_note,redirect_type,created_at,sender_id,receiver_id,requested_item_id,offered_item_id,requested_item:items!offers_requested_item_id_fkey(id,title,condition,item_images(image_url,is_primary),categories(name_ar),profiles!items_owner_id_fkey(display_name)),offered_item:items!offers_offered_item_id_fkey(id,title,condition,item_images(image_url,is_primary),categories(name_ar),profiles!items_owner_id_fkey(display_name)),offer_events(id,event_type,created_at)")
+    .select("id,status,message,public_note,redirect_type,created_at,sender_id,receiver_id,requested_item_id,offered_item_id,requested_item:items!offers_requested_item_id_fkey(id,title,condition,item_images(image_url,is_primary),categories(name_ar),profiles!items_owner_id_fkey(display_name,username)),offered_item:items!offers_offered_item_id_fkey(id,title,condition,item_images(image_url,is_primary),categories(name_ar),profiles!items_owner_id_fkey(display_name,username)),offer_events(id,event_type,created_at)")
     .eq("id", offerId)
     .maybeSingle();
 
@@ -37,6 +37,9 @@ export default async function OfferDetail({ params, searchParams }: { params: Pr
 
   const reqOwner = firstOrNull(requested.profiles)?.display_name ?? "صاحب الإعلان";
   const offOwner = firstOrNull(offered.profiles)?.display_name ?? "مستخدم";
+  const reqProfile = firstOrNull(requested.profiles);
+  const offProfile = firstOrNull(offered.profiles);
+
   const reqImg = requested.item_images?.find((x) => x.is_primary)?.image_url ?? requested.item_images?.[0]?.image_url ?? null;
   const offImg = offered.item_images?.find((x) => x.is_primary)?.image_url ?? offered.item_images?.[0]?.image_url ?? null;
   const isReceiver = user?.id === offer.receiver_id;
@@ -60,7 +63,7 @@ export default async function OfferDetail({ params, searchParams }: { params: Pr
     {query.error && errorMap[query.error] ? <p className="rounded-xl border border-red-200 bg-red-50 p-3 text-red-800">{errorMap[query.error]}</p> : null}
     {query.response ? <p className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-emerald-800">تم تحديث حالة العرض.</p> : null}
     <div className="grid gap-4 md:grid-cols-[1fr_auto_1fr]"><OfferItemCard itemId={offered.id} title={offered.title} imageUrl={offImg} category={firstOrNull(offered.categories)?.name_ar ?? null} conditionLabel={conditionLabels[offered.condition]} ownerName={offOwner} /><div className="self-center text-center text-3xl">↔</div><OfferItemCard itemId={requested.id} title={requested.title} imageUrl={reqImg} category={firstOrNull(requested.categories)?.name_ar ?? null} conditionLabel={conditionLabels[requested.condition]} ownerName={reqOwner} /></div>
-    <p className="text-stone-700">{offOwner} عرض {offered.title} مقابل {requested.title}.</p>
+    <p className="text-stone-700">{offProfile?.username ? <Link href={`/users/${offProfile.username}`} className="hover:underline">{offOwner}</Link> : offOwner} عرض {offered.title} مقابل {requested.title} لصاحب الإعلان {reqProfile?.username ? <Link href={`/users/${reqProfile.username}`} className="hover:underline">{reqOwner}</Link> : reqOwner}.</p>
     {offer.message ? <div className="rounded-xl border p-3"><p className="font-semibold">رسالة العرض:</p><p>«{offer.message}»</p></div> : null}
     {offer.public_note ? <div className="rounded-xl border border-sky-200 bg-sky-50 p-3"><p className="font-semibold">ملاحظة صاحب الحاجة:</p><p>«{offer.public_note}»</p></div> : null}
     {offer.redirect_type ? <p className="text-sm text-stone-600">نوع الباب التاني: {redirectMap[offer.redirect_type] ?? offer.redirect_type}</p> : null}
