@@ -102,3 +102,14 @@
 - [ ] App opens from home screen if user installs it.
 - [ ] Offline fallback appears on navigation when network is unavailable.
 - [ ] Private pages are not cached/reused for another user session.
+
+
+## M) Sharing / beta launch
+- [ ] `/beta` opens for logged-out user.
+- [ ] Beta CTA buttons navigate to expected routes.
+- [ ] Item page shows share/copy actions.
+- [ ] Public profile page shows share/copy actions.
+- [ ] Copy link works on desktop browser.
+- [ ] Native share works on supported mobile browser.
+- [ ] Item metadata does not expose archived/private item data.
+- [ ] Profile metadata does not expose email/auth id.

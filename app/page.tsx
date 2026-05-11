@@ -35,6 +35,9 @@ export default function HomePage() {
           <Link href="/install" className="rounded-xl px-5 py-3 text-stone-700 underline-offset-4 hover:underline">
             نزّله كتطبيق
           </Link>
+          <Link href="/beta" className="rounded-xl px-5 py-3 text-stone-700 underline-offset-4 hover:underline">
+            جرّب النسخة التجريبية
+          </Link>
         </div>
       </section>
 

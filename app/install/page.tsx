@@ -30,6 +30,8 @@ export default function InstallPage() {
         </ul>
       </article>
 
+      <p className="text-sm text-stone-600">لسه جديد؟ <Link href="/beta" className="underline underline-offset-4 hover:no-underline">اقرأ عن النسخة التجريبية</Link></p>
+
       <div className="flex flex-wrap gap-3">
         <Link href="/items" className="rounded-xl bg-clay px-5 py-3 text-white">افتح السوق</Link>
         <Link href="/dashboard" className="rounded-xl border border-stone-300 px-5 py-3">حسابي</Link>

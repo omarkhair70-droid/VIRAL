@@ -64,3 +64,10 @@ Before broad beta access, confirm all of the following are already applied:
 - No push notifications yet.
 - No offline writes/background sync.
 - Privacy rule: do not cache authenticated/private pages (dashboard, deals, notifications, admin, auth).
+
+
+## 8) Beta launch sharing baseline (Phase 18)
+- Public beta landing page exists at `/beta`.
+- Sharing UI uses browser-native APIs only (`navigator.share` and `navigator.clipboard`).
+- No referral tracking/rewards implemented yet.
+- Social metadata is added for public item and profile pages.

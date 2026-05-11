@@ -1,5 +1,7 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ShareActions } from "@/components/share-actions";
 import { createClient } from "@/lib/supabase/server";
 
 type ProfileRow = {
@@ -11,6 +13,7 @@ type ProfileRow = {
   area: string | null;
   created_at: string;
   successful_swaps_count: number;
+  avatar_url?: string | null;
 };
 
 type ReviewRow = {
@@ -21,11 +24,58 @@ type ReviewRow = {
   reviewer: { display_name: string | null; username: string | null }[] | null;
 };
 
+const genericProfileMetadata: Metadata = {
+  title: "بروفايل على بدّلها",
+  description: "بروفايل مقايضات وتقييمات على بدّلها.",
+};
+
+function isSafePublicImageUrl(url: string) {
+  return url.startsWith("https://") || url.startsWith("http://");
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ username: string }> }): Promise<Metadata> {
+  const { username } = await params;
+  if (!username) return genericProfileMetadata;
+
+  const supabase = await createClient();
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("username,display_name,bio,avatar_url")
+    .eq("username", username.toLowerCase())
+    .maybeSingle();
+
+  const typed = profile as Pick<ProfileRow, "username" | "display_name" | "bio" | "avatar_url"> | null;
+  if (!typed?.username) return genericProfileMetadata;
+
+  const displayName = typed.display_name || typed.username;
+  const description = typed.bio || "بروفايل مقايضات وتقييمات على بدّلها.";
+  const avatarUrl = typed.avatar_url && isSafePublicImageUrl(typed.avatar_url) ? typed.avatar_url : null;
+
+  return {
+    title: `${displayName} على بدّلها`,
+    description,
+    openGraph: {
+      title: `${displayName} على بدّلها`,
+      description,
+      type: "profile",
+      images: avatarUrl ? [{ url: avatarUrl }] : undefined,
+    },
+    twitter: {
+      card: avatarUrl ? "summary_large_image" : "summary",
+      title: `${displayName} على بدّلها`,
+      description,
+      images: avatarUrl ? [avatarUrl] : undefined,
+    },
+  };
+}
+
 export default async function UserProfilePage({ params, searchParams }: { params: Promise<{ username: string }>; searchParams?: Promise<{ reported?: string }> }) {
   const { username } = await params;
   const query = (await searchParams) ?? {};
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   const { data: profile } = await supabase
     .from("profiles")
@@ -38,16 +88,8 @@ export default async function UserProfilePage({ params, searchParams }: { params
   const typed = profile as ProfileRow;
 
   const [{ data: items }, { count: dealsCount }, { data: reviewsData }] = await Promise.all([
-    supabase
-      .from("items")
-      .select("id,title,city,area,created_at")
-      .eq("owner_id", typed.id)
-      .eq("status", "active")
-      .order("created_at", { ascending: false }),
-    supabase
-      .from("swap_deals")
-      .select("id", { count: "exact", head: true })
-      .or(`requester_id.eq.${typed.id},offerer_id.eq.${typed.id}`),
+    supabase.from("items").select("id,title,city,area,created_at").eq("owner_id", typed.id).eq("status", "active").order("created_at", { ascending: false }),
+    supabase.from("swap_deals").select("id", { count: "exact", head: true }).or(`requester_id.eq.${typed.id},offerer_id.eq.${typed.id}`),
     supabase
       .from("reviews")
       .select("id,rating,comment,created_at,reviewer:profiles!reviews_reviewer_id_fkey(display_name,username)")
@@ -60,6 +102,7 @@ export default async function UserProfilePage({ params, searchParams }: { params
   const { data: avgRows } = await supabase.from("reviews").select("rating").eq("reviewee_id", typed.id);
   const reviewCount = avgRows?.length ?? 0;
   const averageRating = reviewCount > 0 ? (avgRows ?? []).reduce((sum, review) => sum + review.rating, 0) / reviewCount : null;
+  const displayName = typed.display_name || typed.username || "مستخدم";
 
   return (
     <section className="mx-auto max-w-4xl space-y-6 px-4 py-10">
@@ -68,6 +111,16 @@ export default async function UserProfilePage({ params, searchParams }: { params
         <p className="mt-1 text-stone-600">@{typed.username}</p>
         <p className="mt-2 text-sm text-stone-600">{[typed.city, typed.area].filter(Boolean).join(" - ") || "لسه مكملش بياناته"}</p>
         {typed.bio ? <p className="mt-3 text-stone-700">{typed.bio}</p> : null}
+        {typed.username ? (
+          <div className="mt-4">
+            <ShareActions
+              label="شارك البروفايل"
+              title={`${displayName} على بدّلها`}
+              text="شوف بروفايل المقايضات والتقييمات على بدّلها."
+              urlPath={`/users/${typed.username}`}
+            />
+          </div>
+        ) : null}
         <p className="mt-3 text-xs text-stone-500">عضو من {new Date(typed.created_at).toLocaleDateString("ar-EG")}</p>
       </div>
 
@@ -80,7 +133,11 @@ export default async function UserProfilePage({ params, searchParams }: { params
 
       {query.reported === "1" ? <p className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-emerald-800">تم إرسال البلاغ. شكرًا إنك ساعدتنا نحافظ على التجربة.</p> : null}
       <p className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-amber-900">اتعامل بهدوء، وافحص الحاجة قبل المقايضة.</p>
-      {user && user.id !== typed.id ? <Link href={`/report?username=${encodeURIComponent(username)}&returnTo=${encodeURIComponent(`/users/${username}`)}`} className="inline-block text-sm text-stone-600 hover:underline">بلّغ عن المستخدم</Link> : null}
+      {user && user.id !== typed.id ? (
+        <Link href={`/report?username=${encodeURIComponent(username)}&returnTo=${encodeURIComponent(`/users/${username}`)}`} className="inline-block text-sm text-stone-600 hover:underline">
+          بلّغ عن المستخدم
+        </Link>
+      ) : null}
 
       <div className="space-y-3">
         <h2 className="text-xl font-semibold">آراء الناس بعد المقايضة</h2>
@@ -92,7 +149,9 @@ export default async function UserProfilePage({ params, searchParams }: { params
               return (
                 <article key={review.id} className="rounded-xl border bg-white p-4">
                   <p className="text-sm text-stone-500">{new Date(review.created_at).toLocaleDateString("ar-EG")}</p>
-                  <p className="font-semibold">{reviewerName} • {review.rating}/5</p>
+                  <p className="font-semibold">
+                    {reviewerName} • {review.rating}/5
+                  </p>
                   {review.comment ? <p className="mt-1 text-sm text-stone-700">{review.comment}</p> : null}
                 </article>
               );
