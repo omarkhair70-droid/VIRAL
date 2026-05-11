@@ -101,7 +101,7 @@ export default async function NotificationsPage({
                 {notification.body ? <p className="text-sm text-stone-700">{notification.body}</p> : null}
                 <p className="mt-2 text-xs text-stone-500">{new Date(notification.created_at).toLocaleString("ar-EG")}</p>
                 <div className="mt-3 flex flex-wrap items-center gap-3">
-                  {targetLink ? <Link href={targetLink} className="text-sm text-clay hover:underline">افتح</Link> : null}
+                  {targetLink ? <Link href={targetLink} className="text-sm text-clay hover:underline">افتح</Link> : <span className="text-sm text-stone-500">التفاصيل مش متاحة دلوقتي</span>}
                   {!notification.read_at ? (
                     <form action={markNotificationRead}>
                       <input type="hidden" name="notification_id" value={notification.id} />

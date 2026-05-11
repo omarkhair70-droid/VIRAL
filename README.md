@@ -52,3 +52,9 @@
 - Phase 1: item listing flow + lightweight discover UX.
 - Phase 2: offers lifecycle + events.
 - Phase 3: deal coordination + confirmations + reviews.
+
+
+## Phase 14 Production Hardening
+- راجع `docs/PRODUCTION_READINESS.md` قبل دعوة مستخدمين بيتا جدد.
+- راجع `docs/BETA_QA_CHECKLIST.md` للتست اليدوي النهائي قبل أي release.
+- راجع `docs/RLS_AUDIT.md` لمراجعة صلاحيات RLS الحالية والمتابعات المقترحة.
