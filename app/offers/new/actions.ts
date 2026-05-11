@@ -1,5 +1,6 @@
 "use server";
 import { redirect } from "next/navigation";
+import { createNotification } from "@/lib/notifications";
 import { createClient } from "@/lib/supabase/server";
 
 type ItemCondition = "almost_new" | "good_used" | "minor_issues" | "needs_repair";
@@ -52,6 +53,13 @@ export async function createOffer(formData: FormData) {
   if (!offer) redirect(`/offers/new?requestedItemId=${requestedItemId}&error=offer_failed`);
   await supabase.from("offer_events").insert({ offer_id: offer.id, actor_id: user.id, event_type: "created", old_status: null, new_status: "pending", note: null });
   if (typeof requestedItem.offer_count === "number") await supabase.from("items").update({ offer_count: requestedItem.offer_count + 1 }).eq("id", requestedItemId);
-  await supabase.from("notifications").insert({ user_id: requestedItem.owner_id, type: "offer_received", title: "وصلك عرض جديد", body: `فيه حد عرض حاجة على ${requestedItem.title}`, item_id: requestedItemId, offer_id: offer.id });
+  await createNotification(supabase, {
+    targetUserId: requestedItem.owner_id,
+    notificationType: "offer_received",
+    notificationTitle: "وصلك عرض جديد",
+    notificationBody: `فيه حد عرض حاجة على ${requestedItem.title}`,
+    targetItemId: requestedItemId,
+    targetOfferId: offer.id,
+  });
   redirect(`/offers/${offer.id}`);
 }

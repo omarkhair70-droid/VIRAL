@@ -35,3 +35,15 @@ Manual end-to-end checks before inviting first beta users:
 - Change report status to `reviewing`.
 - Change report status to `resolved`.
 - Log in as non-admin and confirm `/admin/reports` is not accessible.
+
+## Phase 13 — Notifications Center
+- [ ] Create an offer and verify receiver gets notification.
+- [ ] Respond to offer and verify sender gets notification.
+- [ ] Accept offer and verify deal-created notification.
+- [ ] Confirm deal from one side and verify other side gets pending confirmation notification.
+- [ ] Complete deal and verify both get completed notification.
+- [ ] Submit review and verify other side gets review notification.
+- [ ] Update report status as admin and verify reporter gets report update notification.
+- [ ] Mark one notification read.
+- [ ] Mark all notifications read.
+- [ ] Verify another account cannot see these notifications.
