@@ -1,4 +1,4 @@
-import { sendMagicLink } from "./actions";
+import { sendMagicLink, signInWithGoogle } from "./actions";
 
 function normalizeNextPath(next: string | null | undefined) {
   if (!next || !next.startsWith("/")) return "/dashboard";
@@ -19,11 +19,15 @@ export default async function LoginPage({
   return (
     <section className="mx-auto max-w-xl space-y-5 px-4 py-12">
       <h1 className="text-3xl font-bold">ادخل علشان نعرف نرجعلك بردود العروض.</h1>
-      <p className="text-stone-700">هتسجل بإيميلك، وبعدها تقدر تنشر حاجتك وتتابع العروض اللي توصلك.</p>
+      <p className="text-stone-700">الدخول بجوجل هو الأسرع. والإيميل موجود كاختيار احتياطي.</p>
 
       {error ? (
         <div className="rounded-xl bg-red-50 p-4 text-red-700">
-          {error === "empty_email" ? "اكتب الإيميل الأول." : "ماعرفناش نبعت اللينك دلوقتي. جرّب تاني."}
+          {error === "empty_email"
+            ? "اكتب الإيميل الأول."
+            : error === "google_failed"
+              ? "معرفناش نفتح دخول جوجل دلوقتي. راجع إعدادات Google Provider في Supabase."
+              : "ماعرفناش نبعت اللينك دلوقتي. جرّب تاني."}
         </div>
       ) : null}
 
@@ -33,6 +37,15 @@ export default async function LoginPage({
           <p>افتحه وكمل من نفس المتصفح.</p>
         </div>
       ) : null}
+
+      <form action={signInWithGoogle} className="space-y-3 rounded-2xl border border-stone-200 p-4">
+        <input type="hidden" name="next" value={next} />
+        <button type="submit" className="w-full rounded-xl bg-stone-900 px-4 py-2 font-medium text-white">
+          الدخول بجوجل
+        </button>
+      </form>
+
+      <p className="text-center text-sm text-stone-600">أو ادخل بالإيميل</p>
 
       <form action={sendMagicLink} className="space-y-3 rounded-2xl border border-stone-200 p-4">
         <input type="hidden" name="next" value={next} />

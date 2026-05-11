@@ -43,3 +43,26 @@ export async function sendMagicLink(formData: FormData) {
 
   redirect(`/login?next=${encodeURIComponent(next)}&sent=1`);
 }
+
+export async function signInWithGoogle(formData: FormData) {
+  const supabase = await createClient();
+  const next = normalizeNextPath(String(formData.get("next") ?? ""));
+  const redirectTo = `${await getBaseUrl()}/auth/callback?next=${encodeURIComponent(next)}`;
+
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo,
+    },
+  });
+
+  if (error) {
+    redirect(`/login?next=${encodeURIComponent(next)}&error=google_failed`);
+  }
+
+  if (data.url) {
+    redirect(data.url);
+  }
+
+  redirect(`/login?next=${encodeURIComponent(next)}&error=google_failed`);
+}
