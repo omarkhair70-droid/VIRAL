@@ -176,3 +176,59 @@ export async function submitDealReview(formData: FormData) {
   revalidatePath("/users/[username]", "page");
   redirect(`/deals/${dealId}?reviewed=1`);
 }
+
+
+export async function sendDealMessage(formData: FormData) {
+  const dealId = String(formData.get("dealId") ?? "").trim();
+  const bodyValue = String(formData.get("body") ?? "").trim();
+
+  if (!dealId) redirect("/deals");
+  if (!bodyValue) redirect(`/deals/${dealId}?messageError=empty#messages`);
+  if (bodyValue.length > 800) redirect(`/deals/${dealId}?messageError=too_long#messages`);
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect(`/login?next=/deals/${dealId}`);
+
+  const { data: dealData } = await supabase
+    .from("swap_deals")
+    .select("id,requester_id,offerer_id,status")
+    .eq("id", dealId)
+    .maybeSingle();
+
+  const deal = dealData as Pick<DealRow, "id" | "requester_id" | "offerer_id" | "status"> | null;
+  const canSend =
+    !!deal
+    && (user.id === deal.requester_id || user.id === deal.offerer_id)
+    && (deal.status === "coordinating" || deal.status === "completed_pending_confirmation");
+
+  if (!canSend) {
+    redirect(`/deals/${dealId}?messageError=not_allowed#messages`);
+  }
+
+  const { error: insertError } = await supabase.from("deal_messages").insert({
+    deal_id: dealId,
+    sender_id: user.id,
+    body: bodyValue,
+  });
+
+  if (insertError) {
+    redirect(`/deals/${dealId}?messageError=send_failed#messages`);
+  }
+
+  const recipientId = user.id === deal.requester_id ? deal.offerer_id : deal.requester_id;
+  if (recipientId && recipientId !== user.id) {
+    await insertNotificationSafely(supabase, {
+      userId: recipientId,
+      notificationType: "system",
+      title: "رسالة جديدة في الصفقة",
+      body: "الطرف التاني بعت رسالة في صفحة التنسيق.",
+      dealId,
+    });
+  }
+
+  revalidatePath(`/deals/${dealId}`);
+  redirect(`/deals/${dealId}?message=sent#messages`);
+}

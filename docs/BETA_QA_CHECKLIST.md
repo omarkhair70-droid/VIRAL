@@ -69,3 +69,14 @@
 - [ ] User cannot access another user deal directly.
 - [ ] Unauthenticated access to protected pages redirects to login with `next`.
 - [ ] Invalid UUID / bad route does not crash app (graceful not-found/error handling).
+
+## K) Deal messages
+- [ ] Accepted deal shows message section.
+- [ ] Participant A sends message.
+- [ ] Participant B sees message.
+- [ ] Participant B gets notification.
+- [ ] Non-participant cannot access deal/messages.
+- [ ] Empty message is blocked.
+- [ ] Long message is blocked.
+- [ ] Completed deal shows messages read-only.
+- [ ] Messages do not appear on public profile.

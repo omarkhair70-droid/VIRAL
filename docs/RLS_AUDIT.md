@@ -44,6 +44,13 @@ Scope reviewed from current migrations in `supabase/migrations`.
 - **Update:** Deal participants only.
 - **Risk/Follow-up:** Good baseline for privacy.
 
+
+## deal_messages
+- **Read:** Deal participants only (`deal_messages_participant_select`).
+- **Insert:** Authenticated deal participant only with `sender_id = auth.uid()` (`deal_messages_participant_insert`).
+- **Update/Delete:** Not exposed in current app flow.
+- **Risk/Follow-up:** Message reporting/moderation may be added later.
+
 ## deal_confirmations
 - **Read:** Deal participants only.
 - **Insert:** Authenticated participant can confirm self only (`user_id = auth.uid()`).

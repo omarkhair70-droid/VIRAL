@@ -12,6 +12,7 @@ Current production beta MVP includes:
 - Safety reports
 - Admin reports review page
 - Notifications center
+- Deal-scoped coordination messages inside deal page
 
 ## 2) Required Manual Supabase Setup
 Before broad beta access, confirm all of the following are already applied:
@@ -38,7 +39,7 @@ Before broad beta access, confirm all of the following are already applied:
 - Mobile smoke test works on key pages.
 
 ## 5) Known Limitations
-- No chat yet.
+- Messages are page-refresh based, not real-time.
 - No delivery or payments.
 - No push/email notifications.
 - No HEIC image conversion.
