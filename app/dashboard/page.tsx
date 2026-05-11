@@ -1,16 +1,21 @@
 import { redirect } from "next/navigation";
-import { EmptyState } from "@/components/empty-state";
 import { PageShell } from "@/components/page-shell";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
-  const { data } = await supabase.auth.getUser();
-  if (!data.user) redirect("/login");
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) redirect("/login?next=/dashboard");
 
   return (
     <PageShell title="حسابي">
-      <EmptyState title="أهلاً بيك" hint="داشبود الحساب جاهز كبداية. تدفقات السوق لسه في المرحلة 1." />
+      <div className="space-y-2 rounded-xl border border-stone-200 bg-white p-4">
+        <p className="font-semibold">أهلاً بيك 👋</p>
+        <p className="text-stone-700">إنت دلوقتي داخل. تقدر تكمل نشر إعلان جديد أو تراجع عروضك.</p>
+      </div>
     </PageShell>
   );
 }
