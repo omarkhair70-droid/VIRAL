@@ -44,6 +44,21 @@ export default function BetaPage() {
         </CardContent>
       </Card>
 
+      <Card>
+        <CardHeader><CardTitle>عايز تساعدنا؟</CardTitle></CardHeader>
+        <CardContent>
+          <ul className="list-inside list-disc space-y-1 text-muted">
+            <li>جرّب تنشر حاجة.</li>
+            <li>ابعت عرض لو لقيت حاجة مناسبة.</li>
+            <li>لو حاجة مش واضحة ابعت feedback.</li>
+          </ul>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <ButtonLink href="/feedback" variant="secondary">ابعت feedback</ButtonLink>
+            <ButtonLink href="/install" variant="secondary">تثبيت التطبيق</ButtonLink>
+          </div>
+        </CardContent>
+      </Card>
+
       <div className="flex flex-wrap gap-3">
         <ButtonLink href="/items/new">ابدأ واعرض حاجة</ButtonLink>
         <ButtonLink href="/items" variant="secondary">شوف السوق</ButtonLink>

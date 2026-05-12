@@ -66,3 +66,10 @@ If docs and implementation differ, **current code + SQL behavior wins**; docs mu
 - User feedback history route: `/dashboard/feedback` (owner-only via RLS).
 - Admin feedback review route: `/admin/feedback` (admin-only review/status update).
 - Dashboard now includes a beta feedback entry card.
+
+## Phase 25 closed beta readiness additions
+- Closed beta launch plan created (`docs/CLOSED_BETA_LAUNCH_PLAN.md`).
+- Invite copy scripts created (`docs/BETA_INVITE_COPY.md`).
+- Manual tracking template created (`docs/BETA_TRACKING_TEMPLATE.md`).
+- Triage guide created (`docs/BETA_TRIAGE_GUIDE.md`).
+- Pre-send launch gate checklist created (`docs/PRE_BETA_CHECKLIST.md`).

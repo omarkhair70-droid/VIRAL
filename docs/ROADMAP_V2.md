@@ -99,3 +99,5 @@ Phase 23 added operations runbooks, smoke testing, admin ops snapshot, and healt
 
 ## Phase 24 update
 Phase 24 added a controlled-beta feedback center (`/feedback`, `/dashboard/feedback`) and admin review workflow (`/admin/feedback`) with RLS + aggregate ops visibility.
+
+**Phase 25 Update (May 12, 2026):** Closed beta launch kit added (launch plan, invite scripts, pre-send checklist, triage guide, and manual tracking templates) with stop/expand gates for 10 → 25 → 50 rollout.
