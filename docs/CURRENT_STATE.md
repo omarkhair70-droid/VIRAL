@@ -152,3 +152,8 @@ If docs and implementation differ, **current code + SQL behavior wins**; docs mu
 - `/notifications` now renders as a clearer event timeline with per-type icons.
 - Unread/read distinction now has stronger but calm visual rhythm for faster scanning.
 - Notification functionality remains unchanged (filters, target links, mark read actions).
+
+## Post-Season-2 Polish — Dashboard / Account Hub 2.0 (May 12, 2026)
+- `/dashboard` now uses an attention-first account hub hierarchy.
+- The page is organized into: Attention Now, My Swap Activity, My Account & Trust, Support & Utilities.
+- Existing dashboard metrics/logic are preserved while profile identity actions and utility routes are grouped more clearly.
