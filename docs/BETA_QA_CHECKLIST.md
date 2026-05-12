@@ -230,3 +230,22 @@
 - [ ] logged-in protection still redirects unauthenticated users
 - [ ] `npm run build` passes
 - [ ] mobile layout ordering and CTA clarity are sane
+
+## AA. Phase 32 — Deal Room 2.0
+- [ ] coordinating deal room renders correctly
+- [ ] completed_pending_confirmation state renders correctly
+- [ ] completed deal room renders success/review state
+- [ ] cancelled/disputed messaging still renders
+- [ ] offered/requested item summary with links
+- [ ] participant cards/profile links
+- [ ] progress/checklist clarity
+- [ ] deal messages still send successfully
+- [ ] message errors/success messages remain visible
+- [ ] confirmation CTA still submits correctly
+- [ ] one-side-confirmed waiting state remains correct
+- [ ] completed review submit still works
+- [ ] previously submitted review state still renders
+- [ ] report deal link remains available
+- [ ] mobile layout sanity
+- [ ] desktop layout sanity
+- [ ] build passes
