@@ -139,3 +139,7 @@ If docs and implementation differ, **current code + SQL behavior wins**; docs mu
 - Global and route-level loading states were upgraded with a reusable branded loading surface.
 - `/offline` now renders a stronger app-state recovery experience with direct recovery actions.
 - Deals, dashboard items, and drops empty states were polished for visual consistency using `EmptyState`.
+
+## Post-Season-2 Polish — Offer Detail 2.1 (May 12, 2026)
+- `/offers/[offerId]` now uses a decision-first response panel so receiver chooses one path before seeing form details.
+- Offer event history now renders as a compact visual timeline instead of plain text bullets.

@@ -293,3 +293,17 @@
 - [ ] drops empty state still works
 - [ ] no mobile overlap with bottom nav
 - [ ] build passes
+
+## Offer Detail 2.1 — Decision Panel + Visual Timeline
+- [ ] pending receiver sees decision panel (not four full forms at once)
+- [ ] thinking receiver sees decision panel
+- [ ] sender does not see response decision panel
+- [ ] accept response still submits through existing action
+- [ ] thinking response still submits note through existing action
+- [ ] soft reject still submits optional note
+- [ ] redirect still requires redirect type and submits correctly
+- [ ] success/error query alerts still appear
+- [ ] visual timeline renders existing events in chronological order
+- [ ] parent-follow-up offer context still appears
+- [ ] accepted offer still links to deal room
+- [ ] build passes

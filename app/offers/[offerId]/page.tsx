@@ -2,8 +2,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { OfferItemCard } from "@/components/offers/offer-item-card";
 import { OfferStatusBadge } from "@/components/offers/offer-status-badge";
+import { OfferResponsePanel } from "./offer-response-panel";
+import { OfferTimeline } from "./offer-timeline";
 import { createClient } from "@/lib/supabase/server";
-import { acceptOffer, markOfferThinking, redirectOffer, softRejectOffer } from "./actions";
 
 type MaybeArray<T> = T | T[] | null | undefined;
 function firstOrNull<T>(value: MaybeArray<T>): T | null { if (!value) return null; return Array.isArray(value) ? value[0] ?? null : value; }
@@ -13,9 +14,9 @@ type OfferRow = { id: string; status: string; message: string | null; public_not
 type DealRow = { id: string; requester_id: string; offerer_id: string };
 const conditionLabels = { almost_new: "جديد تقريبًا", good_used: "مستخدم بحالة كويسة", minor_issues: "فيه عيوب بسيطة", needs_repair: "محتاج تصليح / عارف حالته" };
 
-const timelineMap: Record<string, string> = { created: "العرض اتبعت", marked_thinking: "صاحب الحاجة محتاج يفكر", accepted: "العرض اتقبل", soft_rejected: "العرض ما ظبطش", redirected: "اتفتح باب تاني" };
 const redirectMap: Record<string, string> = { offer_another_item: "اعرض حاجة تانية", ask_for_different_item: "بدور على نوع مختلف", update_preferences: "وضّح اختياراتك أكتر" };
 const errorMap: Record<string, string> = { not_allowed: "مش مسموح ترد على العرض ده.", invalid_status: "العرض ده اترد عليه بالفعل.", response_failed: "مش قادرين نحدّث العرض دلوقتي. جرّب تاني.", invalid_redirect_type: "لازم تختار نوع الباب التاني." };
+const responseMap: Record<string, string> = { accepted: "تم قبول العرض وفتح مسار التنسيق.", thinking: "تم تحديث العرض إلى محتاج تفكير.", soft_rejected: "تم تسجيل الرد: العرض ما ظبطش.", redirected: "تم فتح باب تاني للعرض." };
 
 export default async function OfferDetail({ params, searchParams }: { params: Promise<{ offerId: string }>; searchParams?: Promise<{ error?: string; response?: string; reported?: string }> }) {
   const { offerId } = await params;
@@ -59,10 +60,12 @@ export default async function OfferDetail({ params, searchParams }: { params: Pr
   }
 
   return <section className="mx-auto max-w-5xl space-y-6 px-4 py-10">
-    <h1 className="text-3xl font-bold">عرض مقايضة</h1>
-    <OfferStatusBadge status={offer.status} />
+    <div className="space-y-3">
+      <h1 className="text-3xl font-bold">عرض مقايضة</h1>
+      <OfferStatusBadge status={offer.status} />
+    </div>
     {query.error && errorMap[query.error] ? <p className="rounded-xl border border-red-200 bg-red-50 p-3 text-red-800">{errorMap[query.error]}</p> : null}
-    {query.response ? <p className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-emerald-800">تم تحديث حالة العرض.</p> : null}
+    {query.response ? <p className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-emerald-800">{responseMap[query.response] ?? "تم تحديث حالة العرض."}</p> : null}
     {query.reported === "1" ? <p className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-emerald-800">تم إرسال البلاغ. شكرًا إنك ساعدتنا نحافظ على التجربة.</p> : null}
     <div className="grid gap-4 md:grid-cols-[1fr_auto_1fr]"><OfferItemCard itemId={offered.id} title={offered.title} imageUrl={offImg} category={firstOrNull(offered.categories)?.name_ar ?? null} conditionLabel={conditionLabels[offered.condition]} ownerName={offOwner} /><div className="self-center text-center text-3xl">↔</div><OfferItemCard itemId={requested.id} title={requested.title} imageUrl={reqImg} category={firstOrNull(requested.categories)?.name_ar ?? null} conditionLabel={conditionLabels[requested.condition]} ownerName={reqOwner} /></div>
     <p className="text-stone-700">{offProfile?.username ? <Link href={`/users/${offProfile.username}`} className="hover:underline">{offOwner}</Link> : offOwner} عرض {offered.title} مقابل {requested.title} لصاحب الإعلان {reqProfile?.username ? <Link href={`/users/${reqProfile.username}`} className="hover:underline">{reqOwner}</Link> : reqOwner}.</p>
@@ -71,15 +74,9 @@ export default async function OfferDetail({ params, searchParams }: { params: Pr
     {offer.redirect_type ? <p className="text-sm text-stone-600">نوع الباب التاني: {redirectMap[offer.redirect_type] ?? offer.redirect_type}</p> : null}
     {offer.parent_offer_id ? <div className="rounded-xl border border-sky-200 bg-sky-50 p-3"><p className="font-semibold">العرض ده جاي بعد فتح باب تاني</p><Link className="text-sm underline" href={`/offers/${offer.parent_offer_id}`}>افتح العرض الأصلي</Link></div> : null}
 
-    <div className="rounded-xl bg-stone-50 p-4"><p className="font-semibold">الخط الزمني</p><ul className="mt-2 list-disc space-y-1 pr-4">{offer.parent_offer_id ? <li>اتعمل كعرض تاني بعد فتح باب تاني</li> : null}{(offer.offer_events ?? []).map((event) => <li key={event.id}>{timelineMap[event.event_type] ?? event.event_type} - {new Date(event.created_at).toLocaleDateString("ar-EG")}{event.note ? ` (${event.note})` : ""}</li>)}</ul></div>
+    <OfferTimeline events={offer.offer_events} hasParentOffer={Boolean(offer.parent_offer_id)} />
 
-    {canRespond ? <div className="space-y-3 rounded-xl border border-amber-200 bg-amber-50 p-4"><p className="text-lg font-semibold">رد على العرض</p><p className="text-sm text-stone-700">اختار رد بسيط. التفاصيل الخاصة لسه مش مفتوحة غير بعد القبول.</p>
-      <form action={acceptOffer} className="rounded-xl border bg-white p-3"><input type="hidden" name="offerId" value={offer.id} /><p className="font-semibold">قبول العرض</p><p className="text-sm text-stone-600">لما تقبل، الحاجتين هيتحجزوا وتتفتح صفحة تنسيق خاصة بينكم.</p><button className="mt-2 rounded-lg bg-emerald-600 px-3 py-2 text-sm text-white">اقبل العرض</button></form>
-      <form action={markOfferThinking} className="rounded-xl border bg-white p-3"><input type="hidden" name="offerId" value={offer.id} /><p className="font-semibold">محتاج أفكر</p><p className="text-sm text-stone-600">العرض يفضل مفتوح، وصاحب العرض يعرف إنك محتاج وقت قبل القرار.</p><textarea name="note" className="mt-2 w-full rounded-lg border p-2 text-sm" placeholder="شكراً على العرض، بس مش مناسب ليا دلوقتي." /><button className="mt-2 rounded-lg border px-3 py-2 text-sm">علّم العرض كمحتاج تفكير</button></form>
-      <form action={softRejectOffer} className="rounded-xl border bg-white p-3"><input type="hidden" name="offerId" value={offer.id} /><p className="font-semibold">العرض ما ظبطش</p><p className="text-sm text-stone-600">العرض يتقفل بلطف من غير صفقة. استخدمها لو العرض مش مناسب.</p><p className="mt-2 text-sm">اكتب سبب بسيط لو تحب</p><textarea name="note" className="mt-1 w-full rounded-lg border p-2 text-sm" placeholder="شكراً على العرض، بس مش مناسب ليا دلوقتي." /><button className="mt-2 rounded-lg border px-3 py-2 text-sm">ارفض بلطف</button></form>
-      <form action={redirectOffer} className="rounded-xl border bg-white p-3"><input type="hidden" name="offerId" value={offer.id} /><p className="font-semibold">افتح باب تاني</p><p className="text-sm text-stone-600">العرض ده مش مناسب، بس صاحب العرض يقدر يبعت عرض تاني مختلف مرتبط بنفس الإعلان.</p><select name="redirectType" className="mt-2 w-full rounded-lg border p-2 text-sm" defaultValue=""><option value="" disabled>اختار نوع الباب التاني</option><option value="offer_another_item">اعرض حاجة تانية</option><option value="ask_for_different_item">بدور على نوع مختلف</option><option value="update_preferences">وضّحلي اختياراتك أكتر</option></select><textarea name="note" className="mt-2 w-full rounded-lg border p-2 text-sm" placeholder="العرض ده مش مناسب، بس لو عندك حاجة للبيت/إلكترونيات خفيفة ممكن أشوفها." /><button className="mt-2 rounded-lg bg-sky-700 px-3 py-2 text-sm text-white">افتح باب تاني</button></form>
-    </div> : null}
-
+    {canRespond ? <OfferResponsePanel offerId={offer.id} /> : null}
     {isSender && offer.status === "pending" ? <p className="rounded-xl bg-blue-50 p-3 text-blue-900">عرضك اتبعت. مستني رد صاحب الحاجة.</p> : null}
     {isSender && offer.status === "thinking" ? <p className="rounded-xl bg-yellow-50 p-3 text-yellow-900">صاحب الحاجة شاف العرض ومحتاج يفكر.</p> : null}
     {isSender && offer.status === "accepted" ? <p className="rounded-xl bg-emerald-50 p-3 text-emerald-900">عرضك اتقبل. افتح صفحة التنسيق واتفقوا بهدوء.</p> : null}
