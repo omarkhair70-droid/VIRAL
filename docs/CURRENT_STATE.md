@@ -120,3 +120,9 @@ If docs and implementation differ, **current code + SQL behavior wins**; docs mu
 - Participant cards now clarify both sides (you/other participant) with profile links and optional profile visuals when available.
 - Deal progress now appears as a stronger stages/checklist module with practical coordination reminders.
 - Messages, completion confirmation, completed success state, and review actions are organized into clearer room sections without changing backend deal logic.
+
+## Phase 33 — Story Items + Drops
+- Story label now appears on story-rich items.
+- Featured story items are curated manually by admins.
+- Public /drops page added for curated discovery.
+- Admin /admin/drops page added for drops + featured story curation.

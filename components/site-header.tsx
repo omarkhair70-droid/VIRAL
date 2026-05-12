@@ -47,6 +47,7 @@ export async function SiteHeader() {
 
         <nav className="hidden max-w-full items-center justify-end gap-1.5 text-sm sm:flex sm:gap-2">
           <Link className="rounded-lg px-2.5 py-2" href="/items">السوق</Link>
+          <Link className="rounded-lg px-2.5 py-2" href="/drops">الدروب</Link>
           {loggedIn ? <Link className="rounded-lg px-2.5 py-2" href="/items/new">اعرض حاجة</Link> : null}
           {!loggedIn ? <Link className="rounded-lg px-2.5 py-2" href="/how-it-works">إزاي بتشتغل</Link> : null}
           {loggedIn ? <Link className="rounded-lg px-2.5 py-2" href="/dashboard">حسابي</Link> : null}

@@ -28,6 +28,9 @@ type ItemListRawRow = {
   area: string | null;
   desire_mode: "specific" | "flexible" | "surprise";
   desire_text: string | null;
+  item_story: string | null;
+  swap_reason: string | null;
+  good_for: string | null;
   categories: MaybeArray<{ name_ar: string | null }>;
   item_images: Array<{ image_url: string | null; is_primary: boolean | null }> | null;
 };
@@ -78,7 +81,7 @@ export default async function ItemsPage({ searchParams }: { searchParams: Search
 
   let query = supabase
     .from("items")
-    .select("id,title,condition,city,area,desire_mode,desire_text,categories(name_ar),item_images(image_url,is_primary)")
+    .select("id,title,condition,city,area,desire_mode,desire_text,item_story,swap_reason,good_for,categories(name_ar),item_images(image_url,is_primary)")
     .eq("status", "active");
 
   if (q) {
@@ -117,6 +120,7 @@ export default async function ItemsPage({ searchParams }: { searchParams: Search
     categoryName: firstOrNull(item.categories)?.name_ar ?? null,
     imageUrl:
       item.item_images?.find((img) => img.is_primary)?.image_url ?? item.item_images?.[0]?.image_url ?? null,
+    hasStory: Boolean(item.item_story || item.swap_reason || item.good_for),
   }));
 
   return (

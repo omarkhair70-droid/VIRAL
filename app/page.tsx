@@ -20,6 +20,11 @@ export default async function HomePage() {
 
   let displayName = "";
   let profileQuickLinkLabel = "شوف بروفايلك";
+
+  const { count: featuredCount } = await supabase.from("featured_story_items").select("item_id", { count: "exact", head: true });
+  const { count: publishedDropsCount } = await supabase.from("creator_drops").select("id", { count: "exact", head: true }).eq("status", "published");
+  const showStoryEntry = (featuredCount ?? 0) > 0 || (publishedDropsCount ?? 0) > 0;
+
   if (user) {
     const { data: profile } = await supabase.from("profiles").select("display_name,username,bio,city,area").eq("id", user.id).maybeSingle();
     displayName = profile?.display_name?.trim() ?? "";
@@ -56,6 +61,7 @@ export default async function HomePage() {
             </ul>
           </CardContent>
         </Card>
+        {showStoryEntry ? <Card className="rounded-3xl p-5"><h2 className="text-xl font-semibold">حاجات ليها حكاية</h2><p className="text-sm text-muted">اختيارات ودروب متجمعة يدويًا من أقوى القصص.</p><div className="mt-3"><ButtonLink href="/drops" variant="secondary">افتح الدروب</ButtonLink></div></Card> : null}
       </div>
     );
   }
@@ -97,6 +103,7 @@ export default async function HomePage() {
         <p className="rounded-xl bg-sand p-4 text-sm text-muted">مفيش أرقام موبايل عامة.</p>
         <p className="rounded-xl bg-sand p-4 text-sm text-muted">التقييمات بتظهر بعد المقايضة المكتملة فقط.</p>
       </CardContent></Card>
+      {showStoryEntry ? <Card className="rounded-3xl p-6"><h2 className="text-xl font-semibold">حاجات ليها حكاية</h2><p className="text-sm text-muted">اختيارات قصصية ودروب منسقة بعناية.</p><div className="mt-3"><ButtonLink href="/drops" variant="secondary">استكشف الدروب</ButtonLink></div></Card> : null}
     </div>
   );
 }

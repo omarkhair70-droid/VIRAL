@@ -1,0 +1,14 @@
+"use server";
+import { notFound, redirect } from "next/navigation";
+import { isCurrentUserAdmin } from "@/lib/admin";
+import { createClient } from "@/lib/supabase/server";
+const VALID_STATUS=["draft","published"]; const VALID_TYPE=["artist_drop","creator_closet","event_piece","story_item","limited_swap"];
+const get=(f:FormData,k:string)=>{const v=f.get(k);return typeof v==="string"?v.trim():""};
+async function guard(){const s=await createClient();const {data:{user}}=await s.auth.getUser(); if(!user) redirect('/login?next=/admin/drops'); if(!(await isCurrentUserAdmin(s))) notFound(); return s;}
+const cleanSlug=(s:string)=>s.toLowerCase().trim().replace(/\s+/g,'-');
+export async function featureStoryItem(f:FormData){const s=await guard();const item_id=get(f,'item_id');const sort_order=Number(get(f,'sort_order')||0);const curator_note=get(f,'curator_note').slice(0,240)||null; await s.from('featured_story_items').upsert({item_id,sort_order,curator_note}); redirect('/admin/drops?ok=featured');}
+export async function unfeatureStoryItem(f:FormData){const s=await guard();await s.from('featured_story_items').delete().eq('item_id',get(f,'item_id'));redirect('/admin/drops?ok=unfeatured');}
+export async function createDrop(f:FormData){const s=await guard();const slug=cleanSlug(get(f,'slug'));const status=get(f,'status');const drop_type=get(f,'drop_type'); if(!/^[a-z0-9-]{1,80}$/.test(slug)||!VALID_STATUS.includes(status)||!VALID_TYPE.includes(drop_type)) redirect('/admin/drops?error=invalid_drop'); const {error}=await s.from('creator_drops').insert({slug,title:get(f,'title').slice(0,120),drop_type,creator_name:get(f,'creator_name').slice(0,100)||null,intro_copy:get(f,'intro_copy').slice(0,500),status}); if(error) redirect('/admin/drops?error=create_drop');redirect('/admin/drops?ok=drop_created');}
+export async function updateDrop(f:FormData){const s=await guard();const id=get(f,'drop_id');await s.from('creator_drops').update({title:get(f,'title').slice(0,120),drop_type:get(f,'drop_type'),creator_name:get(f,'creator_name').slice(0,100)||null,intro_copy:get(f,'intro_copy').slice(0,500),status:get(f,'status')}).eq('id',id);redirect('/admin/drops?ok=drop_updated');}
+export async function addItemToDrop(f:FormData){const s=await guard();const drop_id=get(f,'drop_id');const item_id=get(f,'item_id');const {data:item}=await s.from('items').select('id,status').eq('id',item_id).maybeSingle(); if(!item||!["active","reserved","swapped"].includes(item.status)) redirect('/admin/drops?error=invalid_item'); await s.from('creator_drop_items').upsert({drop_id,item_id,sort_order:Number(get(f,'sort_order')||0)});redirect('/admin/drops?ok=item_added');}
+export async function removeItemFromDrop(f:FormData){const s=await guard();await s.from('creator_drop_items').delete().eq('drop_id',get(f,'drop_id')).eq('item_id',get(f,'item_id'));redirect('/admin/drops?ok=item_removed');}

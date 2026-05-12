@@ -79,6 +79,7 @@ export default async function AdminOpsPage() {
         <CardContent className="flex flex-wrap gap-2">
           <ButtonLink href="/admin/reports" variant="secondary" size="sm">/admin/reports</ButtonLink>
           <ButtonLink href="/admin/feedback" variant="secondary" size="sm">/admin/feedback</ButtonLink>
+          <ButtonLink href="/admin/drops" variant="secondary" size="sm">/admin/drops</ButtonLink>
           <ButtonLink href="/beta" variant="secondary" size="sm">/beta</ButtonLink>
           <ButtonLink href="/feedback" variant="secondary" size="sm">/feedback</ButtonLink>
           <ButtonLink href="/dashboard" variant="secondary" size="sm">/dashboard</ButtonLink>
