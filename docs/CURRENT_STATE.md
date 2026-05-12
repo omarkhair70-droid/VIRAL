@@ -73,3 +73,9 @@ If docs and implementation differ, **current code + SQL behavior wins**; docs mu
 - Manual tracking template created (`docs/BETA_TRACKING_TEMPLATE.md`).
 - Triage guide created (`docs/BETA_TRIAGE_GUIDE.md`).
 - Pre-send launch gate checklist created (`docs/PRE_BETA_CHECKLIST.md`).
+
+
+## Phase 26 Direction Update (May 12, 2026)
+- Current state remains controlled beta MVP.
+- Season 2 premium product direction is now documented.
+- Next implementation phase should be Profile 2.0.

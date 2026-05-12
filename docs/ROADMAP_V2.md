@@ -101,3 +101,7 @@ Phase 23 added operations runbooks, smoke testing, admin ops snapshot, and healt
 Phase 24 added a controlled-beta feedback center (`/feedback`, `/dashboard/feedback`) and admin review workflow (`/admin/feedback`) with RLS + aggregate ops visibility.
 
 **Phase 25 Update (May 12, 2026):** Closed beta launch kit added (launch plan, invite scripts, pre-send checklist, triage guide, and manual tracking templates) with stop/expand gates for 10 → 25 → 50 rollout.
+
+## Season 2 Pointer
+After closed beta readiness and final logo installation, Season 2 focuses on premium product evolution: Profile 2.0, Publish Item 2.0, Item Detail 2.0, Deal Room 2.0, Story Items, Creator Drops, Trust Badges, and App Feel 2.0.
+See: `docs/SEASON_2_ROADMAP.md`.
