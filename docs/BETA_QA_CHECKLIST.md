@@ -320,3 +320,16 @@
 - [ ] story/drops card still appears conditionally
 - [ ] PWA install card still works
 - [ ] `npm run build` passes
+
+## AB. Post-Season-2 Polish — Notification Timeline Pass
+- [ ] all filter still works
+- [ ] unread filter still works
+- [ ] unread notifications visually distinct from read ones
+- [ ] all current notification types map to a valid icon/tone
+- [ ] target links still route deal > offer > item correctly
+- [ ] mark one as read still works
+- [ ] mark all as read still works
+- [ ] empty all state still works
+- [ ] empty unread state still works
+- [ ] optional date grouping, if implemented, renders in correct order
+- [ ] build passes

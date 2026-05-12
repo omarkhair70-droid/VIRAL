@@ -147,3 +147,8 @@ If docs and implementation differ, **current code + SQL behavior wins**; docs mu
 
 ## Post-Season-2 Polish — Smart Logged-in Home (May 12, 2026)
 - Logged-in `/` now surfaces one priority next action before generic tips, based on: received offers needing response, pending deal confirmation, profile completeness, and active listing presence.
+
+## Post-Season-2 Polish — Notification Timeline Pass (May 12, 2026)
+- `/notifications` now renders as a clearer event timeline with per-type icons.
+- Unread/read distinction now has stronger but calm visual rhythm for faster scanning.
+- Notification functionality remains unchanged (filters, target links, mark read actions).
