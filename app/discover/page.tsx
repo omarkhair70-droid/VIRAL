@@ -18,6 +18,9 @@ type ItemListRawRow = {
   area: string | null;
   desire_mode: "specific" | "flexible" | "surprise";
   desire_text: string | null;
+  item_story: string | null;
+  swap_reason: string | null;
+  good_for: string | null;
   categories: MaybeArray<{ name_ar: string | null }>;
   item_images: Array<{ image_url: string | null; is_primary: boolean | null }> | null;
 };
@@ -47,7 +50,7 @@ export default async function DiscoverPage({ searchParams }: { searchParams: Pro
         .limit(6),
       supabase
         .from("items")
-        .select("id,title,condition,city,area,desire_mode,desire_text,categories(name_ar),item_images(image_url,is_primary)")
+        .select("id,title,condition,city,area,desire_mode,desire_text,item_story,swap_reason,good_for,categories(name_ar),item_images(image_url,is_primary)")
         .eq("status", "active")
         .or(`title.ilike.%${item}%,description.ilike.%${item}%,desire_text.ilike.%${item}%,city.ilike.%${item}%,area.ilike.%${item}%`)
         .order("created_at", { ascending: false })
@@ -59,6 +62,7 @@ export default async function DiscoverPage({ searchParams }: { searchParams: Pro
       ...it,
       categoryName: firstOrNull(it.categories)?.name_ar ?? null,
       imageUrl: it.item_images?.find((img) => img.is_primary)?.image_url ?? it.item_images?.[0]?.image_url ?? null,
+      hasStory: Boolean(it.item_story || it.swap_reason || it.good_for),
     }));
   }
 

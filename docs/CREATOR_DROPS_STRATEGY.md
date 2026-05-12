@@ -40,3 +40,8 @@ A premium layer where artists/creators can list meaningful items:
 - Keep drops curated.
 - Start manually.
 - No payments/auctioning in first version.
+
+
+## Phase 33 status update
+Manual MVP drops layer is now implemented (featured story items + curated drops + public /drops + admin curation).
+Creator verification ecosystem and broader creator program remain in later phases.

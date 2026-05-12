@@ -102,7 +102,10 @@ The app remains controlled beta while this roadmap is implemented phase by phase
 **Completion note:** Deal room now uses a clearer two-column hierarchy with swap hero, participant cards, status + next-step clarity, improved progress/checklist guidance, stronger coordination/completion modules, and polished completed/review flow while preserving existing lifecycle logic.
 
 ## Phase 33 — Story Items + Drops
+**Status:** Completed (implemented on May 12, 2026).
 **Goal:** Add premium culture/story layer.
+
+**Completion note:** Story labels, featured story curation, public /drops discovery, and admin drops curation are now live as a manual editorial MVP layer.
 
 **Deliverables**
 - story item label
@@ -145,8 +148,4 @@ The app remains controlled beta while this roadmap is implemented phase by phase
 - public creator monetization
 - public launch SEO expansion
 - complex invite systems
-
-
-## Phase 29 — Publish Item 2.0
-**Status:** Completed (implemented on May 12, 2026).
 

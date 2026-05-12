@@ -249,3 +249,18 @@
 - [ ] mobile layout sanity
 - [ ] desktop layout sanity
 - [ ] build passes
+
+## Phase 33 — Story Items + Drops QA
+- [ ] story label appears only on story-rich items
+- [ ] no story label on empty-story items
+- [ ] /drops loads with featured items
+- [ ] /drops loads with published drops
+- [ ] drop card items link correctly
+- [ ] home CTA/section appears only when curated content exists
+- [ ] site header route link to /drops works
+- [ ] admin drops page blocks non-admins
+- [ ] admin can feature/unfeature story item
+- [ ] admin can create/update draft/published drop
+- [ ] admin can attach/remove item from drop
+- [ ] published drops visible publicly, drafts not visible publicly
+- [ ] build passes

@@ -168,6 +168,7 @@ export default async function ItemDetailPage({ params, searchParams }: { params:
               <StatusPill tone="warning">{conditionLabels[typed.condition]}</StatusPill>
               {location ? <StatusPill>{location}</StatusPill> : null}
               <StatusPill>اتنشر {new Date(typed.created_at).toLocaleDateString("ar-EG")}</StatusPill>
+              {hasStory ? <StatusPill tone="pending">ليها حكاية</StatusPill> : null}
             </div>
             <h1 className="text-3xl font-bold text-ink md:text-4xl">{typed.title}</h1>
           </div>

@@ -37,3 +37,8 @@
 - Story capture is now productized inside publish flow via optional guided fields.
 - Publish preview now includes story content before final submit.
 - Deeper story curation/presentation remains scheduled for later phases (especially Phase 30+).
+
+
+## Phase 33 status update
+Phase 33 added the story label and curated discovery layer.
+Drops now manually highlight the strongest story-rich items.
