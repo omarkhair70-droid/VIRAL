@@ -59,6 +59,7 @@ The app remains controlled beta while this roadmap is implemented phase by phase
 - key EmptyState surfaces migrated to official icons
 
 ## Phase 30 — Item Detail 2.0
+**Status:** Completed (implemented on May 12, 2026).
 **Goal:** Make item pages feel valuable and trustworthy.
 
 **Deliverables**
@@ -70,6 +71,8 @@ The app remains controlled beta while this roadmap is implemented phase by phase
 - offer CTA hierarchy
 - more from this user
 - safety strip
+
+**Completion note:** Item detail now follows a product-page hierarchy with hero imagery, story/value clarity, owner trust context, stronger primary swap CTA behavior by viewer state, and conditional "more from this user" recommendations.
 
 ## Phase 31 — Offer Flow 2.0
 **Goal:** Make offers clearer and more intentional.

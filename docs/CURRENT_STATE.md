@@ -101,3 +101,9 @@ If docs and implementation differ, **current code + SQL behavior wins**; docs mu
 ## App Feel 3.0 — Icon System Integration (May 12, 2026)
 - Official Baddelha UI icon system integrated into core mobile navigation, mobile header utility actions, and key empty states.
 - Temporary mixed emoji/inline icon usage was replaced in these core surfaces to keep icon language unified.
+
+## Phase 30 Item Detail 2.0 (May 12, 2026)
+- `/items/[itemId]` upgraded from basic listing details to a premium decision-first product page hierarchy.
+- New structure emphasizes hero gallery + stronger header + dedicated swap CTA module + trust card + calm safety strip.
+- Story fields now render as a focused "حكاية الحاجة" block only when content exists.
+- "More from this user" compact section now appears conditionally when other active items exist.
