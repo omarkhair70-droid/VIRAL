@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { ButtonLink } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PageHeading } from "@/components/ui/page-heading";
+import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
   title: "بدّلها | سوق المقايضة",
@@ -11,7 +13,53 @@ export const metadata: Metadata = {
 
 const steps = ["اعرض حاجة مركونة", "استقبل عروض", "افتح صفحة التنسيق", "قيّم بعد المقايضة"];
 
-export default function HomePage() {
+export default async function HomePage() {
+  const supabase = await createClient();
+  const { data } = await supabase.auth.getUser();
+  const user = data.user;
+
+  let displayName = "";
+  let profileQuickLinkLabel = "شوف بروفايلك";
+  if (user) {
+    const { data: profile } = await supabase.from("profiles").select("display_name,username,bio,city,area").eq("id", user.id).maybeSingle();
+    displayName = profile?.display_name?.trim() ?? "";
+    const profileComplete = Boolean(profile?.username && profile?.bio && profile?.city && profile?.area);
+    profileQuickLinkLabel = profileComplete ? "شوف بروفايلك" : "أكمل بروفايلك";
+  }
+
+  if (user) {
+    return (
+      <div className="mx-auto max-w-6xl space-y-5 px-4 py-6 md:space-y-7 md:py-10">
+        <Card className="rounded-3xl bg-cream p-5 md:p-8">
+          <p className="text-sm text-muted">{displayName ? `أهلاً ${displayName}` : "أهلاً بيك في بدّلها"}</p>
+          <h1 className="mt-1 text-2xl font-bold text-ink md:text-3xl">جاهز تبدّل حاجة النهارده؟</h1>
+          <p className="mt-2 text-sm text-muted">ابدأ بسرعة: انشر حاجة مركونة أو استكشف السوق وشوف العروض المناسبة ليك.</p>
+          <div className="mt-4 flex flex-wrap gap-2.5">
+            <ButtonLink href="/items/new" size="lg">اعرض حاجة</ButtonLink>
+            <ButtonLink href="/items" variant="secondary" size="lg">شوف السوق</ButtonLink>
+          </div>
+        </Card>
+
+        <section className="grid gap-3 sm:grid-cols-3">
+          <Link className="rounded-2xl border border-warmBorder bg-white p-4 text-sm font-medium text-ink" href="/dashboard">حسابي وعروضي</Link>
+          <Link className="rounded-2xl border border-warmBorder bg-white p-4 text-sm font-medium text-ink" href="/notifications">الإشعارات</Link>
+          <Link className="rounded-2xl border border-warmBorder bg-white p-4 text-sm font-medium text-ink" href="/profile">{profileQuickLinkLabel}</Link>
+        </section>
+
+        <Card className="rounded-3xl p-5 md:p-6">
+          <CardHeader className="p-0"><CardTitle>ابدأ من هنا</CardTitle></CardHeader>
+          <CardContent className="p-0 pt-3">
+            <ul className="space-y-2 text-sm text-muted">
+              <li>1) اعرض حاجة بصور واضحة ووصف صريح.</li>
+              <li>2) تابع الإشعارات أول بأول عشان مايفوتكش أي عرض.</li>
+              <li>3) لما تتفقوا، كمّلوا المقايضة في مكان عام وآمن.</li>
+            </ul>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="mx-auto max-w-6xl space-y-10 px-4 py-10 md:py-14">
       <Card className="rounded-3xl bg-cream p-6 md:p-10">

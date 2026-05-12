@@ -23,6 +23,18 @@ The app remains controlled beta while this roadmap is implemented phase by phase
 - trust badges
 - profile share card
 
+## Phase 28.5 — Mobile App Shell 2.0 + Home Experience Reset
+**Status:** Completed (implemented on May 12, 2026).
+**Goal:** Make the mobile shell and home feel like a polished app entry experience.
+
+**Deliverables**
+- compact mobile-first header utilities (without duplicating full nav)
+- refined bottom nav (4 primary destinations, clearer action hierarchy)
+- logged-in home reset to action-oriented dashboard-lite experience
+- logged-out home preserved as premium landing path
+- safe-area/mobile spacing polish to avoid bottom-nav overlap
+- mobile footer de-emphasis to reduce shell clutter
+
 ## Phase 29 — Publish Item 2.0
 **Goal:** Turn publishing from form into guided experience.
 
