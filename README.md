@@ -94,3 +94,12 @@ Because `item-images` is public-read:
 - Final logo assets: `public/brand/`
 - Final app icon assets: `public/icons/`
 - Source of truth: `docs/LOGO_SYSTEM.md`
+
+## Season 2 Premium Product Direction
+- `docs/PREMIUM_PRODUCT_VISION.md`
+- `docs/PREMIUM_BRAND_POSITIONING.md`
+- `docs/PRODUCT_PRINCIPLES.md`
+- `docs/FEATURE_PILLARS_SEASON_2.md`
+- `docs/SEASON_2_ROADMAP.md`
+- `docs/STORY_SWAP_STRATEGY.md`
+- `docs/CREATOR_DROPS_STRATEGY.md`
