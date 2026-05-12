@@ -89,3 +89,5 @@
 
 
 **Phase 22B Update (May 11, 2026):** Core UX flow elevation: first-time entry, publish, offer, deal, review, report, notifications.
+
+**Phase 22C Update (May 11, 2026):** Phase 22C clarified offer responses, redirected follow-ups, deal steps, messages, completion, reviews, and reports.

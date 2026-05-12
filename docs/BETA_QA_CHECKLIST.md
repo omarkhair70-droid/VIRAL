@@ -78,3 +78,17 @@
 - [ ] report page explains what happens next
 - [ ] notifications page explains in-app nature
 - [ ] profile pages explain trust/reviews
+
+## Q. Deal + Offer UX Clarity
+- [ ] offer receiver understands accept/thinking/reject/redirect consequences
+- [ ] sender redirected state shows “ابعت عرض تاني” explanation
+- [ ] send offer page explains existing vs new item mode
+- [ ] follow-up mode explains different item requirement
+- [ ] deal page step tracker matches coordinating status
+- [ ] deal page step tracker matches pending confirmation status
+- [ ] completed deal shows review guidance
+- [ ] message section explains not realtime
+- [ ] message safety copy appears
+- [ ] confirmation warning appears before action
+- [ ] report page explains what happens next
+- [ ] deals empty state explains when deals appear

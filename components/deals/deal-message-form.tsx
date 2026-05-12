@@ -17,7 +17,7 @@ export function DealMessageForm({ dealId }: { dealId: string }) {
         className="w-full rounded-xl border p-3 text-sm"
         placeholder="اكتب رسالة تنسيق بسيطة..."
       />
-      <p className="text-xs text-stone-600">خليك واضح ومختصر. لو الطرف التاني ضغط عليك أو بعت حاجة مش مريحة، بلّغ عن الرسالة.</p>
+      <p className="text-xs text-stone-600">خليك واضح ومختصر. ما تبعتش عنوانك أو بيانات حساسة بدري.</p>
       <button className="rounded-lg bg-clay px-4 py-2 text-sm text-white">ابعت الرسالة</button>
     </form>
   );

@@ -140,3 +140,11 @@
 - **Confusing moments:** invitee path from share to first action can be tighter.
 - **Mobile concerns:** native share availability varies by browser.
 - **Priority improvements:** stronger branded previews + “what to do first” landing direction (P1).
+
+## Phase 22C UX Clarity Notes (May 11, 2026)
+- **Responding to an offer:** clarified Accept / Thinking / Soft reject / Redirect consequences so receiver decisions are explicit and calm.
+- **Accepted deal coordination:** added a visible step tracker clarifying where users are in the deal lifecycle.
+- **Deal messages:** added expectation copy that messages are not realtime and safety prompting for reporting.
+- **Confirming completion:** added stricter warning copy to confirm only after actual handoff, with one-side-confirmed guidance.
+- **Leaving review:** added short prompt for useful review content and reassurance when review already submitted.
+- **Reporting unsafe behavior:** added post-submit expectation copy that reporting helps review but is not an instant-response promise.

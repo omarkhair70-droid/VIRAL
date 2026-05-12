@@ -78,7 +78,8 @@ export default async function ReportPage({ searchParams }: { searchParams?: Prom
     <section className="mx-auto max-w-2xl space-y-6 px-4 py-10">
       <div>
         <h1 className="text-3xl font-bold">بلّغ عن حاجة مش مريحة</h1>
-        <p className="mt-2 text-stone-600">البلاغات بتساعدنا نحافظ على التجربة آمنة ومحترمة. اكتب اللي حصل بوضوح من غير بيانات خاصة.</p>
+        <p className="mt-2 text-stone-600">البلاغات بتساعدنا نحافظ على التجربة آمنة ومحترمة. البلاغ مش وعد برد فوري، لكنه بيساعدنا نراجع المشاكل.</p>
+        <p className="mt-1 text-sm text-stone-600">اكتب تفاصيل قصيرة وواضحة.</p>
       </div>
 
       {messageId ? (
