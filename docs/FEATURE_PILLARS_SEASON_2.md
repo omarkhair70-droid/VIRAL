@@ -16,7 +16,7 @@ Includes: publish, offer, redirected follow-up, accept, deal room, messages, com
 
 ## 3) Trust Profiles
 - **Purpose:** Make profile the trust and personality anchor of the app.
-- **Current status:** Profile exists in MVP form with baseline trust loops.
+- **Current status:** Profile 2.0 implemented (cover/avatar hero, trust summary, swap personality, richer available items, review hierarchy).
 - **Future direction:** Expand profile depth and readability for trust decisions.
 - **Example implementation:** Profile 2.0 with cover/avatar/bio/location/interests/swap preferences/available items/completed swaps/reviews/trust badges.
 

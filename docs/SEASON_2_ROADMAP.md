@@ -8,6 +8,7 @@ The app remains controlled beta while this roadmap is implemented phase by phase
 **Status:** Completed / installed.
 
 ## Phase 28 — Profile 2.0
+**Status:** Completed (implemented on May 12, 2026).
 **Goal:** Turn profile into trust/personality page.
 
 **Deliverables**

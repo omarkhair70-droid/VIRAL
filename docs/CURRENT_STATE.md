@@ -79,3 +79,9 @@ If docs and implementation differ, **current code + SQL behavior wins**; docs mu
 - Current state remains controlled beta MVP.
 - Season 2 premium product direction is now documented.
 - Next implementation phase should be Profile 2.0.
+
+
+## Phase 28 Profile 2.0 (May 12, 2026)
+- Public profile now includes cover/avatar hero, trust summary, swap personality, richer items, and upgraded reviews hierarchy.
+- `/profile` now supports avatar/cover uploads and Season 2 profile fields.
+- New `profile-images` bucket is public-read; profile images are public and users should avoid sensitive uploads.

@@ -6,6 +6,7 @@ Controlled beta marketplace MVP with hardened offers/deals lifecycle protections
 ## Required Supabase state
 - All migrations applied, including `20260511193000_phase20_5_offer_deal_hardening.sql`.
 - `item-images` bucket exists and is public-read.
+- `profile-images` bucket exists and is public-read (avatar/cover are intentionally public).
 - At least one row in `admin_users` for moderation review.
 
 ## Security/lifecycle baseline checks
@@ -17,6 +18,7 @@ Controlled beta marketplace MVP with hardened offers/deals lifecycle protections
 
 ## Beta limitations (known)
 - Public listing images are public URLs.
+- Public profile avatar/cover images are public URLs.
 - Upload->publish split can leave orphan storage files if publish fails.
 - No payments, escrow, delivery, or advanced AI matching.
 - No push/email notifications.
