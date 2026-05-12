@@ -199,3 +199,19 @@
 - [ ] Layout does not shift unexpectedly on mobile.
 - [ ] No emoji icons remain in touched header/nav locations.
 - [ ] `npm run build` passes.
+
+## Y. Phase 30 — Item Detail 2.0
+- [ ] item with story fields shows "حكاية الحاجة" with the expected values
+- [ ] item without story fields does not show an empty story block
+- [ ] logged-in non-owner sees main CTA and routes to `/offers/new?requestedItemId=...`
+- [ ] logged-out visitor sees "سجّل وابعث عرض" and auth path behavior still works
+- [ ] owner view shows "دي حاجتك أنت." and edit/manage actions as secondary
+- [ ] multi-image item shows primary hero + secondary image strip
+- [ ] single-image item still renders correctly
+- [ ] no-image item still shows fallback state
+- [ ] desire_mode / desire_text / wanted tags block renders correctly
+- [ ] owner trust card shows profile data and profile link when available
+- [ ] "حاجات تانية من نفس الشخص" appears only when there are other active items
+- [ ] share/report/manage secondary actions remain available and quiet
+- [ ] mobile ordering remains clear and desktop 2-column hierarchy is sane
+- [ ] `npm run build` passes
