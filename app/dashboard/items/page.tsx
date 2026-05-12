@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { OwnerItemCard } from "@/components/owner-item-card";
 import { PageShell } from "@/components/page-shell";
+import { EmptyState } from "@/components/ui/empty-state";
 import { createClient } from "@/lib/supabase/server";
 
 type MaybeArray<T> = T | T[] | null | undefined;
@@ -52,11 +53,7 @@ export default async function DashboardItemsPage({
         <Link href="/dashboard/items?tab=archived" className="rounded-lg border px-3 py-1.5 text-sm">مؤرشفة</Link>
       </div>
       {items.length === 0 ? (
-        <div className="rounded-xl border bg-white p-5">
-          <p className="font-semibold">لسه ما عرضتش حاجات.</p>
-          <p className="mb-3 mt-1 text-sm text-stone-600">ابدأ بحاجة واحدة واضحة، وخليك واضح في الوصف.</p>
-          <Link href="/items/new" className="inline-flex rounded-lg bg-clay px-4 py-2 text-white">اعرض أول حاجة</Link>
-        </div>
+        <EmptyState iconName="publish" title="لسه ما عرضتش حاجات." subtitle="ابدأ بحاجة واحدة واضحة، وخليك واضح في الوصف." action={<Link href="/items/new" className="inline-flex rounded-lg bg-clay px-4 py-2 text-white">اعرض أول حاجة</Link>} />
       ) : (
         <div className="grid gap-4 md:grid-cols-2">{items.map((item) => <OwnerItemCard key={item.id} item={item} />)}</div>
       )}

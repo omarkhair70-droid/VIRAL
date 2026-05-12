@@ -277,3 +277,19 @@
 - [ ] owner trust card shows compact badge preview
 - [ ] average rating and latest reviews still render
 - [ ] build passes
+
+## Phase 35 — App Feel 2.0
+- [ ] bottom nav still only appears for logged-in users
+- [ ] unread notification badge unchanged and still caps at 9+
+- [ ] active bottom nav state changes correctly by route
+- [ ] publish nav action still opens /items/new
+- [ ] install card appears only when install prompt is available
+- [ ] install card hides after dismiss/install
+- [ ] install card does not show in standalone mode
+- [ ] app/loading.tsx improved and route-level loading files compile
+- [ ] /offline page renders upgraded state
+- [ ] deals empty state uses upgraded EmptyState
+- [ ] dashboard items empty state uses upgraded EmptyState
+- [ ] drops empty state still works
+- [ ] no mobile overlap with bottom nav
+- [ ] build passes

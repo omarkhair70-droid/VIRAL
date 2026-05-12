@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ButtonLink } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PageHeading } from "@/components/ui/page-heading";
+import { PwaInstallCard } from "@/components/pwa-install-card";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
@@ -35,6 +36,7 @@ export default async function HomePage() {
   if (user) {
     return (
       <div className="mx-auto max-w-6xl space-y-5 px-4 py-6 md:space-y-7 md:py-10">
+        <PwaInstallCard />
         <Card className="rounded-3xl bg-cream p-5 md:p-8">
           <p className="text-sm text-muted">{displayName ? `أهلاً ${displayName}` : "أهلاً بيك في بدّلها"}</p>
           <h1 className="mt-1 text-2xl font-bold text-ink md:text-3xl">جاهز تبدّل حاجة النهارده؟</h1>
@@ -68,6 +70,7 @@ export default async function HomePage() {
 
   return (
     <div className="mx-auto max-w-6xl space-y-10 px-4 py-10 md:py-14">
+      <PwaInstallCard />
       <Card className="rounded-3xl bg-cream p-6 md:p-10">
         <PageHeading eyebrow="بدّلها — Baddelha Swap" title="بدّل الحاجة بدل ما تسيبها مركونة." subtitle="بدّلها مساحة مقايضة عملية: اعرض حاجة، استقبل عروض، واتفقوا بأمان في مكان عام." />
         <div className="mt-2 flex flex-wrap gap-3">

@@ -132,3 +132,10 @@ If docs and implementation differ, **current code + SQL behavior wins**; docs mu
 - Public profiles now aggregate and display review-backed trust badges with calm, count-based signals.
 - Item detail owner trust card now includes a compact trust badge preview to support faster send-offer decisions.
 - Beta Member and Completed Swapper remain derived, honest presentation badges.
+
+## Phase 35 — App Feel 2.0 (May 12, 2026)
+- Mobile bottom nav now uses route-aware active states while preserving auth gating and unread badge logic.
+- Home now includes a lightweight install onboarding card driven by `beforeinstallprompt`, with standalone/dismiss safeguards.
+- Global and route-level loading states were upgraded with a reusable branded loading surface.
+- `/offline` now renders a stronger app-state recovery experience with direct recovery actions.
+- Deals, dashboard items, and drops empty states were polished for visual consistency using `EmptyState`.
