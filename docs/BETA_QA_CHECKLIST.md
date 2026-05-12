@@ -215,3 +215,18 @@
 - [ ] share/report/manage secondary actions remain available and quiet
 - [ ] mobile ordering remains clear and desktop 2-column hierarchy is sane
 - [ ] `npm run build` passes
+
+## Z. Phase 31 — Offer Flow 2.0
+- [ ] normal offer starts from Item Detail 2.0 CTA (`/offers/new?requestedItemId=...`)
+- [ ] existing active item mode shows selectable visual item list
+- [ ] quick new item mode renders all supported fields and guidance copy
+- [ ] submit still creates offer successfully
+- [ ] quick-created offer item appears in marketplace like before
+- [ ] offered/requested preview block is clear before submit
+- [ ] message helper prompts appear and remain optional
+- [ ] redirected follow-up flow works via `/offers/new?fromOffer=...`
+- [ ] redirected follow-up still blocks reusing same previous offered item
+- [ ] invalid/unavailable parent offer behavior remains unchanged
+- [ ] logged-in protection still redirects unauthenticated users
+- [ ] `npm run build` passes
+- [ ] mobile layout ordering and CTA clarity are sane

@@ -75,6 +75,7 @@ The app remains controlled beta while this roadmap is implemented phase by phase
 **Completion note:** Item detail now follows a product-page hierarchy with hero imagery, story/value clarity, owner trust context, stronger primary swap CTA behavior by viewer state, and conditional "more from this user" recommendations.
 
 ## Phase 31 — Offer Flow 2.0
+**Status:** Completed (implemented on May 12, 2026).
 **Goal:** Make offers clearer and more intentional.
 
 **Deliverables**
@@ -143,3 +144,6 @@ The app remains controlled beta while this roadmap is implemented phase by phase
 
 ## Phase 29 — Publish Item 2.0
 **Status:** Completed (implemented on May 12, 2026).
+
+
+**Completion note:** Offer creation now uses a guided composer with requested-item spotlight, clearer existing/new offering choice, stronger review preview, improved message helper, and polished follow-up/redirected context.

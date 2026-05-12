@@ -107,3 +107,9 @@ If docs and implementation differ, **current code + SQL behavior wins**; docs mu
 - New structure emphasizes hero gallery + stronger header + dedicated swap CTA module + trust card + calm safety strip.
 - Story fields now render as a focused "حكاية الحاجة" block only when content exists.
 - "More from this user" compact section now appears conditionally when other active items exist.
+
+## Phase 31 Offer Flow 2.0 (May 12, 2026)
+- `/offers/new` upgraded into a guided offer composer with clearer hierarchy and requested-item spotlight.
+- Existing vs quick-new offer input is now clearer, with improved existing item visual selection.
+- Added stronger offer review/preview, lightweight message helper, and swap rationale support copy.
+- Redirected follow-up context at offer creation is now clearer while keeping all existing validations and lifecycle behavior.
