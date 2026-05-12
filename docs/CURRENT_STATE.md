@@ -96,3 +96,8 @@ If docs and implementation differ, **current code + SQL behavior wins**; docs mu
 - `/items/new` now runs as a guided 6-step publish wizard (images, basics, condition clarity, story, desired swap, review/publish).
 - Story Item fields (`item_story`, `swap_reason`, `good_for`) are captured on publish and editable later.
 - Item detail shows a minimal "حكاية الحاجة" section when story data exists (full Item Detail 2.0 still pending Phase 30).
+
+
+## App Feel 3.0 — Icon System Integration (May 12, 2026)
+- Official Baddelha UI icon system integrated into core mobile navigation, mobile header utility actions, and key empty states.
+- Temporary mixed emoji/inline icon usage was replaced in these core surfaces to keep icon language unified.

@@ -188,3 +188,14 @@
 - [ ] item edit saves story field updates
 - [ ] existing listings without story fields still render normally
 - [ ] build passes
+
+
+## X. App Feel 3.0 — Icon System Integration
+- [ ] Bottom nav uses official icons and still navigates correctly.
+- [ ] Notification badge still appears and caps at 9+.
+- [ ] Mobile header shows proper icons for notifications/account/login.
+- [ ] Existing aria labels remain valid.
+- [ ] Empty states in marketplace and notifications display official icons.
+- [ ] Layout does not shift unexpectedly on mobile.
+- [ ] No emoji icons remain in touched header/nav locations.
+- [ ] `npm run build` passes.

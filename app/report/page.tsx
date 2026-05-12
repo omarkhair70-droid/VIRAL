@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Route } from "next";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { AppIcon } from "@/components/ui/app-icon";
 import { normalizeNextPath } from "@/lib/normalize-next-path";
 import { createReport } from "./actions";
 
@@ -77,7 +78,7 @@ export default async function ReportPage({ searchParams }: { searchParams?: Prom
   return (
     <section className="mx-auto max-w-2xl space-y-6 px-4 py-10">
       <div>
-        <h1 className="text-3xl font-bold">بلّغ عن حاجة مش مريحة</h1>
+        <h1 className="flex items-center gap-2 text-3xl font-bold"><AppIcon name="report" className="h-6 w-6" />بلّغ عن حاجة مش مريحة</h1>
         <p className="mt-2 text-stone-600">البلاغات بتساعدنا نحافظ على التجربة آمنة ومحترمة. البلاغ مش وعد برد فوري، لكنه بيساعدنا نراجع المشاكل.</p>
         <p className="mt-1 text-sm text-stone-600">اكتب تفاصيل قصيرة وواضحة.</p>
       </div>

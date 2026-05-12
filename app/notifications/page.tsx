@@ -87,7 +87,7 @@ export default async function NotificationsPage({
       </div>
 
       {notifications.length === 0 ? (
-        <EmptyState title={filter === "unread" ? "مفيش جديد دلوقتي." : "لسه مفيش إشعارات."} subtitle={filter === "all" ? "لما يوصلك عرض أو يحصل تحديث مهم، هيظهر هنا." : "جرّب تبدّل على كل الإشعارات."} />
+        <EmptyState iconName="bell" title={filter === "unread" ? "مفيش جديد دلوقتي." : "لسه مفيش إشعارات."} subtitle={filter === "all" ? "لما يوصلك عرض أو يحصل تحديث مهم، هيظهر هنا." : "جرّب تبدّل على كل الإشعارات."} />
       ) : (
         <div className="space-y-3">
           {notifications.map((notification) => {

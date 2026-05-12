@@ -47,6 +47,17 @@ The app remains controlled beta while this roadmap is implemented phase by phase
 - preview before publish
 - better mobile UX
 
+
+## App Feel 3.0 — Icon System Integration
+**Status:** Completed (implemented on May 12, 2026).
+**Goal:** Standardize core UI icon language without redesigning flows.
+
+**Deliverables**
+- reusable `AppIcon` component backed by `public/ui-icons/*`
+- bottom nav icons migrated to official system
+- mobile header utility icons migrated from emoji to official icons
+- key EmptyState surfaces migrated to official icons
+
 ## Phase 30 — Item Detail 2.0
 **Goal:** Make item pages feel valuable and trustworthy.
 

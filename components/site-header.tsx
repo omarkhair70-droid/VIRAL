@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { AuthButton } from "@/components/auth-button";
+import { AppIcon } from "@/components/ui/app-icon";
 import { createClient } from "@/lib/supabase/server";
 
 export async function SiteHeader() {
@@ -31,7 +32,7 @@ export async function SiteHeader() {
         <div className="flex items-center gap-1 sm:hidden">
           {loggedIn ? (
             <Link aria-label="الإشعارات" className="relative rounded-xl border border-warmBorder bg-white/70 p-2 text-ink" href="/notifications">
-              <span aria-hidden>🔔</span>
+              <AppIcon name="bell" className="h-4 w-4" />
               {unreadNotificationsCount > 0 ? (
                 <span className="absolute -right-1 -top-1 min-w-5 rounded-full bg-clay px-1 text-center text-[10px] font-semibold leading-5 text-white">
                   {unreadNotificationsCount > 9 ? "9+" : unreadNotificationsCount}
@@ -40,7 +41,7 @@ export async function SiteHeader() {
             </Link>
           ) : null}
           <Link aria-label={loggedIn ? "حسابي" : "تسجيل الدخول"} className="rounded-xl border border-warmBorder bg-white/70 p-2 text-ink" href={loggedIn ? "/dashboard" : "/login"}>
-            <span aria-hidden>{loggedIn ? "👤" : "↗"}</span>
+            <AppIcon name={loggedIn ? "profile" : "forward"} className="h-4 w-4" />
           </Link>
         </div>
 

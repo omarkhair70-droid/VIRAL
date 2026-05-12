@@ -133,6 +133,7 @@ export default async function ItemsPage({ searchParams }: { searchParams: Search
       {items.length === 0 ? (
         hasFilters ? (
           <EmptyState
+            iconName="search"
             title="مفيش نتائج بنفس الفلاتر دي."
             subtitle="جرّب تخفف الفلاتر أو غيّر كلمات البحث. ولو عندك حاجة مناسبة اعرضها."
             secondaryAction={<ButtonLink href="/items" variant="secondary">امسح الفلاتر</ButtonLink>}
@@ -140,6 +141,7 @@ export default async function ItemsPage({ searchParams }: { searchParams: Search
           />
         ) : (
           <EmptyState
+            iconName="empty-box"
             title="السوق الحقيقي لسه بيتبني."
             subtitle="ابدأ بأول حاجة عندك، أو شوف الناس عارضة إيه."
             action={<ButtonLink href="/items/new">اعرض حاجة</ButtonLink>}
