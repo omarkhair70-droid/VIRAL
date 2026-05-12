@@ -41,3 +41,8 @@ Includes: featured item, artist drop, creator closet, event piece, limited swap,
 - **Example implementation:** Stronger reminders, clearer report outcomes, no public phone numbers, no sensitive image guidance.
 
 Includes: reports, feedback, admin review, ratings, safety reminders, no public phone numbers, no sensitive images.
+
+
+### Story Items status update (May 12, 2026)
+- Publish-time story capture is now implemented in Phase 29 (`item_story`, `swap_reason`, `good_for`).
+- Full premium story presentation polish remains part of Phase 30 Item Detail 2.0.

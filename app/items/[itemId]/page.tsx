@@ -39,6 +39,9 @@ type ItemDetailRawRow = {
   area: string | null;
   desire_mode: "specific" | "flexible" | "surprise";
   desire_text: string | null;
+  item_story: string | null;
+  swap_reason: string | null;
+  good_for: string | null;
   created_at: string;
   categories: MaybeArray<{ name_ar: string | null }>;
   item_images: Array<{ image_url: string | null; is_primary: boolean | null }> | null;
@@ -108,7 +111,7 @@ export default async function ItemDetailPage({ params, searchParams }: { params:
   const { data: item, error } = await supabase
     .from("items")
     .select(
-      "id,owner_id,status,title,description,condition,condition_notes,city,area,desire_mode,desire_text,created_at,categories(name_ar),item_images(image_url,is_primary),item_wanted_tags(tag),profiles!items_owner_id_fkey(display_name,username,city,successful_swaps_count)",
+      "id,owner_id,status,title,description,condition,condition_notes,city,area,desire_mode,desire_text,item_story,swap_reason,good_for,created_at,categories(name_ar),item_images(image_url,is_primary),item_wanted_tags(tag),profiles!items_owner_id_fkey(display_name,username,city,successful_swaps_count)",
     )
     .eq("id", itemId)
     .maybeSingle();
@@ -154,6 +157,16 @@ export default async function ItemDetailPage({ params, searchParams }: { params:
             </div>
           ) : null}
         </Card>
+
+
+        {(typed.item_story || typed.swap_reason || typed.good_for) ? (
+          <Card className="p-4">
+            <p className="font-semibold">حكاية الحاجة</p>
+            {typed.item_story ? <p className="mt-2 text-sm text-stone-700">{typed.item_story}</p> : null}
+            {typed.swap_reason ? <p className="mt-2 text-sm"><span className="font-medium">ليه بيتبدّل؟ </span>{typed.swap_reason}</p> : null}
+            {typed.good_for ? <p className="mt-2 text-sm"><span className="font-medium">مناسب لمين؟ </span>{typed.good_for}</p> : null}
+          </Card>
+        ) : null}
 
         <Card className="p-4">
           <p className="font-semibold">صاحب الإعلان</p>

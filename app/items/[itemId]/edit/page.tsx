@@ -11,7 +11,7 @@ export default async function EditItemPage({ params }: { params: Promise<{ itemI
   if (!user) redirect(`/login?next=/items/${itemId}/edit`);
 
   const [{ data: item }, { data: categories }] = await Promise.all([
-    supabase.from("items").select("id,owner_id,title,category_id,description,condition,condition_notes,city,area,desire_mode,desire_text").eq("id", itemId).maybeSingle(),
+    supabase.from("items").select("id,owner_id,title,category_id,description,condition,condition_notes,city,area,desire_mode,desire_text,item_story,swap_reason,good_for").eq("id", itemId).maybeSingle(),
     supabase.from("categories").select("id,name_ar").eq("is_active", true).order("sort_order", { ascending: true }),
   ]);
 

@@ -40,3 +40,7 @@ Controlled beta marketplace MVP with hardened offers/deals lifecycle protections
 - Feedback center available for controlled beta issue intake.
 - Admin feedback review page available.
 - Remaining: no automated moderation/ban tools yet.
+
+
+## Phase 29 note
+- Story item fields (`item_story`, `swap_reason`, `good_for`) are public listing content and should not contain sensitive/private information.

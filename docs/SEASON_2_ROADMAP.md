@@ -125,3 +125,7 @@ The app remains controlled beta while this roadmap is implemented phase by phase
 - public creator monetization
 - public launch SEO expansion
 - complex invite systems
+
+
+## Phase 29 — Publish Item 2.0
+**Status:** Completed (implemented on May 12, 2026).
