@@ -85,6 +85,8 @@ The app remains controlled beta while this roadmap is implemented phase by phase
 - message helper
 - follow-up polish
 
+**Completion note:** Offer creation now uses a guided composer with requested-item spotlight, clearer existing/new offering choice, stronger review preview, improved message helper, and polished follow-up/redirected context.
+
 ## Phase 32 — Deal Room 2.0
 **Goal:** Turn deals into organized swap rooms.
 
@@ -145,5 +147,3 @@ The app remains controlled beta while this roadmap is implemented phase by phase
 ## Phase 29 — Publish Item 2.0
 **Status:** Completed (implemented on May 12, 2026).
 
-
-**Completion note:** Offer creation now uses a guided composer with requested-item spotlight, clearer existing/new offering choice, stronger review preview, improved message helper, and polished follow-up/redirected context.

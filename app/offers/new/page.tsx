@@ -37,6 +37,8 @@ export default async function NewOfferPage({ searchParams }: { searchParams: Pro
     requestedItemId = sourceOffer.requested_item_id;
   }
 
+  if (!requestedItemId) return <section className="mx-auto max-w-3xl p-8">مش لاقيين الحاجة اللي عايز تعرض عليها.</section>;
+
   const { data: requested } = await supabase.from("items").select("id,owner_id,title,condition,status,desire_text,categories(name_ar),item_images(image_url,is_primary),profiles!items_owner_id_fkey(display_name)").eq("id", requestedItemId).maybeSingle();
   const { data: ownItems } = await supabase.from("items").select("id,title,condition,categories(name_ar),item_images(image_url,is_primary)").eq("owner_id", user.id).eq("status", "active").order("created_at", { ascending: false });
   const { data: categories } = await supabase.from("categories").select("id,name_ar").eq("is_active", true).order("sort_order", { ascending: true });
