@@ -5,6 +5,12 @@ import { createClient } from "@/lib/supabase/server";
 
 type ItemCondition = "almost_new" | "good_used" | "minor_issues" | "needs_repair";
 type DesireMode = "specific" | "flexible" | "surprise";
+const ALLOWED_IMAGE_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
+const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024;
+
+function makeSafeFilename(fileName: string) {
+  return fileName.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9._-]/g, "").replace(/-+/g, "-").slice(0, 120);
+}
 
 type ParentOffer = {
   id: string;
@@ -68,7 +74,7 @@ export async function createOffer(formData: FormData) {
   } else {
     const title = String(formData.get("title") || "").trim();
     const categoryId = String(formData.get("category_id") || "").trim() || null;
-    const imageUrl = String(formData.get("image_url") || "").trim();
+    const imageFile = formData.get("image_file");
     const description = String(formData.get("description") || "").trim() || null;
     const condition = String(formData.get("condition") || "good_used") as ItemCondition;
     const conditionNotes = String(formData.get("condition_notes") || "").trim() || null;
@@ -77,11 +83,23 @@ export async function createOffer(formData: FormData) {
     const desireMode = String(formData.get("desire_mode") || "flexible") as DesireMode;
     const desireText = String(formData.get("desire_text") || "").trim() || null;
     const wantedTagsRaw = String(formData.get("wanted_tags") || "").trim();
+    const base = parentOfferId ? `/offers/new?fromOffer=${encodeURIComponent(parentOfferId)}` : `/offers/new?requestedItemId=${requestedItemId}`;
 
     if (!title || !condition || !desireMode) redirect(`/offers/new?requestedItemId=${requestedItemId}&error=validation`);
-    const { data: newItem } = await supabase.from("items").insert({ owner_id: user.id, status: "active", source: "offer_upload", title, category_id: categoryId, description, condition, condition_notes: conditionNotes, city, area, desire_mode: desireMode, desire_text: desireText }).select("id").single();
+    if (!(imageFile instanceof File) || imageFile.size === 0) redirect(`${base}&error=image_required`);
+    if (!ALLOWED_IMAGE_TYPES.has(imageFile.type)) redirect(`${base}&error=image_type`);
+    if (imageFile.size > MAX_IMAGE_SIZE_BYTES) redirect(`${base}&error=image_too_large`);
+
+    const newItemId = crypto.randomUUID();
+    const objectPath = `items/${user.id}/${newItemId}/${Date.now()}-${makeSafeFilename(imageFile.name || "image")}`;
+    const { error: uploadError } = await supabase.storage.from("item-images").upload(objectPath, imageFile, { upsert: false, contentType: imageFile.type });
+    if (uploadError) redirect(`${base}&error=image_upload_failed`);
+
+    const { data: publicData } = supabase.storage.from("item-images").getPublicUrl(objectPath);
+    const { data: newItem } = await supabase.from("items").insert({ id: newItemId, owner_id: user.id, status: "active", source: "offer_upload", title, category_id: categoryId, description, condition, condition_notes: conditionNotes, city, area, desire_mode: desireMode, desire_text: desireText }).select("id").single();
     if (!newItem) redirect(`/offers/new?requestedItemId=${requestedItemId}&error=publish`);
-    if (imageUrl) await supabase.from("item_images").insert({ item_id: newItem.id, image_url: imageUrl, is_primary: true, sort_order: 0 });
+    const { error: itemImageError } = await supabase.from("item_images").insert({ item_id: newItem.id, image_url: publicData.publicUrl, is_primary: true, sort_order: 0 });
+    if (itemImageError) redirect(`${base}&error=publish`);
     const tags = wantedTagsRaw.split(",").map((tag) => tag.trim()).filter(Boolean);
     if (tags.length > 0) await supabase.from("item_wanted_tags").insert(tags.map((tag) => ({ item_id: newItem.id, tag })));
     offeredItemId = newItem.id;
