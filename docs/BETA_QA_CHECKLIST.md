@@ -132,3 +132,22 @@
 - [ ] `/admin/ops` shows beta watch section
 - [ ] tracking template created
 - [ ] stop/expand conditions documented
+
+
+## U. Profile 2.0
+- [ ] existing user can open /profile
+- [ ] avatar upload succeeds with valid image
+- [ ] avatar rejects invalid type/oversize
+- [ ] cover upload succeeds with valid image
+- [ ] cover rejects invalid type/oversize
+- [ ] profile update saves new fields
+- [ ] public profile shows cover/avatar/tagline/bio/location
+- [ ] public profile handles missing cover/avatar gracefully
+- [ ] public profile shows trust summary
+- [ ] public profile shows swap personality section
+- [ ] active items section still works
+- [ ] reviews section still works
+- [ ] share profile still works
+- [ ] report user still works
+- [ ] logged-out guest can view public profile
+- [ ] no sensitive storage path leak or private bucket exposure

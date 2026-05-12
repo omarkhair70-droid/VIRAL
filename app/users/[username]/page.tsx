@@ -1,183 +1,45 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ShareActions } from "@/components/share-actions";
 import { createClient } from "@/lib/supabase/server";
 
-type ProfileRow = {
-  id: string;
-  display_name: string;
-  username: string | null;
-  bio: string | null;
-  city: string | null;
-  area: string | null;
-  created_at: string;
-  successful_swaps_count: number;
-  avatar_url?: string | null;
-};
+type ProfileRow = { id: string; display_name: string; username: string | null; bio: string | null; city: string | null; area: string | null; created_at: string; successful_swaps_count: number; avatar_url?: string | null; cover_url?: string | null; profile_tagline?: string | null; interests?: string | null; preferred_categories?: string | null; swap_preferences?: string | null; };
+type ReviewRow = { id: string; rating: number; comment: string | null; created_at: string; reviewer: { display_name: string | null; username: string | null }[] | null; };
+const genericProfileMetadata: Metadata = { title: "بروفايل على بدّلها", description: "بروفايل مقايضات وتقييمات على بدّلها." };
+const isSafePublicImageUrl = (url: string) => url.startsWith("https://") || url.startsWith("http://");
 
-type ReviewRow = {
-  id: string;
-  rating: number;
-  comment: string | null;
-  created_at: string;
-  reviewer: { display_name: string | null; username: string | null }[] | null;
-};
-
-const genericProfileMetadata: Metadata = {
-  title: "بروفايل على بدّلها",
-  description: "بروفايل مقايضات وتقييمات على بدّلها.",
-};
-
-function isSafePublicImageUrl(url: string) {
-  return url.startsWith("https://") || url.startsWith("http://");
-}
-
-export async function generateMetadata({ params }: { params: Promise<{ username: string }> }): Promise<Metadata> {
-  const { username } = await params;
-  if (!username) return genericProfileMetadata;
-
-  const supabase = await createClient();
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("username,display_name,bio,avatar_url")
-    .eq("username", username.toLowerCase())
-    .maybeSingle();
-
-  const typed = profile as Pick<ProfileRow, "username" | "display_name" | "bio" | "avatar_url"> | null;
-  if (!typed?.username) return genericProfileMetadata;
-
-  const displayName = typed.display_name || typed.username;
-  const description = typed.bio || "بروفايل مقايضات وتقييمات على بدّلها.";
-  const avatarUrl = typed.avatar_url && isSafePublicImageUrl(typed.avatar_url) ? typed.avatar_url : null;
-
-  return {
-    title: `${displayName} على بدّلها`,
-    description,
-    openGraph: {
-      title: `${displayName} على بدّلها`,
-      description,
-      type: "profile",
-      images: avatarUrl ? [{ url: avatarUrl }] : undefined,
-    },
-    twitter: {
-      card: avatarUrl ? "summary_large_image" : "summary",
-      title: `${displayName} على بدّلها`,
-      description,
-      images: avatarUrl ? [avatarUrl] : undefined,
-    },
-  };
-}
+export async function generateMetadata({ params }: { params: Promise<{ username: string }> }): Promise<Metadata> { const { username } = await params; if (!username) return genericProfileMetadata; const supabase = await createClient(); const { data } = await supabase.from("profiles").select("username,display_name,bio,avatar_url").eq("username", username.toLowerCase()).maybeSingle(); const p = data as Pick<ProfileRow, "username" | "display_name" | "bio" | "avatar_url"> | null; if (!p?.username) return genericProfileMetadata; const n = p.display_name || p.username; const d = p.bio || genericProfileMetadata.description!; const a = p.avatar_url && isSafePublicImageUrl(p.avatar_url) ? p.avatar_url : null; return { title: `${n} على بدّلها`, description: d, openGraph: { title: `${n} على بدّلها`, description: d, type: "profile", images: a ? [{ url: a }] : undefined }, twitter: { card: a ? "summary_large_image" : "summary", title: `${n} على بدّلها`, description: d, images: a ? [a] : undefined } }; }
 
 export default async function UserProfilePage({ params, searchParams }: { params: Promise<{ username: string }>; searchParams?: Promise<{ reported?: string }> }) {
-  const { username } = await params;
-  const query = (await searchParams) ?? {};
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("id,display_name,username,bio,city,area,created_at,successful_swaps_count")
-    .eq("username", username.toLowerCase())
-    .maybeSingle();
-
-  if (!profile) notFound();
-
-  const typed = profile as ProfileRow;
-
-  const [{ data: items }, { count: dealsCount }, { data: reviewsData }] = await Promise.all([
-    supabase.from("items").select("id,title,city,area,created_at").eq("owner_id", typed.id).eq("status", "active").order("created_at", { ascending: false }),
+  const { username } = await params; const query = (await searchParams) ?? {}; const supabase = await createClient(); const { data: { user } } = await supabase.auth.getUser();
+  const { data: profile } = await supabase.from("profiles").select("id,display_name,username,bio,city,area,created_at,successful_swaps_count,avatar_url,cover_url,profile_tagline,interests,preferred_categories,swap_preferences").eq("username", username.toLowerCase()).maybeSingle();
+  if (!profile) notFound(); const typed = profile as ProfileRow;
+  const [{ data: items }, { count: dealsCount }, { data: reviewsData }, { data: avgRows }] = await Promise.all([
+    supabase.from("items").select("id,title,city,area,created_at,item_images(image_url,is_primary)").eq("owner_id", typed.id).eq("status", "active").order("created_at", { ascending: false }).limit(6),
     supabase.from("swap_deals").select("id", { count: "exact", head: true }).or(`requester_id.eq.${typed.id},offerer_id.eq.${typed.id}`),
-    supabase
-      .from("reviews")
-      .select("id,rating,comment,created_at,reviewer:profiles!reviews_reviewer_id_fkey(display_name,username)")
-      .eq("reviewee_id", typed.id)
-      .order("created_at", { ascending: false })
-      .limit(3),
+    supabase.from("reviews").select("id,rating,comment,created_at,reviewer:profiles!reviews_reviewer_id_fkey(display_name,username)").eq("reviewee_id", typed.id).order("created_at", { ascending: false }).limit(3),
+    supabase.from("reviews").select("rating").eq("reviewee_id", typed.id),
   ]);
+  const latestReviews = (reviewsData as ReviewRow[] | null) ?? []; const reviewCount = avgRows?.length ?? 0; const averageRating = reviewCount > 0 ? (avgRows ?? []).reduce((s, r) => s + r.rating, 0) / reviewCount : null;
+  const displayName = typed.display_name || typed.username || "مستخدم"; const location = [typed.city, typed.area].filter(Boolean).join(" - ");
 
-  const latestReviews = (reviewsData as ReviewRow[] | null) ?? [];
-  const { data: avgRows } = await supabase.from("reviews").select("rating").eq("reviewee_id", typed.id);
-  const reviewCount = avgRows?.length ?? 0;
-  const averageRating = reviewCount > 0 ? (avgRows ?? []).reduce((sum, review) => sum + review.rating, 0) / reviewCount : null;
-  const displayName = typed.display_name || typed.username || "مستخدم";
+  return <section className="mx-auto max-w-5xl space-y-6 px-4 py-8">
+    <div className="overflow-hidden rounded-2xl border bg-white"><div className="h-36 w-full bg-gradient-to-r from-stone-200 to-amber-100">{typed.cover_url ? <Image src={typed.cover_url} alt="cover" width={1200} height={240} className="h-full w-full object-cover" /> : null}</div><div className="p-5"><div className="-mt-16 mb-3">{typed.avatar_url ? <Image src={typed.avatar_url} alt={displayName} width={96} height={96} className="h-24 w-24 rounded-full border-4 border-white object-cover" /> : <div className="flex h-24 w-24 items-center justify-center rounded-full border-4 border-white bg-stone-100 text-2xl font-bold">{displayName.charAt(0)}</div>}</div><h1 className="text-2xl font-bold">{displayName}</h1><p className="text-stone-600">@{typed.username}</p>{typed.profile_tagline ? <p className="mt-1 text-sm text-stone-700">{typed.profile_tagline}</p> : null}<p className="mt-2 text-sm text-stone-600">{location || "لسه مكملش بيانات المكان"}</p>{typed.bio ? <p className="mt-2 text-stone-700">{typed.bio}</p> : null}<p className="mt-2 text-xs text-stone-500">عضو من {new Date(typed.created_at).toLocaleDateString("ar-EG")}</p></div></div>
 
-  return (
-    <section className="mx-auto max-w-4xl space-y-6 px-4 py-10">
-      <div className="rounded-2xl border bg-white p-5">
-        <h1 className="text-3xl font-bold">{typed.display_name}</h1>
-        <p className="mt-1 text-stone-600">@{typed.username}</p>
-        <p className="mt-2 text-sm text-stone-600">{[typed.city, typed.area].filter(Boolean).join(" - ") || "لسه مكملش بياناته"}</p>
-        {typed.bio ? <p className="mt-3 text-stone-700">{typed.bio}</p> : null}
-        {typed.username ? (
-          <div className="mt-4">
-            <ShareActions
-              label="شارك البروفايل"
-              title={`${displayName} على بدّلها`}
-              text="شوف بروفايل المقايضات والتقييمات على بدّلها."
-              urlPath={`/users/${typed.username}`}
-            />
-          </div>
-        ) : null}
-        <p className="mt-3 text-xs text-stone-500">عضو من {new Date(typed.created_at).toLocaleDateString("ar-EG")}</p>
-      </div>
+    <div className="rounded-2xl border bg-white p-4"><p className="mb-2 text-sm text-stone-700">شارك البروفايل مع حد ممكن يلاقي عنده حاجة مناسبة.</p>{typed.username ? <ShareActions label="شارك البروفايل" title={`${displayName} على بدّلها`} text="شوف بروفايل المقايضات والتقييمات على بدّلها." urlPath={`/users/${typed.username}`} /> : null}</div>
 
-      <div className="grid gap-3 sm:grid-cols-2">
-        <div className="rounded-xl border bg-stone-50 p-4"><p className="text-sm text-stone-600">حاجاته المعروضة</p><p className="text-2xl font-bold">{items?.length ?? 0}</p></div>
-        <div className="rounded-xl border bg-stone-50 p-4"><p className="text-sm text-stone-600">صفقات مقبولة</p><p className="text-2xl font-bold">{dealsCount ?? 0}</p></div>
-        <div className="rounded-xl border bg-stone-50 p-4"><p className="text-sm text-stone-600">مقايضات ناجحة</p><p className="text-2xl font-bold">{typed.successful_swaps_count}</p></div>
-        <div className="rounded-xl border bg-stone-50 p-4"><p className="text-sm text-stone-600">متوسط التقييم</p><p className="text-2xl font-bold">{averageRating ? averageRating.toFixed(1) : "-"}</p><p className="text-xs text-stone-500">{reviewCount} تقييم</p></div>
-      </div>
+    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4"><div className="rounded-xl border bg-stone-50 p-4"><p className="text-sm text-stone-600">الحاجات المتاحة</p><p className="text-2xl font-bold">{items?.length ?? 0}</p></div><div className="rounded-xl border bg-stone-50 p-4"><p className="text-sm text-stone-600">مقايضات مكتملة</p><p className="text-2xl font-bold">{typed.successful_swaps_count}</p></div><div className="rounded-xl border bg-stone-50 p-4"><p className="text-sm text-stone-600">كل التقييمات</p><p className="text-2xl font-bold">{reviewCount}</p></div><div className="rounded-xl border bg-stone-50 p-4"><p className="text-sm text-stone-600">متوسط التقييم</p><p className="text-2xl font-bold">{averageRating ? averageRating.toFixed(1) : "-"}</p><p className="text-xs text-stone-500">صفقات مقبولة: {dealsCount ?? 0}</p></div></div>
+    <div className="flex flex-wrap gap-2 text-sm"><span className="rounded-full border px-3 py-1">عضو في بدّلها</span>{typed.successful_swaps_count > 0 ? <span className="rounded-full border px-3 py-1">{typed.successful_swaps_count} مقايضات مكتملة</span> : null}{reviewCount > 0 ? <span className="rounded-full border px-3 py-1">{reviewCount} تقييم</span> : null}</div>
 
-      {query.reported === "1" ? <p className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-emerald-800">تم إرسال البلاغ. شكرًا إنك ساعدتنا نحافظ على التجربة.</p> : null}
-      <p className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-amber-900">اتعامل بهدوء، وافحص الحاجة قبل المقايضة.</p>
-      {user && user.id !== typed.id ? (
-        <Link href={`/report?username=${encodeURIComponent(username)}&returnTo=${encodeURIComponent(`/users/${username}`)}`} className="inline-block text-sm text-stone-600 hover:underline">
-          بلّغ عن المستخدم
-        </Link>
-      ) : null}
+    {query.reported === "1" ? <p className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-emerald-800">تم إرسال البلاغ. شكرًا إنك ساعدتنا نحافظ على التجربة.</p> : null}
+    {user && user.id !== typed.id ? <Link href={`/report?username=${encodeURIComponent(username)}&returnTo=${encodeURIComponent(`/users/${username}`)}`} className="text-sm text-stone-600 hover:underline">بلّغ عن المستخدم</Link> : null}
 
-      <div className="space-y-3">
-        <h2 className="text-xl font-semibold">آراء الناس بعد المقايضة</h2>
-        <p className="text-sm text-stone-600">الآراء دي بتظهر بعد مقايضات مكتملة فقط.</p>
-        {latestReviews.length ? (
-          <div className="space-y-3">
-            {latestReviews.map((review) => {
-              const reviewer = review.reviewer?.[0];
-              const reviewerName = reviewer?.display_name ?? "مستخدم";
-              return (
-                <article key={review.id} className="rounded-xl border bg-white p-4">
-                  <p className="text-sm text-stone-500">{new Date(review.created_at).toLocaleDateString("ar-EG")}</p>
-                  <p className="font-semibold">
-                    {reviewerName} • {review.rating}/5
-                  </p>
-                  {review.comment ? <p className="mt-1 text-sm text-stone-700">{review.comment}</p> : null}
-                </article>
-              );
-            })}
-          </div>
-        ) : (
-          <p className="rounded-xl border bg-white p-4 text-stone-600">لسه مفيش تقييمات.</p>
-        )}
-      </div>
+    <div className="rounded-2xl border bg-white p-4"><h2 className="text-xl font-semibold">بيحب يبدّل إيه؟</h2>{typed.interests || typed.preferred_categories || typed.swap_preferences ? <div className="mt-2 space-y-2 text-stone-700">{typed.interests ? <p><span className="font-medium">اهتماماته:</span> {typed.interests}</p> : null}{typed.preferred_categories ? <p><span className="font-medium">الفئات المفضلة:</span> {typed.preferred_categories}</p> : null}{typed.swap_preferences ? <p><span className="font-medium">تفضيلاته:</span> {typed.swap_preferences}</p> : null}</div> : <p className="mt-2 text-stone-600">لسه ما كتبش اهتماماته في المقايضة.</p>}</div>
 
-      <div className="space-y-3">
-        <h2 className="text-xl font-semibold">حاجاته</h2>
-        {items?.length ? (
-          <div className="grid gap-3 sm:grid-cols-2">
-            {items.map((item) => (
-              <Link key={item.id} href={`/items/${item.id}`} className="rounded-xl border bg-white p-4">
-                <p className="font-semibold">{item.title}</p>
-                <p className="mt-1 text-sm text-stone-600">{[item.city, item.area].filter(Boolean).join(" - ") || "بدون موقع"}</p>
-              </Link>
-            ))}
-          </div>
-        ) : (
-          <p className="rounded-xl border bg-white p-4 text-stone-600">لسه مفيش حاجات معروضة.</p>
-        )}
-      </div>
-    </section>
-  );
+    <div className="space-y-3"><h2 className="text-xl font-semibold">آراء الناس بعد المقايضة</h2><p className="text-sm text-stone-600">الآراء دي بتظهر بعد مقايضات مكتملة فقط.</p><p className="text-sm text-stone-700">متوسط التقييم: {averageRating ? averageRating.toFixed(1) : "-"} • عدد التقييمات: {reviewCount}</p>{latestReviews.length ? latestReviews.map((review) => { const reviewer = review.reviewer?.[0]; return <article key={review.id} className="rounded-xl border bg-white p-4"><p className="text-sm text-stone-500">{new Date(review.created_at).toLocaleDateString("ar-EG")}</p><p className="font-semibold">{reviewer?.display_name ?? reviewer?.username ?? "مستخدم"} • {review.rating}/5</p>{review.comment ? <p className="mt-1 text-sm text-stone-700">{review.comment}</p> : null}</article>; }) : <p className="rounded-xl border bg-white p-4 text-stone-600">لسه مفيش تقييمات.</p>}</div>
+
+    <div className="space-y-3"><h2 className="text-xl font-semibold">الحاجات المتاحة منه</h2>{items?.length ? <div className="grid gap-3 sm:grid-cols-2">{items.map((item) => { const image = Array.isArray((item as { item_images?: { image_url: string; is_primary: boolean }[] }).item_images) ? (item as { item_images?: { image_url: string; is_primary: boolean }[] }).item_images?.find((img) => img.is_primary)?.image_url ?? (item as { item_images?: { image_url: string; is_primary: boolean }[] }).item_images?.[0]?.image_url : null; return <Link key={item.id} href={`/items/${item.id}`} className="rounded-xl border bg-white p-3">{image ? <Image src={image} alt={item.title} width={320} height={180} className="mb-2 h-36 w-full rounded-lg object-cover" /> : null}<p className="font-semibold">{item.title}</p><p className="mt-1 text-sm text-stone-600">{[item.city, item.area].filter(Boolean).join(" - ") || "بدون موقع"}</p></Link>; })}</div> : <p className="rounded-xl border bg-white p-4 text-stone-600">لسه مفيش حاجات متاحة للمقايضة.</p>}{user?.id === typed.id ? <Link href="/items/new" className="inline-flex rounded-xl border px-4 py-2 text-sm">اعرض حاجة جديدة</Link> : null}</div>
+  </section>;
 }

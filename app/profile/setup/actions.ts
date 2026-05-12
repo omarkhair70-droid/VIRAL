@@ -29,12 +29,14 @@ export async function completeProfileSetup(formData: FormData): Promise<void> {
   const city = getText(formData, "city");
   const area = getText(formData, "area");
   const bio = getText(formData, "bio");
+  const profileTagline = getText(formData, "profile_tagline");
 
   if (displayName.length < 2 || displayName.length > 60) setupErrorRedirect("الاسم لازم يكون بين 2 و60 حرف.", next);
   if (username.length < 3 || username.length > 30 || !USERNAME_REGEX.test(username)) {
     setupErrorRedirect("اسم المستخدم لازم يكون 3-30 حرف وبحروف صغيرة أو أرقام أو _ أو -.", next);
   }
   if (bio.length > 200) setupErrorRedirect("النبذة قصيرة: لحد 200 حرف.", next);
+  if (profileTagline.length > 120) setupErrorRedirect("الجملة الصغيرة لحد 120 حرف.", next);
   if (city.length > 60) setupErrorRedirect("المدينة لحد 60 حرف.", next);
   if (area.length > 60) setupErrorRedirect("المنطقة لحد 60 حرف.", next);
 
@@ -46,6 +48,7 @@ export async function completeProfileSetup(formData: FormData): Promise<void> {
       city: city || null,
       area: area || null,
       bio: bio || null,
+      profile_tagline: profileTagline || null,
     },
     { onConflict: "id" },
   );

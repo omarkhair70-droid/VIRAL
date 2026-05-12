@@ -21,7 +21,7 @@ export default async function ProfileSetupPage({ searchParams }: SetupPageParams
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("display_name,username,city,area,bio")
+    .select("display_name,username,city,area,bio,profile_tagline")
     .eq("id", user.id)
     .maybeSingle();
 
@@ -55,6 +55,10 @@ export default async function ProfileSetupPage({ searchParams }: SetupPageParams
             <label htmlFor="area" className="mb-1 block text-sm font-medium">المنطقة (اختياري)</label>
             <input id="area" name="area" maxLength={60} defaultValue={profile?.area ?? ""} className="w-full rounded-lg border p-2" />
           </div>
+        </div>
+        <div>
+          <label htmlFor="profile_tagline" className="mb-1 block text-sm font-medium">جملة صغيرة تحت اسمك (اختياري)</label>
+          <input id="profile_tagline" name="profile_tagline" maxLength={120} defaultValue={profile?.profile_tagline ?? ""} className="w-full rounded-lg border p-2" />
         </div>
         <div>
           <label htmlFor="bio" className="mb-1 block text-sm font-medium">نبذة قصيرة (اختياري)</label>
