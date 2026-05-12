@@ -110,6 +110,20 @@ export function ItemForm({ categories, prefill, action, authRequired = false, us
     }
 
     const formData = new FormData(form);
+    // Earlier wizard-step inputs are unmounted by Step 6, so final publish must serialize from component state.
+    formData.set("title", title);
+    formData.set("category_id", categoryId);
+    formData.set("city", city);
+    formData.set("area", area);
+    formData.set("condition", condition);
+    formData.set("condition_notes", conditionNotes);
+    formData.set("description", description);
+    formData.set("item_story", itemStory);
+    formData.set("swap_reason", swapReason);
+    formData.set("good_for", goodFor);
+    formData.set("desire_mode", desireMode);
+    formData.set("desire_text", desireText);
+    formData.set("wanted_tags", wantedTags);
     formData.set("item_id", draftItemId);
     formData.set("uploaded_image_paths_json", JSON.stringify(uploadedPaths));
     setSubmissionStage("publishing");
