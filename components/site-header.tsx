@@ -23,8 +23,7 @@ export async function SiteHeader() {
       <div className="mx-auto flex max-w-6xl items-start justify-between gap-3 px-4 py-3 sm:items-center">
         <Link href="/" className="min-w-0 flex-1">
           <span className="flex items-center gap-2">
-            <Image src="/brand/baddelha-mark.svg" alt="شعار بدّلها" width={28} height={28} className="shrink-0" />
-            <span className="block truncate text-xl font-bold text-ink">بدّلها</span>
+            <Image src="/brand/baddelha-horizontal.png" alt="بدّلها" width={168} height={36} className="h-9 w-auto shrink-0" priority />
           </span>
           <span className="hidden text-xs text-muted sm:block">بدّل الحاجة بدل ما تسيبها مركونة.</span>
         </Link>

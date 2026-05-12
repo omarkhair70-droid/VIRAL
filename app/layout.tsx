@@ -20,9 +20,12 @@ export const metadata: Metadata = {
     statusBarStyle: "default",
   },
   icons: {
-    icon: "/icons/icon.svg",
-    apple: "/icons/icon.svg",
-    other: [{ rel: "mask-icon", url: "/icons/icon-maskable.svg" }],
+    icon: [
+      { url: "/icons/favicon.svg", type: "image/svg+xml" },
+      { url: "/icons/favicon.png", type: "image/png", sizes: "32x32" },
+    ],
+    apple: [{ url: "/icons/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+    other: [{ rel: "mask-icon", url: "/icons/icon-maskable.svg", color: "#C45A3A" }],
   },
   openGraph: {
     title: "بدّلها | سوق المقايضة",
