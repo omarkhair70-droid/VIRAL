@@ -333,3 +333,15 @@
 - [ ] empty unread state still works
 - [ ] optional date grouping, if implemented, renders in correct order
 - [ ] build passes
+
+## AB. Dashboard / Account Hub 2.0
+- [ ] dashboard auth redirect unchanged
+- [ ] attention section appears when offers/deals/notifications need attention
+- [ ] empty attention state appears when nothing is urgent
+- [ ] swap activity cards show existing metrics correctly
+- [ ] profile card shows username/incomplete state correctly
+- [ ] public profile link appears only when username exists (if shown)
+- [ ] utility/support links still route correctly
+- [ ] admin review link still appears only for admins
+- [ ] install CTA still available
+- [ ] build passes
