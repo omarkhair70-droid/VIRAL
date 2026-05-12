@@ -28,6 +28,7 @@ export function OfferComposerClient({ requestedItem, ownItems, categories, hasSo
   const [mode, setMode] = useState<"existing_item" | "new_item">("existing_item");
   const [offeredItemId, setOfferedItemId] = useState(ownItems[0]?.id ?? "");
   const selectedItem = useMemo(() => ownItems.find((item) => item.id === offeredItemId) ?? null, [ownItems, offeredItemId]);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
 
   return (
     <div className="space-y-5">
@@ -77,7 +78,24 @@ export function OfferComposerClient({ requestedItem, ownItems, categories, hasSo
           <div className="space-y-2">
             <input name="title" placeholder="عنوان الحاجة" className="w-full rounded-xl border px-3 py-2" />
             <select name="category_id" className="w-full rounded-xl border px-3 py-2"><option value="">اختار تصنيف</option>{categories.map((c) => <option value={c.id} key={c.id}>{c.name_ar}</option>)}</select>
-            <input name="image_url" type="url" placeholder="رابط الصورة" className="w-full rounded-xl border px-3 py-2" />
+            <label className="block text-sm text-muted" htmlFor="image_file">اختار صورة من جهازك</label>
+            <input
+              id="image_file"
+              name="image_file"
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              required={mode === "new_item"}
+              onChange={(event) => {
+                const selectedFile = event.target.files?.[0] ?? null;
+                if (!selectedFile) {
+                  setImagePreviewUrl(null);
+                  return;
+                }
+                setImagePreviewUrl(URL.createObjectURL(selectedFile));
+              }}
+              className="w-full rounded-xl border px-3 py-2 text-sm"
+            />
+            {imagePreviewUrl ? <img src={imagePreviewUrl} alt="معاينة الصورة" className="h-28 w-full rounded-xl object-cover" /> : null}
             <textarea name="description" placeholder="وصف" className="w-full rounded-xl border px-3 py-2" />
             <select name="condition" defaultValue="good_used" className="w-full rounded-xl border px-3 py-2"><option value="almost_new">جديد تقريبًا</option><option value="good_used">مستخدم بحالة كويسة</option><option value="minor_issues">فيه عيوب بسيطة</option><option value="needs_repair">محتاج تصليح / عارف حالته</option></select>
             <textarea name="condition_notes" placeholder="ملاحظات الحالة" className="w-full rounded-xl border px-3 py-2" />

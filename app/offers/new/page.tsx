@@ -14,7 +14,7 @@ type SourceOffer = { id: string; status: string; sender_id: string; requested_it
 
 const conditionLabels = { almost_new: "جديد تقريبًا", good_used: "مستخدم بحالة كويسة", minor_issues: "فيه عيوب بسيطة", needs_repair: "محتاج تصليح / عارف حالته" };
 const redirectMap: Record<string, string> = { offer_another_item: "اعرض حاجة تانية", ask_for_different_item: "بدور على نوع مختلف", update_preferences: "وضّح اختياراتك أكتر" };
-const errorMap: Record<string, string> = { invalid_parent: "مش قادرين نفتح العرض الأصلي. جرّب من صفحة العرض نفسه.", not_followup_allowed: "العرض ده مش متاح تبعت منه عرض تاني.", same_offered_item: "لازم تختار حاجة مختلفة عن العرض الأصلي.", duplicate_followup: "العرض التاني بنفس الحاجة متبعت بالفعل ولسه نشط.", unavailable: "الحاجة المطلوبة مش متاحة للعروض دلوقتي." };
+const errorMap: Record<string, string> = { invalid_parent: "مش قادرين نفتح العرض الأصلي. جرّب من صفحة العرض نفسه.", not_followup_allowed: "العرض ده مش متاح تبعت منه عرض تاني.", same_offered_item: "لازم تختار حاجة مختلفة عن العرض الأصلي.", duplicate_followup: "العرض التاني بنفس الحاجة متبعت بالفعل ولسه نشط.", unavailable: "الحاجة المطلوبة مش متاحة للعروض دلوقتي.", image_required: "اختار صورة للحاجة الجديدة.", image_type: "الصورة لازم تكون JPG أو PNG أو WEBP.", image_too_large: "الصورة لازم تكون أقل من 5 ميجا.", image_upload_failed: "مش قادرين نرفع الصورة دلوقتي. جرّب تاني." };
 
 export default async function NewOfferPage({ searchParams }: { searchParams: Promise<{ requestedItemId?: string; fromOffer?: string; error?: string }> }) {
   const params = await searchParams;
@@ -67,7 +67,7 @@ export default async function NewOfferPage({ searchParams }: { searchParams: Pro
         {req.desire_text ? <p className="rounded-xl bg-sand p-3 text-sm">هو بيدور على: {req.desire_text}</p> : null}
       </CardContent></Card>
 
-      <form action={createOffer}>
+      <form action={createOffer} encType="multipart/form-data">
         <input type="hidden" name="requested_item_id" value={requestedItemId} />
         {sourceOffer ? <input type="hidden" name="parent_offer_id" value={sourceOffer.id} /> : null}
         <OfferComposerClient
