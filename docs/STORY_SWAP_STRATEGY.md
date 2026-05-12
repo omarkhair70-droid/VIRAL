@@ -31,3 +31,9 @@
 - Item detail needs story section.
 - Profile should show story-rich items.
 - Drops should highlight strongest stories.
+
+
+## F) Phase 29 implementation update (May 12, 2026)
+- Story capture is now productized inside publish flow via optional guided fields.
+- Publish preview now includes story content before final submit.
+- Deeper story curation/presentation remains scheduled for later phases (especially Phase 30+).

@@ -33,11 +33,18 @@ export async function createItem(formData: FormData): Promise<CreateItemResult> 
   const area = String(formData.get("area") || "").trim() || null;
   const desire_mode = String(formData.get("desire_mode") || "flexible");
   const desire_text = String(formData.get("desire_text") || "").trim() || null;
+  const item_story = String(formData.get("item_story") || "").trim() || null;
+  const swap_reason = String(formData.get("swap_reason") || "").trim() || null;
+  const good_for = String(formData.get("good_for") || "").trim() || null;
   const wantedTagsRaw = String(formData.get("wanted_tags") || "").trim();
   const uploadedPathsRaw = String(formData.get("uploaded_image_paths_json") || "[]");
   const uploadedPaths = parseImagePaths(uploadedPathsRaw);
 
   if (!itemId || !title || !condition || !desire_mode) {
+    return { ok: false, error: "validation" };
+  }
+
+  if ((item_story && item_story.length > 600) || (swap_reason && swap_reason.length > 240) || (good_for && good_for.length > 240)) {
     return { ok: false, error: "validation" };
   }
 
@@ -64,6 +71,9 @@ export async function createItem(formData: FormData): Promise<CreateItemResult> 
       area,
       desire_mode,
       desire_text,
+      item_story,
+      swap_reason,
+      good_for,
       owner_id: user.id,
       status: "active",
       source: "direct_listing",

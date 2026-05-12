@@ -90,3 +90,9 @@ If docs and implementation differ, **current code + SQL behavior wins**; docs mu
 - Mobile shell refined to feel app-native: compact mobile header utilities + improved bottom nav hierarchy.
 - Logged-in home now prioritizes action-oriented app entry (publish/market/notifications/account) instead of a long landing-only experience.
 - Mobile spacing/safe-area/footer behavior polished so content stays clear above bottom navigation.
+
+
+## Phase 29 Publish Item 2.0 (May 12, 2026)
+- `/items/new` now runs as a guided 6-step publish wizard (images, basics, condition clarity, story, desired swap, review/publish).
+- Story Item fields (`item_story`, `swap_reason`, `good_for`) are captured on publish and editable later.
+- Item detail shows a minimal "حكاية الحاجة" section when story data exists (full Item Detail 2.0 still pending Phase 30).

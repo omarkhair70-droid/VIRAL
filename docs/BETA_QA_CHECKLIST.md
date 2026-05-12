@@ -167,3 +167,24 @@
 - [ ] home CTAs still route correctly
 - [ ] footer does not visually fight bottom nav on mobile
 - [ ] `npm run build` passes
+
+
+## W. Publish Item 2.0
+- [ ] logged-in user can open /items/new
+- [ ] logged-out user still sees sign-in guidance
+- [ ] wizard step progression works
+- [ ] back navigation keeps entered data
+- [ ] cannot proceed without required image/title fields where appropriate
+- [ ] valid images preview correctly
+- [ ] invalid image type rejected
+- [ ] oversize image rejected
+- [ ] item story optional fields accept valid content
+- [ ] story fields respect character limits
+- [ ] final review step shows accurate entered content
+- [ ] publish uploads images and creates item
+- [ ] new story fields saved successfully
+- [ ] after publish item detail displays "حكاية الحاجة" block if story data exists
+- [ ] item edit page loads story fields
+- [ ] item edit saves story field updates
+- [ ] existing listings without story fields still render normally
+- [ ] build passes
