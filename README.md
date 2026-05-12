@@ -72,3 +72,12 @@ Because `item-images` is public-read:
 - RLS/security posture: `docs/RLS_AUDIT.md`
 - Production readiness gaps: `docs/PRODUCTION_READINESS.md`
 - Manual QA checklist: `docs/BETA_QA_CHECKLIST.md`
+
+
+## Operations
+- Run smoke check: `npm run smoke` (set `BASE_URL` for preview/local target).
+- Runbook: `docs/OPERATIONS_RUNBOOK.md`
+- Release checklist: `docs/RELEASE_CHECKLIST.md`
+- Monitoring plan: `docs/MONITORING_PLAN.md`
+- Incident response: `docs/INCIDENT_RESPONSE.md`
+- Storage/image operations: `docs/STORAGE_AND_IMAGES_OPERATIONS.md`

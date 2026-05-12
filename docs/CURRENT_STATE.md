@@ -52,3 +52,10 @@ VIRAL (بدّلها) is an Arabic-first item swap marketplace MVP where users li
 
 ## Conflict rule (source of truth)
 If docs and implementation differ, **current code + SQL behavior wins**; docs must be updated to match runtime truth immediately.
+
+
+## Phase 23 operational additions
+- Admin ops snapshot route: `/admin/ops` (admin-only, aggregate metrics).
+- Smoke test script: `scripts/smoke-test.mjs` (`npm run smoke`, configurable `BASE_URL`).
+- Health endpoint: `/api/health` (lightweight app-up JSON only).
+- Operations docs set: runbook, release checklist, monitoring plan, incident response, storage/image operations.

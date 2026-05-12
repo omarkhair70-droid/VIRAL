@@ -92,3 +92,18 @@
 - [ ] confirmation warning appears before action
 - [ ] report page explains what happens next
 - [ ] deals empty state explains when deals appear
+
+
+## R. Scale / Reliability / Monitoring
+- [ ] `npm run build` passes.
+- [ ] `npm run smoke` passes against local/preview URL.
+- [ ] `/api/health` returns `{ ok: true, app: "baddelha", status: "up" }`.
+- [ ] `/admin/ops` is admin-only.
+- [ ] `/admin/ops` shows aggregate counts only.
+- [ ] `/admin/ops` does not expose emails/messages/auth IDs.
+- [ ] `/admin/reports` still works.
+- [ ] item/offer/deal flows still work after Phase 23.
+- [ ] public pages still load.
+- [ ] PWA offline still loads.
+- [ ] no private routes cached by service worker.
+- [ ] storage public image warning remains visible.
