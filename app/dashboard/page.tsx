@@ -88,7 +88,7 @@ export default async function DashboardPage() {
       <PageHeading title="حسابي" subtitle="مركز حسابك: راجع المهم دلوقتي، تابع نشاطك، وعدّل بروفايلك." />
 
       <section className="space-y-3">
-        <h2 className="text-xl font-semibold">Attention Now</h2>
+        <h2 className="text-xl font-semibold">المهم دلوقتي</h2>
         {urgentAttentionItems.length > 0 ? (
           <div className="grid gap-3 md:grid-cols-3">
             {urgentAttentionItems.map((item) => (
@@ -115,7 +115,7 @@ export default async function DashboardPage() {
           <Card>
             <CardContent className="flex flex-col gap-3 py-5 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-sm text-stone-700">مفيش حاجة مستعجلة دلوقتي.</p>
-              <ButtonLink href="/" variant="secondary" size="sm">
+              <ButtonLink href="/items" variant="secondary" size="sm">
                 شوف السوق
               </ButtonLink>
             </CardContent>
@@ -124,7 +124,7 @@ export default async function DashboardPage() {
       </section>
 
       <section className="mt-6 space-y-3">
-        <h2 className="text-xl font-semibold">My Swap Activity</h2>
+        <h2 className="text-xl font-semibold">نشاط المقايضة</h2>
         <div className="grid gap-4 md:grid-cols-2">
           <Card>
             <CardHeader>
@@ -183,7 +183,7 @@ export default async function DashboardPage() {
       </section>
 
       <section className="mt-6 space-y-3">
-        <h2 className="text-xl font-semibold">My Account & Trust</h2>
+        <h2 className="text-xl font-semibold">حسابي والثقة</h2>
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg"><AppIcon name="profile" className="h-4 w-4" />بيانات الحساب</CardTitle>
@@ -205,7 +205,7 @@ export default async function DashboardPage() {
       </section>
 
       <section className="mt-6 space-y-3">
-        <h2 className="text-xl font-semibold">Support & Utilities</h2>
+        <h2 className="text-xl font-semibold">الدعم والأدوات</h2>
         <div className="grid gap-4 md:grid-cols-2">
           <Card>
             <CardHeader>
