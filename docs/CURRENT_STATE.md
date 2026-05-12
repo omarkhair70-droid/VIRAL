@@ -113,3 +113,10 @@ If docs and implementation differ, **current code + SQL behavior wins**; docs mu
 - Existing vs quick-new offer input is now clearer, with improved existing item visual selection.
 - Added stronger offer review/preview, lightweight message helper, and swap rationale support copy.
 - Redirected follow-up context at offer creation is now clearer while keeping all existing validations and lifecycle behavior.
+
+
+## Phase 32 Deal Room 2.0 (May 12, 2026)
+- `/deals/[dealId]` now follows a clearer room hierarchy with prominent status, swap summary hero, and next-step guidance.
+- Participant cards now clarify both sides (you/other participant) with profile links and optional profile visuals when available.
+- Deal progress now appears as a stronger stages/checklist module with practical coordination reminders.
+- Messages, completion confirmation, completed success state, and review actions are organized into clearer room sections without changing backend deal logic.

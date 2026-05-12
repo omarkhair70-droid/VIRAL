@@ -88,6 +88,7 @@ The app remains controlled beta while this roadmap is implemented phase by phase
 **Completion note:** Offer creation now uses a guided composer with requested-item spotlight, clearer existing/new offering choice, stronger review preview, improved message helper, and polished follow-up/redirected context.
 
 ## Phase 32 — Deal Room 2.0
+**Status:** Completed (implemented on May 12, 2026).
 **Goal:** Turn deals into organized swap rooms.
 
 **Deliverables**
@@ -97,6 +98,8 @@ The app remains controlled beta while this roadmap is implemented phase by phase
 - messages
 - safety reminders
 - completion/review states
+
+**Completion note:** Deal room now uses a clearer two-column hierarchy with swap hero, participant cards, status + next-step clarity, improved progress/checklist guidance, stronger coordination/completion modules, and polished completed/review flow while preserving existing lifecycle logic.
 
 ## Phase 33 — Story Items + Drops
 **Goal:** Add premium culture/story layer.
