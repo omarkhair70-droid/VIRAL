@@ -30,7 +30,7 @@ async function uploadProfileImage(supabase: Awaited<ReturnType<typeof createClie
 
   const ext = file.type === "image/png" ? "png" : file.type === "image/webp" ? "webp" : "jpg";
   const path = `profiles/${userId}/${kind}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-  const { error } = await supabase.storage.from("profile-images").upload(path, file, { upsert: true, contentType: file.type });
+  const { error } = await supabase.storage.from("profile-images").upload(path, file, { contentType: file.type });
   if (error) errorRedirect("مش قادرين نرفع الصورة دلوقتي. جرّب تاني.");
   const { data } = supabase.storage.from("profile-images").getPublicUrl(path);
   return data.publicUrl;
