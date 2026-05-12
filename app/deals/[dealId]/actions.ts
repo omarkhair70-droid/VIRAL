@@ -102,6 +102,10 @@ export async function submitDealReview(formData: FormData) {
   const ratingValue = Number(formData.get("rating"));
   const commentInput = String(formData.get("comment") ?? "").trim();
   const comment = commentInput.length > 0 ? commentInput.slice(0, 300) : null;
+  const clearDescription = formData.get("clear_description") === "on";
+  const goodCommunication = formData.get("good_communication") === "on";
+  const onTime = formData.get("on_time") === "on";
+  const respectfulSwapper = formData.get("respectful_swapper") === "on";
 
   if (!dealId) redirect("/deals");
   if (!Number.isInteger(ratingValue) || ratingValue < 1 || ratingValue > 5) {
@@ -134,6 +138,10 @@ export async function submitDealReview(formData: FormData) {
     reviewee_id: revieweeId,
     rating: ratingValue,
     comment,
+    clear_description: clearDescription,
+    good_communication: goodCommunication,
+    on_time: onTime,
+    respectful_swapper: respectfulSwapper,
   });
 
   if (error) {
