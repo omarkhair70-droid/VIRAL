@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { EmptyState } from "@/components/ui/empty-state";
 import { createClient } from "@/lib/supabase/server";
 
 type DealRow = { id: string; status: string; created_at: string; offered_item: { title: string }[] | null; requested_item: { title: string }[] | null };
@@ -42,7 +43,7 @@ export default async function DealsPage() {
         <p>تمت: <span className="font-semibold">{grouped.completed.length}</span></p>
         <p>ملغية/مشكلة: <span className="font-semibold">{grouped.cancelledOrDisputed.length}</span></p>
       </div>
-      {deals.length === 0 ? <div className="rounded-xl border bg-white p-5"><p className="font-semibold">لسه مفيش صفقات.</p><p className="mt-1 text-sm text-stone-600">لما عرض يتقبل، هتظهر صفحة تنسيق هنا.</p><Link href="/items" className="mt-3 inline-flex rounded-lg border px-3 py-2 text-sm">شوف السوق</Link></div> : null}
+      {deals.length === 0 ? <EmptyState iconName="deal" title="لسه مفيش صفقات." subtitle="لما عرض يتقبل، هتظهر صفحة تنسيق هنا." action={<Link href="/items" className="inline-flex rounded-lg border px-3 py-2 text-sm">شوف السوق</Link>} /> : null}
       {deals.map((deal) => (
         <article key={deal.id} className="rounded-xl border bg-white p-4">
           <p className="text-sm text-stone-500">{new Date(deal.created_at).toLocaleDateString("ar-EG")}</p>

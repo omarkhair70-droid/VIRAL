@@ -1,14 +1,25 @@
-import Link from "next/link";
+import { OfflineRetryButton } from "@/components/offline-retry-button";
+import { AppIcon } from "@/components/ui/app-icon";
+import { ButtonLink } from "@/components/ui/button";
+import { Card, CardContent, CardTitle } from "@/components/ui/card";
 
 export default function OfflinePage() {
   return (
-    <section className="mx-auto flex min-h-[60vh] max-w-2xl flex-col items-center justify-center px-4 py-12 text-center">
-      <h1 className="text-3xl font-bold text-gray-900">أنت أوفلاين دلوقتي</h1>
-      <p className="mt-3 text-base text-stone-700">الاتصال مش متاح. أول ما النت يرجع، افتح السوق أو حسابك تاني.</p>
-      <div className="mt-6 flex flex-wrap justify-center gap-3">
-        <Link href="/items" className="rounded-xl bg-clay px-5 py-3 text-white">جرّب تفتح السوق</Link>
-        <Link href="/" className="rounded-xl border border-stone-300 px-5 py-3">ارجع للرئيسية</Link>
-      </div>
+    <section className="mx-auto flex min-h-[70vh] max-w-2xl items-center px-4 py-10">
+      <Card className="w-full rounded-3xl text-center">
+        <CardContent className="space-y-4">
+          <div className="mx-auto inline-flex rounded-2xl bg-clay/10 p-3 text-clay">
+            <AppIcon name="warning" className="h-6 w-6" />
+          </div>
+          <CardTitle className="text-2xl">واضح إن الإنترنت فاصل</CardTitle>
+          <p className="text-sm text-muted">ولا يهمك. أول ما الاتصال يرجع هتقدر تكمل التصفح والمقايضة بشكل طبيعي.</p>
+          <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
+            <ButtonLink href="/" variant="secondary">افتح الرئيسية</ButtonLink>
+            <ButtonLink href="/items">افتح السوق</ButtonLink>
+            <OfflineRetryButton />
+          </div>
+        </CardContent>
+      </Card>
     </section>
   );
 }

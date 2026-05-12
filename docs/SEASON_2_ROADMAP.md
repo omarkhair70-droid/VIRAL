@@ -130,7 +130,10 @@ The app remains controlled beta while this roadmap is implemented phase by phase
 - beta member badge
 
 ## Phase 35 — App Feel 2.0
+**Status:** Completed (implemented on May 12, 2026).
 **Goal:** Make mobile/PWA feel like a real polished app.
+
+**Completion note:** Route-aware mobile nav feedback, install onboarding, upgraded loading/offline surfaces, and premium empty-state polish are now live without changing core marketplace logic.
 
 **Deliverables**
 - final app icon polish
