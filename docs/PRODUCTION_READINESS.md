@@ -26,3 +26,11 @@ Controlled beta marketplace MVP with hardened offers/deals lifecycle protections
 - Run `npm run build`.
 - Run full `docs/BETA_QA_CHECKLIST.md`.
 - Verify reports/admin review/notifications continue working after migration.
+
+
+## Phase 23 operational readiness update
+- Added practical operations docs: runbook, release checklist, monitoring plan, incident response, storage/image operations.
+- Added admin operational snapshot route: `/admin/ops` (admin-only, aggregate counts only).
+- Added health endpoint: `/api/health` (app route availability only; no DB check).
+- Added smoke command: `npm run smoke` (supports `BASE_URL`).
+- Remaining limits: no broad offer/report/signup throttling yet, no automated orphan image cleanup, no third-party monitoring integration.
