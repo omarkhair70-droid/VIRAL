@@ -51,6 +51,7 @@ export default async function AdminReportsPage({ searchParams }: { searchParams:
   return (
     <section className="mx-auto max-w-5xl space-y-4 px-4 py-10">
       <PageHeading title="مراجعة البلاغات" subtitle="البلاغات دي خاصة بالإدارة فقط. راجع التفاصيل بهدوء وغيّر الحالة حسب المتابعة." />
+      <Alert>البلاغات للتشغيل والمراجعة اليدوية. لو محتاج تفاصيل تجربة المستخدم، راجع Feedback البيتا. <Link href="/admin/feedback" className="underline">افتح Feedback البيتا</Link></Alert>
       {params.updated === "1" ? <Alert variant="success">تم تحديث حالة البلاغ.</Alert> : null}
       {params.error === "update_failed" ? <Alert variant="danger">مش قادرين نحدّث البلاغ دلوقتي.</Alert> : null}
 

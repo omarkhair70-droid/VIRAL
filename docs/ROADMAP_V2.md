@@ -95,3 +95,7 @@
 
 ## Phase 23 update
 Phase 23 added operations runbooks, smoke testing, admin ops snapshot, and health check.
+
+
+## Phase 24 update
+Phase 24 added a controlled-beta feedback center (`/feedback`, `/dashboard/feedback`) and admin review workflow (`/admin/feedback`) with RLS + aggregate ops visibility.

@@ -59,3 +59,10 @@ If docs and implementation differ, **current code + SQL behavior wins**; docs mu
 - Smoke test script: `scripts/smoke-test.mjs` (`npm run smoke`, configurable `BASE_URL`).
 - Health endpoint: `/api/health` (lightweight app-up JSON only).
 - Operations docs set: runbook, release checklist, monitoring plan, incident response, storage/image operations.
+
+
+## Phase 24 feedback center additions
+- User feedback route: `/feedback` (authenticated submit only).
+- User feedback history route: `/dashboard/feedback` (owner-only via RLS).
+- Admin feedback review route: `/admin/feedback` (admin-only review/status update).
+- Dashboard now includes a beta feedback entry card.

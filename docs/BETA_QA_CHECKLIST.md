@@ -107,3 +107,16 @@
 - [ ] PWA offline still loads.
 - [ ] no private routes cached by service worker.
 - [ ] storage public image warning remains visible.
+
+
+## S. Feedback Center / Admin Ops
+- [ ] logged-out user redirected from `/feedback`
+- [ ] logged-in user can submit feedback
+- [ ] feedback success state appears
+- [ ] user can view own feedback in `/dashboard/feedback`
+- [ ] user cannot see other users’ feedback
+- [ ] admin can open `/admin/feedback`
+- [ ] non-admin cannot open `/admin/feedback`
+- [ ] admin can update feedback status/note
+- [ ] `/admin/ops` shows aggregate feedback counts only
+- [ ] no emails/auth IDs shown

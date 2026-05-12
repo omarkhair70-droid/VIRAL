@@ -34,3 +34,7 @@ Controlled beta marketplace MVP with hardened offers/deals lifecycle protections
 - Added health endpoint: `/api/health` (app route availability only; no DB check).
 - Added smoke command: `npm run smoke` (supports `BASE_URL`).
 - Remaining limits: no broad offer/report/signup throttling yet, no automated orphan image cleanup, no third-party monitoring integration.
+
+- Feedback center available for controlled beta issue intake.
+- Admin feedback review page available.
+- Remaining: no automated moderation/ban tools yet.

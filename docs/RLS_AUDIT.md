@@ -41,3 +41,11 @@ Scope reviewed from current migrations in `supabase/migrations` including Phase 
 - `enforce_offer_insert_integrity` now validates `parent_offer_id` when present.
 - Follow-up insert requires redirected parent, same sender/receiver/requested item, different offered item, pending status, active/owned items.
 - Added partial unique index `offers_unique_active_followup` on `(parent_offer_id, offered_item_id)` for active statuses (`pending`,`thinking`,`accepted`) to block duplicate active follow-ups.
+
+
+## Phase 24 feedback table posture
+- `feedback` has RLS enabled.
+- Authenticated users can insert/select only their own rows (`user_id = auth.uid()`).
+- Admin users (`admin_users`) can select all feedback.
+- Admin users can update review fields/status for triage workflow.
+- No anonymous/public feedback access in this phase.
