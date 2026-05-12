@@ -99,7 +99,11 @@ export async function createOffer(formData: FormData) {
     const { data: newItem } = await supabase.from("items").insert({ id: newItemId, owner_id: user.id, status: "active", source: "offer_upload", title, category_id: categoryId, description, condition, condition_notes: conditionNotes, city, area, desire_mode: desireMode, desire_text: desireText }).select("id").single();
     if (!newItem) redirect(`/offers/new?requestedItemId=${requestedItemId}&error=publish`);
     const { error: itemImageError } = await supabase.from("item_images").insert({ item_id: newItem.id, image_url: publicData.publicUrl, is_primary: true, sort_order: 0 });
-    if (itemImageError) redirect(`${base}&error=publish`);
+    if (itemImageError) {
+      await supabase.from("items").delete().eq("id", newItem.id);
+      await supabase.storage.from("item-images").remove([objectPath]);
+      redirect(`${base}&error=publish`);
+    }
     const tags = wantedTagsRaw.split(",").map((tag) => tag.trim()).filter(Boolean);
     if (tags.length > 0) await supabase.from("item_wanted_tags").insert(tags.map((tag) => ({ item_id: newItem.id, tag })));
     offeredItemId = newItem.id;
