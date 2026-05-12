@@ -1,17 +1,16 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { Alert } from "@/components/ui/alert";
+import { Card, CardContent } from "@/components/ui/card";
+import { PageHeading } from "@/components/ui/page-heading";
 import { createClient } from "@/lib/supabase/server";
 import { createOffer } from "./actions";
+import { OfferComposerClient } from "./offer-composer-client";
 
 type MaybeArray<T> = T | T[] | null | undefined;
 const firstOrNull = <T,>(value: MaybeArray<T>): T | null => (!value ? null : Array.isArray(value) ? value[0] ?? null : value);
-
-type Row = {
-  id: string; owner_id: string; title: string; condition: "almost_new"|"good_used"|"minor_issues"|"needs_repair"; status: string; desire_mode: "specific"|"flexible"|"surprise"; desire_text: string|null;
-  categories: MaybeArray<{name_ar:string|null}>; item_images: Array<{image_url:string|null;is_primary:boolean|null}>|null; profiles: MaybeArray<{display_name:string|null}>;
-};
-
-type SourceOffer = { id: string; status: string; sender_id: string; receiver_id: string; requested_item_id: string; offered_item_id: string; public_note: string | null; redirect_type: string | null };
+type Row = { id: string; owner_id: string; title: string; condition: "almost_new"|"good_used"|"minor_issues"|"needs_repair"; status: string; desire_text: string|null; categories: MaybeArray<{name_ar:string|null}>; item_images: Array<{image_url:string|null;is_primary:boolean|null}>|null; profiles: MaybeArray<{display_name:string|null}>; };
+type SourceOffer = { id: string; status: string; sender_id: string; requested_item_id: string; offered_item_id: string; public_note: string | null; redirect_type: string | null };
 
 const conditionLabels = { almost_new: "جديد تقريبًا", good_used: "مستخدم بحالة كويسة", minor_issues: "فيه عيوب بسيطة", needs_repair: "محتاج تصليح / عارف حالته" };
 const redirectMap: Record<string, string> = { offer_another_item: "اعرض حاجة تانية", ask_for_different_item: "بدور على نوع مختلف", update_preferences: "وضّح اختياراتك أكتر" };
@@ -22,7 +21,6 @@ export default async function NewOfferPage({ searchParams }: { searchParams: Pro
   const fromOffer = params.fromOffer?.trim();
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-
   if (!user) {
     const nextQuery = fromOffer ? `fromOffer=${encodeURIComponent(fromOffer)}` : `requestedItemId=${encodeURIComponent(params.requestedItemId?.trim() ?? "")}`;
     redirect(`/login?next=/offers/new?${nextQuery}`);
@@ -30,14 +28,8 @@ export default async function NewOfferPage({ searchParams }: { searchParams: Pro
 
   let sourceOffer: SourceOffer | null = null;
   let requestedItemId = params.requestedItemId?.trim() ?? "";
-
   if (fromOffer) {
-    const { data } = await supabase
-      .from("offers")
-      .select("id,status,sender_id,receiver_id,requested_item_id,offered_item_id,public_note,redirect_type")
-      .eq("id", fromOffer)
-      .maybeSingle();
-
+    const { data } = await supabase.from("offers").select("id,status,sender_id,requested_item_id,offered_item_id,public_note,redirect_type").eq("id", fromOffer).maybeSingle();
     sourceOffer = (data as SourceOffer | null) ?? null;
     if (!sourceOffer || sourceOffer.sender_id !== user.id || sourceOffer.status !== "redirected") {
       return <section className="mx-auto max-w-3xl space-y-4 p-8"><p className="rounded-xl border border-red-200 bg-red-50 p-3 text-red-800">{errorMap[params.error ?? ""] ?? "مش متاح تبعت عرض تاني من هنا."}</p><div className="flex gap-3"><Link className="underline" href="/items">ارجع للسوق</Link>{fromOffer ? <Link className="underline" href={`/offers/${fromOffer}`}>افتح العرض</Link> : null}</div></section>;
@@ -47,52 +39,44 @@ export default async function NewOfferPage({ searchParams }: { searchParams: Pro
 
   if (!requestedItemId) return <section className="mx-auto max-w-3xl p-8">مش لاقيين الحاجة اللي عايز تعرض عليها.</section>;
 
-  const { data: requested } = await supabase.from("items").select("id,owner_id,title,condition,status,desire_mode,desire_text,categories(name_ar),item_images(image_url,is_primary),profiles!items_owner_id_fkey(display_name)").eq("id", requestedItemId).maybeSingle();
-  const { data: ownItems } = await supabase.from("items").select("id,owner_id,title,condition,status,categories(name_ar),item_images(image_url,is_primary)").eq("owner_id", user.id).eq("status", "active").order("created_at", { ascending: false });
+  const { data: requested } = await supabase.from("items").select("id,owner_id,title,condition,status,desire_text,categories(name_ar),item_images(image_url,is_primary),profiles!items_owner_id_fkey(display_name)").eq("id", requestedItemId).maybeSingle();
+  const { data: ownItems } = await supabase.from("items").select("id,title,condition,categories(name_ar),item_images(image_url,is_primary)").eq("owner_id", user.id).eq("status", "active").order("created_at", { ascending: false });
   const { data: categories } = await supabase.from("categories").select("id,name_ar").eq("is_active", true).order("sort_order", { ascending: true });
 
   const req = requested as unknown as Row | null;
-
   if (!req || req.status !== "active") return <section className="mx-auto max-w-3xl p-8">الحاجة دي مش متاحة للعروض دلوقتي.</section>;
   if (req.owner_id === user.id || params.error === "own_item") return <section className="mx-auto max-w-3xl space-y-4 p-8"><p>دي حاجتك أنت. مينفعش تعرض على حاجة بتاعتك.</p><Link className="underline" href="/items">ارجع للسوق</Link></section>;
 
   const reqImg = req.item_images?.find((img) => img.is_primary)?.image_url ?? req.item_images?.[0]?.image_url ?? null;
   const reqOwner = firstOrNull(req.profiles);
   const reqCat = firstOrNull(req.categories);
+  const filteredOwnItems = (ownItems ?? []).filter((it) => it.id !== requestedItemId && it.id !== sourceOffer?.offered_item_id);
 
-  return <section className="mx-auto max-w-4xl space-y-5 px-4 py-10">
-    <h1 className="text-3xl font-bold">اعرض حاجة عندك</h1>
-    <p>اختار الحاجة اللي هتعرضها، واكتب رسالة قصيرة تساعد صاحب الإعلان يفهم العرض.</p>
-    {params.error && errorMap[params.error] ? <p className="rounded-xl bg-red-50 p-3 text-red-700">{errorMap[params.error]}</p> : null}
-    {sourceOffer ? <div className="rounded-xl border border-sky-200 bg-sky-50 p-4"><p className="font-semibold">ده عرض تاني بعد ما صاحب الحاجة فتح باب تاني.</p><p className="text-sm text-sky-900">اختار حاجة مختلفة عن العرض الأول.</p>{sourceOffer.public_note ? <p className="mt-2 text-sm">ملاحظة صاحب الحاجة: {sourceOffer.public_note}</p> : null}{sourceOffer.redirect_type ? <p className="mt-1 text-sm text-sky-800">نوع الباب التاني: {redirectMap[sourceOffer.redirect_type] ?? sourceOffer.redirect_type}</p> : null}</div> : null}
-    <div className="rounded-2xl border p-4">{reqImg ? <img src={reqImg} alt={req.title} className="mb-2 aspect-video w-full rounded-xl object-cover" /> : null}<p className="font-semibold">{req.title}</p><p>{reqCat?.name_ar ?? "بدون تصنيف"}</p><p>{conditionLabels[req.condition]}</p><p>صاحبها: {reqOwner?.display_name ?? "مستخدم"}</p>{req.desire_text ? <p>{req.desire_text}</p> : null}</div>
-    <form action={createOffer} className="space-y-5 rounded-2xl border p-4">
-      <input type="hidden" name="requested_item_id" value={requestedItemId} />
-      {sourceOffer ? <input type="hidden" name="parent_offer_id" value={sourceOffer.id} /> : null}
-      <div>
-        <p className="mb-2 font-semibold">اختار طريقة العرض</p>
-        <label className="mr-4"><input defaultChecked type="radio" name="offer_mode" value="existing_item" /> اختار من حاجاتك</label>
-        <p className="mb-2 mt-1 text-xs text-stone-600">اختار حاجة أنت عارضها بالفعل.</p>
-        <label><input type="radio" name="offer_mode" value="new_item" /> نزّل حاجة جديدة كعرض</label>
-        <p className="mt-1 text-xs text-stone-600">هتنزّل حاجة جديدة كعرض، وهتظهر في السوق كمان.</p>
-      </div>
-      <div><label>الحاجة اللي هتعرضها من الموجود</label><select name="offered_item_id" className="mt-1 w-full rounded-xl border px-3 py-2"><option value="">لازم تختار حاجة تعرضها</option>{(ownItems ?? []).filter((it) => it.id !== requestedItemId && it.id !== sourceOffer?.offered_item_id).map((it) => <option key={it.id} value={it.id}>{it.title}</option>)}</select>{(ownItems ?? []).length === 0 ? <p className="mt-2 text-sm text-stone-600">لسه ماعندكش حاجات معروضة. ممكن تنزّل حاجة جديدة دلوقتي وتبعتها كعرض.</p> : null}</div>
-      <div className="space-y-2 rounded-xl border border-dashed p-3"><p className="font-semibold">نزّل حاجة جديدة كعرض</p>
-      <input name="title" placeholder="عنوان الحاجة" className="w-full rounded-xl border px-3 py-2" />
-      <select name="category_id" className="w-full rounded-xl border px-3 py-2"><option value="">اختار تصنيف</option>{(categories ?? []).map((c) => <option value={c.id} key={c.id}>{c.name_ar}</option>)}</select>
-      <input name="image_url" type="url" placeholder="رابط الصورة" className="w-full rounded-xl border px-3 py-2" />
-      <textarea name="description" placeholder="وصف" className="w-full rounded-xl border px-3 py-2" />
-      <select name="condition" defaultValue="good_used" className="w-full rounded-xl border px-3 py-2"><option value="almost_new">جديد تقريبًا</option><option value="good_used">مستخدم بحالة كويسة</option><option value="minor_issues">فيه عيوب بسيطة</option><option value="needs_repair">محتاج تصليح / عارف حالته</option></select>
-      <textarea name="condition_notes" placeholder="ملاحظات الحالة" className="w-full rounded-xl border px-3 py-2" />
-      <div className="grid gap-2 sm:grid-cols-2"><input name="city" placeholder="المدينة" className="rounded-xl border px-3 py-2" /><input name="area" placeholder="المنطقة" className="rounded-xl border px-3 py-2" /></div>
-      <select name="desire_mode" defaultValue="flexible" className="w-full rounded-xl border px-3 py-2"><option value="specific">بدور على حاجة معينة</option><option value="flexible">عندي حاجات في بالي، بس فاجئني</option><option value="surprise">فاجئني تمامًا</option></select>
-      <textarea name="desire_text" placeholder="عايز إيه" className="w-full rounded-xl border px-3 py-2" />
-      <input name="wanted_tags" placeholder="مثال: مكتب, ديكور" className="w-full rounded-xl border px-3 py-2" />
-      <p className="rounded-xl bg-blue-50 p-3 text-sm text-blue-900">الحاجة اللي هتنزلها هنا هتبقى إعلان ظاهر في السوق كمان. ده يزوّد فرصها حتى لو العرض ده ما ظبطش.</p>
-      </div>
-      <div><label className="mb-1 block">اكتب رسالة قصيرة لصاحب الحاجة</label><textarea name="message" placeholder="شايفها صفقة غريبة بس نافعة." className="w-full rounded-xl border px-3 py-2" /></div>
-      <div className="space-y-1 rounded-xl bg-stone-50 p-3 text-sm"><p>أنت بتعرض حاجة من عندك مقابل: {req.title}</p><p>رسالتك مش لازم تكون طويلة، المهم تكون واضحة.</p></div>
-      <button className="rounded-xl bg-clay px-5 py-3 text-white">ابعت العرض</button>
-    </form>
+  return <section className="mx-auto max-w-6xl space-y-5 px-4 py-8">
+    <PageHeading title="ابعت عرض مقايضة" subtitle="اختار الحاجة اللي هتعرضها، وراجع الصفقة قبل الإرسال." />
+    {params.error && errorMap[params.error] ? <Alert variant="danger">{errorMap[params.error]}</Alert> : null}
+    {sourceOffer ? <Alert variant="info" className="space-y-1"><p className="font-semibold">فرصة تانية: صاحب الحاجة فتح باب جديد.</p><p>لازم تعرض حاجة مختلفة عن عرضك الأول.</p>{sourceOffer.public_note ? <p>ملاحظة صاحب الحاجة: {sourceOffer.public_note}</p> : null}{sourceOffer.redirect_type ? <p>نوع الباب التاني: {redirectMap[sourceOffer.redirect_type] ?? sourceOffer.redirect_type}</p> : null}</Alert> : null}
+
+    <div className="grid gap-5 lg:grid-cols-[1.2fr_1.8fr]">
+      <Card className="h-fit"><CardContent className="space-y-3">
+        <p className="text-sm font-semibold text-clay">الحاجة اللي عايز تاخدها</p>
+        {reqImg ? <img src={reqImg} alt={req.title} className="aspect-video w-full rounded-xl object-cover" /> : <div className="aspect-video rounded-xl bg-stone-100" />}
+        <h2 className="text-xl font-bold">{req.title}</h2>
+        <p className="text-sm text-muted">{reqCat?.name_ar ?? "بدون تصنيف"} · {conditionLabels[req.condition]}</p>
+        <p className="text-sm">صاحبها: {reqOwner?.display_name ?? "مستخدم"}</p>
+        {req.desire_text ? <p className="rounded-xl bg-sand p-3 text-sm">هو بيدور على: {req.desire_text}</p> : null}
+      </CardContent></Card>
+
+      <form action={createOffer}>
+        <input type="hidden" name="requested_item_id" value={requestedItemId} />
+        {sourceOffer ? <input type="hidden" name="parent_offer_id" value={sourceOffer.id} /> : null}
+        <OfferComposerClient
+          requestedItem={{ id: req.id, title: req.title, conditionLabel: conditionLabels[req.condition], category: reqCat?.name_ar ?? null, ownerName: reqOwner?.display_name ?? "مستخدم", imageUrl: reqImg, desireText: req.desire_text }}
+          ownItems={filteredOwnItems.map((it) => ({ id: it.id, title: it.title, conditionLabel: conditionLabels[it.condition as keyof typeof conditionLabels], category: firstOrNull(it.categories)?.name_ar ?? null, imageUrl: it.item_images?.find((img) => img.is_primary)?.image_url ?? it.item_images?.[0]?.image_url ?? null }))}
+          categories={(categories ?? []).map((c) => ({ id: c.id, name_ar: c.name_ar }))}
+          hasSourceOffer={Boolean(sourceOffer)}
+        />
+      </form>
+    </div>
   </section>;
 }
