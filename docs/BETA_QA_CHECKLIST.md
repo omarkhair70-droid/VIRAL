@@ -307,3 +307,16 @@
 - [ ] parent-follow-up offer context still appears
 - [ ] accepted offer still links to deal room
 - [ ] build passes
+
+
+## AB. Smart Logged-in Home
+- [ ] logged-out home unchanged
+- [ ] logged-in user with pending/thinking received offers sees offer priority card
+- [ ] pending deal confirmation priority appears only when no offer-attention state exists
+- [ ] incomplete profile priority appears only when no higher-priority transaction action exists
+- [ ] no active items priority appears only when no higher-priority state exists
+- [ ] fallback welcome state appears when no attention state applies
+- [ ] priority CTA links route correctly
+- [ ] story/drops card still appears conditionally
+- [ ] PWA install card still works
+- [ ] `npm run build` passes
