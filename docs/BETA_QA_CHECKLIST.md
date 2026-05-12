@@ -151,3 +151,19 @@
 - [ ] report user still works
 - [ ] logged-out guest can view public profile
 - [ ] no sensitive storage path leak or private bucket exposure
+
+
+## V. Mobile App Shell 2.0
+- [ ] mobile header no longer wraps full nav into multiple lines
+- [ ] mobile top bar looks compact and stable
+- [ ] desktop header still works
+- [ ] logged-in bottom nav visible and tappable
+- [ ] bottom nav content not duplicated in top mobile header
+- [ ] bottom nav does not cover page content
+- [ ] safe-area spacing reasonable on iPhone-style screens
+- [ ] notifications count still visible where intended
+- [ ] logged-out home still explains the product clearly
+- [ ] logged-in home feels app-like and action-oriented
+- [ ] home CTAs still route correctly
+- [ ] footer does not visually fight bottom nav on mobile
+- [ ] `npm run build` passes

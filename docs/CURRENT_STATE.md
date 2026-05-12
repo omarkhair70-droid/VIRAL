@@ -85,3 +85,8 @@ If docs and implementation differ, **current code + SQL behavior wins**; docs mu
 - Public profile now includes cover/avatar hero, trust summary, swap personality, richer items, and upgraded reviews hierarchy.
 - `/profile` now supports avatar/cover uploads and Season 2 profile fields.
 - New `profile-images` bucket is public-read; profile images are public and users should avoid sensitive uploads.
+
+## Phase 28.5 Mobile App Shell 2.0 + Home Experience Reset (May 12, 2026)
+- Mobile shell refined to feel app-native: compact mobile header utilities + improved bottom nav hierarchy.
+- Logged-in home now prioritizes action-oriented app entry (publish/market/notifications/account) instead of a long landing-only experience.
+- Mobile spacing/safe-area/footer behavior polished so content stays clear above bottom navigation.

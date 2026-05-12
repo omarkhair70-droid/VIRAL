@@ -44,7 +44,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="ar" dir="rtl">
       <body>
         <SiteHeader />
-        <main className="pb-24 sm:pb-0">{children}</main>
+        <main className="pb-[calc(5.5rem+env(safe-area-inset-bottom))] sm:pb-0">{children}</main>
         <SiteFooter />
         <MobileBottomNav />
         <PwaRegister />
