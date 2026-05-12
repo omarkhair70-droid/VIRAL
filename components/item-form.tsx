@@ -49,8 +49,8 @@ export function ItemForm({ categories, prefill, action, authRequired = false, us
   };
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
     const form = event.currentTarget;
+    event.preventDefault();
     setErrorMessage(null);
 
     if (!userId || authRequired) {
