@@ -38,3 +38,11 @@ Login/profile setup → publish item with image → send offer → redirected fo
 
 - Review recurring confusion/bug themes from `/admin/feedback` and feed them into backlog prioritization.
 - Review `/admin/feedback` for newly submitted beta feedback.
+
+## Closed beta launch daily routine (Phase 25)
+- Confirm current wave size and invite cap for the day.
+- Run `npm run smoke` against production URL before adding new testers.
+- Review `/admin/feedback` and `/admin/reports` for new blocking issues.
+- Check `/admin/ops` aggregate snapshot and storage posture.
+- Validate one complete swap flow (publish → offer → deal → completion → review).
+- Update manual tracker + decision log before any wave expansion.

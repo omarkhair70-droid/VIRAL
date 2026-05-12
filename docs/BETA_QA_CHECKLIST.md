@@ -120,3 +120,15 @@
 - [ ] admin can update feedback status/note
 - [ ] `/admin/ops` shows aggregate feedback counts only
 - [ ] no emails/auth IDs shown
+
+## T. Closed Beta Launch
+- [ ] `/beta` explains closed beta clearly
+- [ ] invite copy ready
+- [ ] pre-beta checklist completed
+- [ ] `npm run smoke` passes against production
+- [ ] first 10 tester plan documented
+- [ ] `/feedback` works
+- [ ] `/admin/feedback` works
+- [ ] `/admin/ops` shows beta watch section
+- [ ] tracking template created
+- [ ] stop/expand conditions documented

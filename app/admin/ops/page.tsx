@@ -63,13 +63,14 @@ export default async function AdminOpsPage() {
       </Card>
 
       <Card>
-        <CardHeader><CardTitle>Beta Watchlist</CardTitle></CardHeader>
+        <CardHeader><CardTitle>Closed beta watch</CardTitle></CardHeader>
         <CardContent className="space-y-2 text-sm text-stone-700">
-          <p><StatusBadge variant="warning">1</StatusBadge> Check storage usage in Supabase.</p>
-          <p><StatusBadge variant="warning">2</StatusBadge> Check latest deployment logs in Vercel.</p>
-          <p><StatusBadge variant="warning">3</StatusBadge> Review open reports.</p>
-          <p><StatusBadge variant="warning">4</StatusBadge> Run <code>npm run smoke</code>.</p>
-          <p><StatusBadge variant="warning">5</StatusBadge> Test offer/deal flow after releases.</p>
+          <p><StatusBadge variant="warning">1</StatusBadge> Run <code>npm run smoke</code>.</p>
+          <p><StatusBadge variant="warning">2</StatusBadge> Check feedback.</p>
+          <p><StatusBadge variant="warning">3</StatusBadge> Check reports.</p>
+          <p><StatusBadge variant="warning">4</StatusBadge> Check storage.</p>
+          <p><StatusBadge variant="warning">5</StatusBadge> Test one full swap flow.</p>
+          <p><StatusBadge variant="warning">6</StatusBadge> Decide next wave.</p>
         </CardContent>
       </Card>
 
@@ -78,9 +79,9 @@ export default async function AdminOpsPage() {
         <CardContent className="flex flex-wrap gap-2">
           <ButtonLink href="/admin/reports" variant="secondary" size="sm">/admin/reports</ButtonLink>
           <ButtonLink href="/admin/feedback" variant="secondary" size="sm">/admin/feedback</ButtonLink>
+          <ButtonLink href="/beta" variant="secondary" size="sm">/beta</ButtonLink>
+          <ButtonLink href="/feedback" variant="secondary" size="sm">/feedback</ButtonLink>
           <ButtonLink href="/dashboard" variant="secondary" size="sm">/dashboard</ButtonLink>
-          <ButtonLink href="/items" variant="secondary" size="sm">/items</ButtonLink>
-          <ButtonLink href="/notifications" variant="secondary" size="sm">/notifications</ButtonLink>
         </CardContent>
       </Card>
     </section>

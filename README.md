@@ -81,3 +81,10 @@ Because `item-images` is public-read:
 - Monitoring plan: `docs/MONITORING_PLAN.md`
 - Incident response: `docs/INCIDENT_RESPONSE.md`
 - Storage/image operations: `docs/STORAGE_AND_IMAGES_OPERATIONS.md`
+
+## Closed Beta Launch
+- Launch plan: `docs/CLOSED_BETA_LAUNCH_PLAN.md`
+- Invite copy: `docs/BETA_INVITE_COPY.md`
+- Tracking template: `docs/BETA_TRACKING_TEMPLATE.md`
+- Triage guide: `docs/BETA_TRIAGE_GUIDE.md`
+- Pre-beta checklist: `docs/PRE_BETA_CHECKLIST.md`
