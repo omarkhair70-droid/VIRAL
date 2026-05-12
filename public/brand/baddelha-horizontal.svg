@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 260" role="img" aria-label="بدّلها logo">
+  <title>Baddelha horizontal logo</title>
+  <rect width="100%" height="100%" fill="none"/>
+  <g transform="translate(40 20) scale(0.9)">
+    <path d="M112 58 C70 58 42 88 42 124 C42 160 70 186 104 186" fill="none" stroke="#C45A3A" stroke-width="34" stroke-linecap="round"/>
+    <path d="M134 58 C178 58 204 88 204 124 C204 160 176 186 140 186" fill="none" stroke="#1A1A1A" stroke-width="34" stroke-linecap="round"/>
+    <circle cx="122" cy="28" r="14" fill="#C45A3A"/>
+    <circle cx="102" cy="218" r="12" fill="#6B6F5A"/>
+    <circle cx="138" cy="218" r="12" fill="#6B6F5A"/>
+  </g>
+  <text x="860" y="150" text-anchor="end" direction="rtl" unicode-bidi="plaintext" font-family="Noto Sans Arabic, Noto Kufi Arabic, Arial, sans-serif" font-size="104" font-weight="700" fill="#1A1A1A">بدّلها</text>
+</svg>
