@@ -35,3 +35,6 @@ Login/profile setup → publish item with image → send offer → redirected fo
 - If release breaks offer/deal creation: rollback immediately.
 - If migration fails: do not deploy code that depends on it.
 - If auth callback/login breaks: rollback immediately.
+
+- Review recurring confusion/bug themes from `/admin/feedback` and feed them into backlog prioritization.
+- Review `/admin/feedback` for newly submitted beta feedback.

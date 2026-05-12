@@ -38,6 +38,10 @@ export default async function AdminOpsPage() {
     { label: "صفقات completed", value: await countRows(supabase, "swap_deals", { column: "status", value: "completed" }) },
     { label: "بلاغات مفتوحة", value: await countRows(supabase, "reports", { column: "status", value: "open" }) },
     { label: "بلاغات under review", value: await countRows(supabase, "reports", { column: "status", value: "reviewing" }) },
+    { label: "إجمالي feedback", value: await countRows(supabase, "feedback") },
+    { label: "Feedback جديد", value: await countRows(supabase, "feedback", { column: "status", value: "new" }) },
+    { label: "Feedback planned", value: await countRows(supabase, "feedback", { column: "status", value: "planned" }) },
+    { label: "Feedback dismissed", value: await countRows(supabase, "feedback", { column: "status", value: "dismissed" }) },
   ];
 
   return (
@@ -73,6 +77,7 @@ export default async function AdminOpsPage() {
         <CardHeader><CardTitle>Release Links</CardTitle></CardHeader>
         <CardContent className="flex flex-wrap gap-2">
           <ButtonLink href="/admin/reports" variant="secondary" size="sm">/admin/reports</ButtonLink>
+          <ButtonLink href="/admin/feedback" variant="secondary" size="sm">/admin/feedback</ButtonLink>
           <ButtonLink href="/dashboard" variant="secondary" size="sm">/dashboard</ButtonLink>
           <ButtonLink href="/items" variant="secondary" size="sm">/items</ButtonLink>
           <ButtonLink href="/notifications" variant="secondary" size="sm">/notifications</ButtonLink>
