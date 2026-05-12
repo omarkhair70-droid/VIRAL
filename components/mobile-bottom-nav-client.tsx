@@ -22,7 +22,11 @@ export function MobileBottomNavClient({ unreadNotificationsCount }: MobileBottom
   const marketActive = isMarketActive(pathname);
   const publishActive = pathname === "/items/new";
   const notificationsActive = pathname.startsWith("/notifications");
-  const dashboardActive = pathname.startsWith("/dashboard");
+  const dashboardActive =
+    pathname.startsWith("/dashboard") ||
+    pathname === "/profile" ||
+    (pathname.startsWith("/offers/") && pathname !== "/offers/new") ||
+    pathname.startsWith("/deals/");
 
   return (
     <nav className="mobile-bottom-nav fixed inset-x-0 bottom-0 z-30 border-t border-warmBorder bg-sand/95 px-3 pt-2 backdrop-blur sm:hidden" aria-label="التنقل السفلي">

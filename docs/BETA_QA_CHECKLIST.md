@@ -258,6 +258,19 @@
 - [ ] drop card items link correctly
 - [ ] home CTA/section appears only when curated content exists
 - [ ] site header route link to /drops works
+
+## Navigation Active-State Edge Cases
+- [ ] `/items` keeps السوق active.
+- [ ] `/items/[id]` keeps السوق active.
+- [ ] `/items/new` keeps اعرض active.
+- [ ] `/notifications` keeps الإشعارات active.
+- [ ] `/dashboard` keeps حسابي active.
+- [ ] `/profile` keeps حسابي active.
+- [ ] `/offers/[offerId]` keeps حسابي active.
+- [ ] `/deals/[dealId]` keeps حسابي active.
+- [ ] `/offers/new` does NOT incorrectly mark حسابي active.
+- [ ] unread badge still caps at `9+`.
+- [ ] `npm run build` passes.
 - [ ] admin drops page blocks non-admins
 - [ ] admin can feature/unfeature story item
 - [ ] admin can create/update draft/published drop
