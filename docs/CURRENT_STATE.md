@@ -157,3 +157,7 @@ If docs and implementation differ, **current code + SQL behavior wins**; docs mu
 - `/dashboard` now uses an attention-first account hub hierarchy.
 - The page is organized into: Attention Now, My Swap Activity, My Account & Trust, Support & Utilities.
 - Existing dashboard metrics/logic are preserved while profile identity actions and utility routes are grouped more clearly.
+
+## Post-Season-2 Polish — Navigation Active-State Edge Cases (May 12, 2026)
+- Mobile bottom-nav "حسابي" active state now remains accurate across `/dashboard*`, `/profile`, `/offers/[offerId]`, and `/deals/[dealId]`.
+- Offer creation route `/offers/new` remains neutral and does not incorrectly activate "حسابي".
