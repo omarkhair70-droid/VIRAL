@@ -208,6 +208,13 @@ export default async function DealDetailPage({ params, searchParams }: { params:
                   <label className="block text-sm">تعليق (اختياري)
                     <textarea name="comment" maxLength={300} className="mt-1 w-full rounded-lg border p-2" rows={4} />
                   </label>
+                  <fieldset className="space-y-2 rounded-xl border border-stone-200 bg-stone-50 p-3">
+                    <legend className="px-1 text-sm font-medium">إيه اللي كان كويس في التجربة؟</legend>
+                    <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="clear_description" className="size-4 rounded border-stone-300" />وصف الحاجة كان واضح</label>
+                    <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="good_communication" className="size-4 rounded border-stone-300" />تواصله كان كويس</label>
+                    <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="on_time" className="size-4 rounded border-stone-300" />التزم بالاتفاق</label>
+                    <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="respectful_swapper" className="size-4 rounded border-stone-300" />محترم في التعامل</label>
+                  </fieldset>
                   <button className="rounded-lg bg-clay px-4 py-2 text-sm text-white">ابعت التقييم</button>
                 </form>
               )}

@@ -6,9 +6,11 @@ import { Card } from "@/components/ui/card";
 import { PageHeading } from "@/components/ui/page-heading";
 import { notFound } from "next/navigation";
 import { ShareActions } from "@/components/share-actions";
+import { TrustBadges } from "@/components/trust-badges";
 import { ImageFrame } from "@/components/ui/image-frame";
 import { StatusPill } from "@/components/ui/status-pill";
 import { AppIcon } from "@/components/ui/app-icon";
+import { buildTrustBadges, type TrustCounts } from "@/lib/trust-badges";
 import { createClient } from "@/lib/supabase/server";
 
 type MaybeArray<T> = T | T[] | null | undefined;
@@ -137,6 +139,12 @@ export default async function ItemDetailPage({ params, searchParams }: { params:
     .neq("id", typed.id)
     .order("created_at", { ascending: false })
     .limit(3);
+  const { data: ownerReviewRows } = await supabase
+    .from("reviews")
+    .select("clear_description,good_communication,on_time,respectful_swapper")
+    .eq("reviewee_id", typed.owner_id);
+  const ownerTrustCounts: TrustCounts = (ownerReviewRows ?? []).reduce((acc, row) => ({ clear_description: acc.clear_description + (row.clear_description ? 1 : 0), good_communication: acc.good_communication + (row.good_communication ? 1 : 0), on_time: acc.on_time + (row.on_time ? 1 : 0), respectful_swapper: acc.respectful_swapper + (row.respectful_swapper ? 1 : 0) }), { clear_description: 0, good_communication: 0, on_time: 0, respectful_swapper: 0 });
+  const ownerTrustBadges = buildTrustBadges({ counts: ownerTrustCounts, successfulSwapsCount: owner?.successful_swaps_count ?? 0, includeBeta: false });
   const moreFromOwner = (moreFromOwnerQuery.data ?? []) as Array<{
     id: string;
     title: string;
@@ -246,6 +254,7 @@ export default async function ItemDetailPage({ params, searchParams }: { params:
                 <p className="text-xs text-stone-600">مقايضات ناجحة: {owner?.successful_swaps_count ?? 0}</p>
               </div>
             </div>
+            <TrustBadges badges={ownerTrustBadges} compact maxVisible={3} />
             {owner?.username ? (
               <Link href={`/users/${owner.username}`} className="inline-flex min-h-10 items-center justify-center rounded-xl border border-warmBorder bg-white px-3 py-2 text-sm font-medium text-ink transition hover:bg-sand">
                 شوف البروفايل

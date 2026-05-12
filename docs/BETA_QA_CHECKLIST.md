@@ -264,3 +264,16 @@
 - [ ] admin can attach/remove item from drop
 - [ ] published drops visible publicly, drafts not visible publicly
 - [ ] build passes
+
+## Phase 34 — Trust Badges 2.0
+- [ ] review form still submits with only rating/comment
+- [ ] review form submits with one or more trust signals
+- [ ] review duplicate protection unchanged
+- [ ] trust signal columns persist on reviews
+- [ ] profile shows beta member badge
+- [ ] completed swapper badge appears only when applicable
+- [ ] trait badges appear after endorsement(s)
+- [ ] trait badges do not appear without endorsements
+- [ ] owner trust card shows compact badge preview
+- [ ] average rating and latest reviews still render
+- [ ] build passes

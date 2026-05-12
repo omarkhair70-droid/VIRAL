@@ -116,7 +116,10 @@ The app remains controlled beta while this roadmap is implemented phase by phase
 - drop card design
 
 ## Phase 34 — Trust Badges 2.0
+**Status:** Completed (implemented on May 12, 2026).
 **Goal:** Make reputation easier to understand.
+
+**Completion note:** Trust Badges 2.0 is now live with review-backed trait endorsements, derived completed/beta badges, and compact trust visibility on profile and item owner surfaces.
 
 **Deliverables**
 - clear description badge

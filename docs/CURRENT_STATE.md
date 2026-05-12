@@ -126,3 +126,9 @@ If docs and implementation differ, **current code + SQL behavior wins**; docs mu
 - Featured story items are curated manually by admins.
 - Public /drops page added for curated discovery.
 - Admin /admin/drops page added for drops + featured story curation.
+
+## Phase 34 — Trust Badges 2.0 (May 12, 2026)
+- Completed-deal reviews now support optional positive trust endorsements (clear description, good communication, on-time, respectful swapper).
+- Public profiles now aggregate and display review-backed trust badges with calm, count-based signals.
+- Item detail owner trust card now includes a compact trust badge preview to support faster send-offer decisions.
+- Beta Member and Completed Swapper remain derived, honest presentation badges.
