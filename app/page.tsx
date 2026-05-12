@@ -19,9 +19,12 @@ export default async function HomePage() {
   const user = data.user;
 
   let displayName = "";
+  let profileQuickLinkLabel = "شوف بروفايلك";
   if (user) {
-    const { data: profile } = await supabase.from("profiles").select("display_name").eq("id", user.id).maybeSingle();
+    const { data: profile } = await supabase.from("profiles").select("display_name,username,bio,city,area").eq("id", user.id).maybeSingle();
     displayName = profile?.display_name?.trim() ?? "";
+    const profileComplete = Boolean(profile?.username && profile?.bio && profile?.city && profile?.area);
+    profileQuickLinkLabel = profileComplete ? "شوف بروفايلك" : "أكمل بروفايلك";
   }
 
   if (user) {
@@ -40,7 +43,7 @@ export default async function HomePage() {
         <section className="grid gap-3 sm:grid-cols-3">
           <Link className="rounded-2xl border border-warmBorder bg-white p-4 text-sm font-medium text-ink" href="/dashboard">حسابي وعروضي</Link>
           <Link className="rounded-2xl border border-warmBorder bg-white p-4 text-sm font-medium text-ink" href="/notifications">الإشعارات</Link>
-          <Link className="rounded-2xl border border-warmBorder bg-white p-4 text-sm font-medium text-ink" href="/profile">أكمل بروفايلك</Link>
+          <Link className="rounded-2xl border border-warmBorder bg-white p-4 text-sm font-medium text-ink" href="/profile">{profileQuickLinkLabel}</Link>
         </section>
 
         <Card className="rounded-3xl p-5 md:p-6">
