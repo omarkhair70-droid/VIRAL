@@ -88,3 +88,9 @@ Because `item-images` is public-read:
 - Tracking template: `docs/BETA_TRACKING_TEMPLATE.md`
 - Triage guide: `docs/BETA_TRIAGE_GUIDE.md`
 - Pre-beta checklist: `docs/PRE_BETA_CHECKLIST.md`
+
+
+## Branding Assets
+- Final logo assets: `public/brand/`
+- Final app icon assets: `public/icons/`
+- Source of truth: `docs/LOGO_SYSTEM.md`
