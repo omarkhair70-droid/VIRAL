@@ -143,3 +143,7 @@ If docs and implementation differ, **current code + SQL behavior wins**; docs mu
 ## Post-Season-2 Polish — Offer Detail 2.1 (May 12, 2026)
 - `/offers/[offerId]` now uses a decision-first response panel so receiver chooses one path before seeing form details.
 - Offer event history now renders as a compact visual timeline instead of plain text bullets.
+
+
+## Post-Season-2 Polish — Smart Logged-in Home (May 12, 2026)
+- Logged-in `/` now surfaces one priority next action before generic tips, based on: received offers needing response, pending deal confirmation, profile completeness, and active listing presence.
