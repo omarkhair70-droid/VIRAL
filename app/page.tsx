@@ -33,13 +33,6 @@ export default async function HomePage() {
   const { count: featuredCount } = await supabase.from("featured_story_items").select("item_id", { count: "exact", head: true });
   const { count: publishedDropsCount } = await supabase.from("creator_drops").select("id", { count: "exact", head: true }).eq("status", "published");
   const showStoryEntry = (featuredCount ?? 0) > 0 || (publishedDropsCount ?? 0) > 0;
-  const { data: peoplePreview } = await supabase
-    .from("profiles")
-    .select("username,display_name,city,area")
-    .not("username", "is", null)
-    .order("successful_swaps_count", { ascending: false })
-    .limit(3);
-
   if (user) {
     const [{ data: profile }, { count: offersNeedAttentionCount }, { count: pendingDealsCount }, { count: activeItemsCount }] = await Promise.all([
       supabase.from("profiles").select("display_name,username,bio,city,area").eq("id", user.id).maybeSingle(),
@@ -147,6 +140,13 @@ export default async function HomePage() {
       </div>
     );
   }
+
+  const { data: peoplePreview } = await supabase
+    .from("profiles")
+    .select("username,display_name,city,area")
+    .not("username", "is", null)
+    .order("successful_swaps_count", { ascending: false })
+    .limit(3);
 
   return (
     <div className="mx-auto max-w-6xl space-y-6 px-4 py-10 md:space-y-8 md:py-14">
