@@ -13,6 +13,14 @@ function parseImagePaths(raw: string): string[] {
   }
 }
 
+async function cleanupUploadedImages(supabase: Awaited<ReturnType<typeof createClient>>, uploadedPaths: string[]) {
+  if (uploadedPaths.length === 0) return;
+  const { error } = await supabase.storage.from("item-images").remove(uploadedPaths);
+  if (error) {
+    console.error("Failed to cleanup uploaded item images", error);
+  }
+}
+
 export type CreateItemResult = { ok: true; itemId: string } | { ok: false; error: "validation" | "publish" };
 
 export async function createItem(formData: FormData): Promise<CreateItemResult> {
@@ -83,6 +91,7 @@ export async function createItem(formData: FormData): Promise<CreateItemResult> 
 
   if (error || !item) {
     console.error("Failed to create item", error);
+    await cleanupUploadedImages(supabase, uploadedPaths);
     return { ok: false, error: "publish" };
   }
 
@@ -99,6 +108,11 @@ export async function createItem(formData: FormData): Promise<CreateItemResult> 
   const { error: imageInsertError } = await supabase.from("item_images").insert(itemImagesPayload);
   if (imageInsertError) {
     console.error("Failed to insert item images", imageInsertError);
+    const { error: deleteItemError } = await supabase.from("items").delete().eq("id", item.id);
+    if (deleteItemError) {
+      console.error("Failed to rollback item after image insert failure", deleteItemError);
+    }
+    await cleanupUploadedImages(supabase, uploadedPaths);
     return { ok: false, error: "publish" };
   }
 
