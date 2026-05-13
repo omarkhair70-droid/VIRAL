@@ -373,3 +373,20 @@
 - [ ] No user-facing "بدّلها" / "Baddelha" references remain in app UI
 - [ ] Existing routes/business logic remain unchanged
 - [ ] `npm run build` passes
+
+
+## Phase 36 — Auth-First Entry + Guided Onboarding QA
+- [ ] Logged-out `/` shows Teswa auth-first hero, not the previous multi-CTA lead.
+- [ ] Primary CTA says "ابدأ وسجّل".
+- [ ] Primary CTA routes to `/login?next=/items/new`.
+- [ ] Secondary CTA "شوف السوق" still routes to `/items`.
+- [ ] Optional learn-more link routes correctly if implemented.
+- [ ] Login page keeps Google + email auth actions unchanged.
+- [ ] Login copy matches Teswa onboarding direction.
+- [ ] New user auth callback still redirects to `/profile/setup?next=/items/new`.
+- [ ] Profile setup keeps existing validation and redirect behavior.
+- [ ] Profile setup copy clearly frames onboarding step 1.
+- [ ] Completing profile setup with next `/items/new` reaches item publish.
+- [ ] Logged-in user with incomplete profile or no active item sees onboarding checklist only when no higher-priority transactional state exists.
+- [ ] Logged-in user with offers/deal priorities is not distracted by onboarding checklist if scope says so.
+- [ ] `npm run build` passes.

@@ -13,7 +13,6 @@ export const metadata: Metadata = {
     "تِسوى — حاجتك لسه لها قيمة. اعرض حاجة، استقبل عروض، واتفقوا بأمان في مكان عام.",
 };
 
-const steps = ["اعرض حاجة مركونة", "استقبل عروض", "افتح صفحة التنسيق", "قيّم بعد المقايضة"];
 
 export default async function HomePage() {
   const supabase = await createClient();
@@ -27,6 +26,9 @@ export default async function HomePage() {
   let priorityCtaPrimary: { href: "/items" | "/items/new" | "/dashboard/offers/received" | "/deals" | "/profile"; label: string } = { href: "/items/new", label: "اعرض حاجة" };
   let priorityCtaSecondary: { href: "/items" | "/items/new" | "/dashboard/offers/received" | "/deals" | "/profile"; label: string } | null = { href: "/items", label: "شوف السوق" };
   let showPriorityBadge = false;
+  let showOnboardingChecklist = false;
+  let isProfileComplete = false;
+  let hasActiveItems = false;
 
   const { count: featuredCount } = await supabase.from("featured_story_items").select("item_id", { count: "exact", head: true });
   const { count: publishedDropsCount } = await supabase.from("creator_drops").select("id", { count: "exact", head: true }).eq("status", "published");
@@ -42,6 +44,8 @@ export default async function HomePage() {
 
     displayName = profile?.display_name?.trim() ?? "";
     const profileComplete = Boolean(profile?.username && profile?.bio && profile?.city && profile?.area);
+    isProfileComplete = profileComplete;
+    hasActiveItems = (activeItemsCount ?? 0) > 0;
     profileQuickLinkLabel = profileComplete ? "شوف بروفايلك" : "أكمل بروفايلك";
 
     if ((offersNeedAttentionCount ?? 0) > 0) {
@@ -69,6 +73,9 @@ export default async function HomePage() {
       priorityCtaSecondary = null;
       showPriorityBadge = true;
     }
+
+    const hasTransactionPriority = (offersNeedAttentionCount ?? 0) > 0 || (pendingDealsCount ?? 0) > 0;
+    showOnboardingChecklist = !hasTransactionPriority && (!isProfileComplete || !hasActiveItems);
   }
 
   if (user) {
@@ -102,36 +109,60 @@ export default async function HomePage() {
             </ul>
           </CardContent>
         </Card>
+
+        {showOnboardingChecklist ? (
+          <Card className="rounded-3xl p-5 md:p-6">
+            <CardHeader className="p-0"><CardTitle>ابدأ رحلتك في تِسوى</CardTitle></CardHeader>
+            <CardContent className="p-0 pt-3">
+              <ul className="space-y-2 text-sm text-muted">
+                <li className="flex items-center justify-between gap-3 rounded-xl border border-warmBorder bg-sand p-3">
+                  <span>{isProfileComplete ? "✅ أكمل بروفايلك" : "◻️ أكمل بروفايلك"}</span>
+                  <Link href="/profile" className="text-xs font-medium text-ink underline underline-offset-2">افتح</Link>
+                </li>
+                <li className="flex items-center justify-between gap-3 rounded-xl border border-warmBorder bg-sand p-3">
+                  <span>{hasActiveItems ? "✅ اعرض أول حاجة" : "◻️ اعرض أول حاجة"}</span>
+                  <Link href="/items/new" className="text-xs font-medium text-ink underline underline-offset-2">ابدأ</Link>
+                </li>
+                <li className="rounded-xl border border-warmBorder bg-sand p-3">
+                  <span>🔜 تابع العروض والرسائل</span>
+                </li>
+              </ul>
+            </CardContent>
+          </Card>
+        ) : null}
         {showStoryEntry ? <Card className="rounded-3xl p-5"><h2 className="text-xl font-semibold">حاجات ليها حكاية</h2><p className="text-sm text-muted">اختيارات ودروب متجمعة يدويًا من أقوى القصص.</p><div className="mt-3"><ButtonLink href="/drops" variant="secondary">افتح الدروب</ButtonLink></div></Card> : null}
       </div>
     );
   }
 
   return (
-    <div className="mx-auto max-w-6xl space-y-10 px-4 py-10 md:py-14">
+    <div className="mx-auto max-w-6xl space-y-6 px-4 py-10 md:space-y-8 md:py-14">
       <PwaInstallCard />
       <Card className="rounded-3xl bg-cream p-6 md:p-10">
-        <PageHeading eyebrow="تِسوى — Teswa" title="حاجتك لسه لها قيمة." subtitle="تِسوى مساحة مقايضة عملية: اعرض حاجة، استقبل عروض، واتفقوا بأمان في مكان عام." />
-        <div className="mt-2 flex flex-wrap gap-3">
-          <ButtonLink href="/items/new" size="lg">
-            اعرض حاجة
+        <PageHeading eyebrow="تِسوى — Teswa" title="حاجتك لسه لها قيمة." subtitle="سجّل، اعرض حاجة عندك، وابدأ تستقبل عروض مقايضة من ناس حقيقية." />
+        <div className="mt-3 flex flex-wrap gap-3">
+          <ButtonLink href="/login?next=/items/new" size="lg">
+            ابدأ وسجّل
           </ButtonLink>
           <ButtonLink href="/items" variant="secondary" size="lg">
             شوف السوق
           </ButtonLink>
-          <ButtonLink href="/how-it-works" variant="quiet" size="lg">
-            إزاي بتشتغل؟
-          </ButtonLink>
-          <ButtonLink href="/beta" variant="quiet" size="lg">
-            ليه النسخة Beta؟
-          </ButtonLink>
+          <Link href="/how-it-works" className="self-center text-sm text-muted underline underline-offset-2">
+            اعرف تِسوى بتشتغل إزاي
+          </Link>
         </div>
       </Card>
 
+      <section className="grid gap-3 sm:grid-cols-3">
+        <Card className="rounded-2xl p-4"><p className="text-sm font-semibold text-ink">اعرض</p><p className="mt-1 text-sm text-muted">انشر حاجة بصور ووصف واضح.</p></Card>
+        <Card className="rounded-2xl p-4"><p className="text-sm font-semibold text-ink">استقبل عروض</p><p className="mt-1 text-sm text-muted">ناس تقترح عليك حاجات مناسبة.</p></Card>
+        <Card className="rounded-2xl p-4"><p className="text-sm font-semibold text-ink">اتفق بأمان</p><p className="mt-1 text-sm text-muted">كمّلوا الصفقة من داخل تِسوى.</p></Card>
+      </section>
+
       <Card className="rounded-3xl p-6 md:p-8">
-        <CardHeader><CardTitle>الموضوع بيمشي في 4 خطوات</CardTitle></CardHeader>
-        <ol className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {steps.map((step, index) => (
+        <CardHeader><CardTitle>إزاي البداية بتحصل؟</CardTitle></CardHeader>
+        <ol className="mt-4 grid gap-3 sm:grid-cols-3">
+          {["سجّل", "اعرض", "بدّل"].map((step, index) => (
             <li key={step} className="rounded-xl border border-warmBorder bg-sand p-4 text-sm font-medium text-ink">
               <span className="mb-2 block text-xs text-muted">خطوة {index + 1}</span>
               {step}
@@ -140,11 +171,13 @@ export default async function HomePage() {
         </ol>
       </Card>
 
-      <Card className="grid gap-4 rounded-3xl p-6 md:grid-cols-3 md:p-8"><CardContent className="contents">
-        <p className="rounded-xl bg-sand p-4 text-sm text-muted">مفيش بيع إجباري.</p>
-        <p className="rounded-xl bg-sand p-4 text-sm text-muted">مفيش أرقام موبايل عامة.</p>
-        <p className="rounded-xl bg-sand p-4 text-sm text-muted">التقييمات بتظهر بعد المقايضة المكتملة فقط.</p>
-      </CardContent></Card>
+      <Card className="rounded-3xl p-6">
+        <CardContent className="grid gap-3 p-0 text-sm text-muted sm:grid-cols-3">
+          <p className="rounded-xl bg-sand p-4">مفيش أرقام موبايل عامة.</p>
+          <p className="rounded-xl bg-sand p-4">التقييمات بعد المقايضة المكتملة.</p>
+          <p className="rounded-xl bg-sand p-4">الاتفاق في مكان عام وآمن.</p>
+        </CardContent>
+      </Card>
       {showStoryEntry ? <Card className="rounded-3xl p-6"><h2 className="text-xl font-semibold">حاجات ليها حكاية</h2><p className="text-sm text-muted">اختيارات قصصية ودروب منسقة بعناية.</p><div className="mt-3"><ButtonLink href="/drops" variant="secondary">استكشف الدروب</ButtonLink></div></Card> : null}
     </div>
   );

@@ -170,3 +170,9 @@ If docs and implementation differ, **current code + SQL behavior wins**; docs mu
 - Teswa rebrand QA and beta readiness review completed.
 - See `docs/TESWA_REBRAND_QA_AND_BETA_READINESS.md` for formal findings and readiness status.
 
+
+
+## Phase 36 — Auth-First Entry + Guided Onboarding (May 13, 2026)
+- Logged-out `/` now uses an auth-first entry hero with a dominant signup/login CTA (`/login?next=/items/new`) and lighter browse/learn options.
+- New users are now naturally guided through login → profile setup → first publish (`/items/new`) while existing auth callback behavior remains intact.
+- Logged-in early-state users now get a contextual onboarding checklist when no higher-priority transactional state (offers/deals) is blocking attention.

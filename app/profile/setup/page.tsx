@@ -31,8 +31,9 @@ export default async function ProfileSetupPage({ searchParams }: SetupPageParams
 
   return (
     <section className="mx-auto max-w-2xl space-y-5 px-4 py-10">
-      <h1 className="text-3xl font-bold">خلّي الناس تعرف تتعامل معاك</h1>
-      <p className="text-stone-700">البروفايل بيساعد الناس تعرف تتعامل مع مين. كمّله في أقل من دقيقة.</p>
+      <p className="inline-flex rounded-full bg-sand px-3 py-1 text-xs font-medium text-ink">الخطوة 1 من 2</p>
+      <h1 className="text-3xl font-bold">جهّز بروفايلك قبل أول عرض.</h1>
+      <p className="text-stone-700">الاسم واسم المستخدم يخلو الناس تعرف مين بيبدّل معاهم. بعد كده هننقلك مباشرة لعرض أول حاجة.</p>
       {query.error ? <p className="rounded-xl border border-red-200 bg-red-50 p-3 text-red-800">{query.error}</p> : null}
 
       <form action={completeProfileSetup} className="space-y-4 rounded-2xl border bg-white p-5">
@@ -64,7 +65,7 @@ export default async function ProfileSetupPage({ searchParams }: SetupPageParams
           <label htmlFor="bio" className="mb-1 block text-sm font-medium">نبذة قصيرة (اختياري)</label>
           <textarea id="bio" name="bio" maxLength={200} defaultValue={profile?.bio ?? ""} className="h-24 w-full rounded-lg border p-2" />
         </div>
-        <button className="rounded-xl bg-clay px-5 py-2.5 text-white">ابدأ ببروفايلك</button>
+        <button className="rounded-xl bg-clay px-5 py-2.5 text-white">كمّل وابدأ عرضك</button>
       </form>
     </section>
   );
