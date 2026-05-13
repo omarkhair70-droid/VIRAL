@@ -176,3 +176,10 @@ If docs and implementation differ, **current code + SQL behavior wins**; docs mu
 - Logged-out `/` now uses an auth-first entry hero with a dominant signup/login CTA (`/login?next=/items/new`) and lighter browse/learn options.
 - New users are now naturally guided through login → profile setup → first publish (`/items/new`) while existing auth callback behavior remains intact.
 - Logged-in early-state users now get a contextual onboarding checklist when no higher-priority transactional state (offers/deals) is blocking attention.
+
+## Season 3 Phase 37 — People Directory / Profiles Discovery (May 13, 2026)
+- New public `/people` route added as the first community discovery layer.
+- People cards summarize human identity + swap trust signals (name, username, location, bio/tagline, completed swaps, active items, trust badges) and link to `/users/[username]`.
+- People search added via URL param `q` (display name, username, city, area) with clear reset and no-results states.
+- Home page now includes community discovery entry for both logged-out and logged-in users without changing transactional priority behavior.
+- No navigation shell changes and no new DB schema introduced in this phase.

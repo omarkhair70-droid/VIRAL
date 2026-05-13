@@ -33,6 +33,12 @@ export default async function HomePage() {
   const { count: featuredCount } = await supabase.from("featured_story_items").select("item_id", { count: "exact", head: true });
   const { count: publishedDropsCount } = await supabase.from("creator_drops").select("id", { count: "exact", head: true }).eq("status", "published");
   const showStoryEntry = (featuredCount ?? 0) > 0 || (publishedDropsCount ?? 0) > 0;
+  const { data: peoplePreview } = await supabase
+    .from("profiles")
+    .select("username,display_name,city,area")
+    .not("username", "is", null)
+    .order("successful_swaps_count", { ascending: false })
+    .limit(3);
 
   if (user) {
     const [{ data: profile }, { count: offersNeedAttentionCount }, { count: pendingDealsCount }, { count: activeItemsCount }] = await Promise.all([
@@ -131,6 +137,13 @@ export default async function HomePage() {
           </Card>
         ) : null}
         {showStoryEntry ? <Card className="rounded-3xl p-5"><h2 className="text-xl font-semibold">حاجات ليها حكاية</h2><p className="text-sm text-muted">اختيارات ودروب متجمعة يدويًا من أقوى القصص.</p><div className="mt-3"><ButtonLink href="/drops" variant="secondary">افتح الدروب</ButtonLink></div></Card> : null}
+        <Card className="rounded-3xl p-5 md:p-6">
+          <CardHeader className="p-0"><CardTitle>ناس على تِسوى</CardTitle></CardHeader>
+          <CardContent className="space-y-3 p-0 pt-3">
+            <p className="text-sm text-muted">اتعرف على بروفايلات ناس بتبدّل بجد، إشارات ثقتهم، والحاجات النشطة اللي بيعرضوها.</p>
+            <ButtonLink href="/people" variant="secondary">استكشف الناس</ButtonLink>
+          </CardContent>
+        </Card>
       </div>
     );
   }
@@ -179,6 +192,16 @@ export default async function HomePage() {
         </CardContent>
       </Card>
       {showStoryEntry ? <Card className="rounded-3xl p-6"><h2 className="text-xl font-semibold">حاجات ليها حكاية</h2><p className="text-sm text-muted">اختيارات قصصية ودروب منسقة بعناية.</p><div className="mt-3"><ButtonLink href="/drops" variant="secondary">استكشف الدروب</ButtonLink></div></Card> : null}
+      <Card className="rounded-3xl p-6 md:p-8">
+        <CardHeader className="p-0">
+          <CardTitle>اتعرف على ناس على تِسوى</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4 p-0 pt-3">
+          <p className="text-sm text-muted">تِسوى فيها ناس حقيقية بتبدّل، لكل واحد أسلوبه في المقايضة وإشارات الثقة والحاجات النشطة بتاعته.</p>
+          {peoplePreview?.length ? <div className="grid gap-2 sm:grid-cols-3">{peoplePreview.map((person) => <Link key={person.username} href={`/users/${person.username}`} className="rounded-xl border border-warmBorder bg-sand p-3 text-sm text-ink"><p className="font-semibold">{person.display_name || person.username}</p><p className="text-xs text-muted">@{person.username}</p><p className="mt-1 text-xs text-muted">{[person.city, person.area].filter(Boolean).join(" - ") || "الموقع غير مكتمل"}</p></Link>)}</div> : null}
+          <div><ButtonLink href="/people" variant="secondary">استكشف الناس</ButtonLink></div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

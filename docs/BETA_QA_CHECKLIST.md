@@ -390,3 +390,21 @@
 - [ ] Logged-in user with incomplete profile or no active item sees onboarding checklist only when no higher-priority transactional state exists.
 - [ ] Logged-in user with offers/deal priorities is not distracted by onboarding checklist if scope says so.
 - [ ] `npm run build` passes.
+
+## AB. Season 3 Phase 37 — People Directory / Profiles Discovery
+- [ ] `/people` loads publicly while logged out.
+- [ ] directory only shows profiles with public usernames.
+- [ ] each people card links to `/users/[username]`.
+- [ ] card shows: display name, username, location, bio/tagline excerpt, successful swaps, active items, trust badges.
+- [ ] search via `/people?q=...` matches display name.
+- [ ] search via `/people?q=...` matches username.
+- [ ] search via `/people?q=...` matches city/area.
+- [ ] query text remains in search input.
+- [ ] search empty-result state appears with recovery guidance.
+- [ ] base empty-directory state appears gracefully when no data.
+- [ ] logged-out home keeps auth-first hero and adds visible `/people` discovery CTA.
+- [ ] logged-in home keeps transactional priority logic and adds `/people` discovery entry after priority surface.
+- [ ] `/users/[username]` destination profile links work from directory cards.
+- [ ] no navigation shell changes introduced.
+- [ ] no DB schema changes introduced.
+- [ ] `npm run build` passes.
