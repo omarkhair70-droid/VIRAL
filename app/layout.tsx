@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     default: "تِسوى | سوق المقايضة",
     template: "%s | تِسوى",
   },
-  description: "بدّل الحاجة بدل ما تسيبها مركونة.",
+  description: "تِسوى — حاجتك لسه لها قيمة. اعرض حاجة، استقبل عروض، واتفقوا على مقايضة أوضح وأأمن.",
   applicationName: "تِسوى",
   manifest: "/manifest.webmanifest",
   appleWebApp: {
@@ -25,11 +25,10 @@ export const metadata: Metadata = {
       { url: "/icons/favicon.png", type: "image/png", sizes: "32x32" },
     ],
     apple: [{ url: "/icons/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
-    other: [{ rel: "mask-icon", url: "/icons/icon-maskable.png", color: "#C45A3A" }],
   },
   openGraph: {
     title: "تِسوى | سوق المقايضة",
-    description: "بدّل الحاجة بدل ما تسيبها مركونة.",
+    description: "تِسوى — حاجتك لسه لها قيمة. اعرض حاجة، استقبل عروض، واتفقوا على مقايضة أوضح وأأمن.",
     type: "website",
     locale: "ar_EG",
   },
