@@ -110,6 +110,10 @@ returns trigger
 language plpgsql
 as $$
 begin
+  if current_setting('app.trusted_profile_metric_update', true) = 'on' then
+    return new;
+  end if;
+
   if auth.uid() is not null and auth.uid() = old.id then
     if new.successful_swaps_count is distinct from old.successful_swaps_count
       or new.response_rate is distinct from old.response_rate
@@ -138,6 +142,10 @@ declare
   v_actor uuid := auth.uid();
   v_is_owner boolean := (v_actor is not null and old.owner_id = v_actor);
 begin
+  if current_setting('app.trusted_item_lifecycle_update', true) = 'on' then
+    return new;
+  end if;
+
   if v_is_owner then
     if new.owner_id is distinct from old.owner_id
       or new.created_at is distinct from old.created_at
@@ -183,3 +191,155 @@ with check (
     or (event_type = 'withdrawn' and old_status in ('pending','thinking') and new_status = 'withdrawn')
   )
 );
+
+
+-- 5) Preserve trusted lifecycle/system RPC flows by using scoped trigger bypass flags inside DB-owned workflows.
+create or replace function public.increment_successful_swaps_for_users(user_a uuid, user_b uuid)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  perform set_config('app.trusted_profile_metric_update', 'on', true);
+
+  update public.profiles
+  set successful_swaps_count = successful_swaps_count + 1
+  where id in (user_a, user_b);
+end;
+$$;
+
+create or replace function public.accept_offer(p_offer_id uuid)
+returns uuid
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_user_id uuid := auth.uid();
+  v_offer public.offers%rowtype;
+  v_requested_item public.items%rowtype;
+  v_offered_item public.items%rowtype;
+  v_deal_id uuid;
+  v_reserved_count integer;
+begin
+  if v_user_id is null then
+    raise exception 'Authentication required';
+  end if;
+
+  select * into v_offer from public.offers where id = p_offer_id for update;
+  if not found then raise exception 'Offer not found'; end if;
+
+  if v_offer.receiver_id <> v_user_id then
+    raise exception 'Only receiver can accept offer';
+  end if;
+
+  if v_offer.status not in ('pending','thinking') then
+    raise exception 'Offer not respondable';
+  end if;
+
+  if v_offer.sender_id = v_user_id then
+    raise exception 'Sender cannot accept own offer';
+  end if;
+
+  select * into v_requested_item from public.items where id = v_offer.requested_item_id for update;
+  if not found then raise exception 'Requested item not found'; end if;
+
+  select * into v_offered_item from public.items where id = v_offer.offered_item_id for update;
+  if not found then raise exception 'Offered item not found'; end if;
+
+  if v_requested_item.status <> 'active' then
+    raise exception 'Requested item not active';
+  end if;
+
+  if v_offered_item.status <> 'active' then
+    raise exception 'Offered item not active';
+  end if;
+
+  if v_requested_item.owner_id <> v_offer.receiver_id then
+    raise exception 'Requested item owner mismatch';
+  end if;
+
+  if v_offered_item.owner_id <> v_offer.sender_id then
+    raise exception 'Offered item owner mismatch';
+  end if;
+
+  update public.offers
+  set status = 'accepted', responded_at = now()
+  where id = p_offer_id;
+
+  perform set_config('app.trusted_item_lifecycle_update', 'on', true);
+
+  update public.items
+  set status = 'reserved'
+  where id in (v_offer.requested_item_id, v_offer.offered_item_id)
+    and status = 'active';
+
+  get diagnostics v_reserved_count = row_count;
+  if v_reserved_count <> 2 then
+    raise exception 'Failed to reserve both items atomically';
+  end if;
+
+  insert into public.swap_deals (offer_id, requested_item_id, offered_item_id, requester_id, offerer_id, status)
+  values (v_offer.id, v_offer.requested_item_id, v_offer.offered_item_id, v_offer.receiver_id, v_offer.sender_id, 'coordinating')
+  on conflict (offer_id) do update set offer_id = excluded.offer_id
+  returning id into v_deal_id;
+
+  insert into public.offer_events (offer_id, actor_id, event_type, old_status, new_status)
+  values (v_offer.id, v_user_id, 'accepted', v_offer.status, 'accepted');
+
+  return v_deal_id;
+end;
+$$;
+
+create or replace function public.complete_deal_if_ready(p_deal_id uuid)
+returns boolean
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_user_id uuid := auth.uid();
+  v_deal public.swap_deals%rowtype;
+  v_confirmations integer;
+begin
+  if v_user_id is null then raise exception 'Authentication required'; end if;
+
+  select * into v_deal from public.swap_deals where id = p_deal_id for update;
+  if not found then raise exception 'Deal not found'; end if;
+
+  if v_user_id not in (v_deal.requester_id, v_deal.offerer_id) then
+    raise exception 'Not a participant';
+  end if;
+
+  if v_deal.status not in ('coordinating','completed_pending_confirmation') then
+    return false;
+  end if;
+
+  select count(*) into v_confirmations from public.deal_confirmations where deal_id = p_deal_id;
+
+  if v_confirmations < 2 then
+    update public.swap_deals
+    set status = 'completed_pending_confirmation'
+    where id = p_deal_id and status = 'coordinating';
+    return false;
+  end if;
+
+  update public.swap_deals
+  set status = 'completed', completed_at = now()
+  where id = p_deal_id and status in ('coordinating','completed_pending_confirmation');
+
+  perform set_config('app.trusted_item_lifecycle_update', 'on', true);
+
+  update public.items
+  set status = 'swapped'
+  where id in (v_deal.requested_item_id, v_deal.offered_item_id)
+    and status in ('reserved','active');
+
+  insert into public.offer_events (offer_id, actor_id, event_type, old_status, new_status)
+  values (v_deal.offer_id, v_user_id, 'completed', 'accepted', 'accepted');
+
+  perform public.increment_successful_swaps_for_users(v_deal.requester_id, v_deal.offerer_id);
+  return true;
+end;
+$$;
