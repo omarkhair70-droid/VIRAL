@@ -4,14 +4,14 @@ export default function InstallPage() {
   return (
     <section className="mx-auto max-w-3xl space-y-6 px-4 py-10">
       <div className="rounded-2xl border bg-white p-5">
-        <h1 className="text-3xl font-bold">نزّل بدّلها على موبايلك</h1>
-        <p className="mt-2 text-stone-700">تقدر تفتح بدّلها من الشاشة الرئيسية كأنه تطبيق، من غير App Store.</p>
+        <h1 className="text-3xl font-bold">نزّل تِسوى على موبايلك</h1>
+        <p className="mt-2 text-stone-700">تقدر تفتح تِسوى من الشاشة الرئيسية كأنه تطبيق، من غير App Store.</p>
       </div>
 
       <article className="rounded-2xl border bg-white p-5">
         <h2 className="text-xl font-semibold">Android / Chrome</h2>
         <ul className="mt-3 list-inside list-disc space-y-1 text-sm text-stone-700">
-          <li>افتح الموقع من Chrome</li><li>اضغط ⋮</li><li>اختار Add to Home screen أو Install app</li><li>افتح بدّلها من الأيقونة</li>
+          <li>افتح الموقع من Chrome</li><li>اضغط ⋮</li><li>اختار Add to Home screen أو Install app</li><li>افتح تِسوى من الأيقونة</li>
         </ul>
       </article>
 

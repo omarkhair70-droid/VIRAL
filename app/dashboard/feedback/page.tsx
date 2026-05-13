@@ -14,7 +14,7 @@ export default async function MyFeedbackPage() {
   const rows = data ?? [];
 
   return <section className="mx-auto max-w-4xl space-y-4 px-4 py-10">
-    <PageHeading title="Feedback اللي بعته" subtitle="متابعة سريعة للحالات والملاحظات من فريق بدّلها." />
+    <PageHeading title="Feedback اللي بعته" subtitle="متابعة سريعة للحالات والملاحظات من فريق تِسوى." />
     {rows.length === 0 ? <EmptyState title="لسه ما بعتش feedback." subtitle="ابعت أول رسالة من صفحة feedback." /> : rows.map((row) => <Card key={row.id}><CardContent className="space-y-1"><div className="flex gap-2"><StatusBadge variant="muted">{row.feedback_type}</StatusBadge><StatusBadge variant="warning">{row.status}</StatusBadge></div><p className="font-semibold">{row.subject}</p><p className="text-xs text-stone-600">{new Date(row.created_at).toLocaleDateString("ar-EG")}</p>{row.admin_note ? <p className="text-sm">ملاحظة الإدارة: {row.admin_note}</p> : null}</CardContent></Card>)}
   </section>;
 }

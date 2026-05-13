@@ -196,7 +196,7 @@ export default async function DealDetailPage({ params, searchParams }: { params:
             <section className="rounded-2xl border bg-white p-4 md:p-5">
               <h2 className="mb-2 flex items-center gap-2 text-xl font-semibold"><AppIcon name="star" className="size-5 text-clay" />قيّم التجربة</h2>
               {myReview ? (
-                <p className="mt-3 text-sm text-emerald-800">تقييمك اتسجل. شكرًا إنك ساعدت تبني ثقة في بدّلها.</p>
+                <p className="mt-3 text-sm text-emerald-800">تقييمك اتسجل. شكرًا إنك ساعدت تبني ثقة في تِسوى.</p>
               ) : (
                 <form action={submitDealReview} className="mt-3 space-y-3">
                   <input type="hidden" name="dealId" value={deal.id} />
@@ -240,7 +240,7 @@ export default async function DealDetailPage({ params, searchParams }: { params:
                   <article key={participant.id} className="rounded-xl border p-3">
                     <div className="flex items-center gap-3">
                       <div className="size-10 overflow-hidden rounded-full bg-stone-100">
-                        {avatar ? <img src={avatar} alt={displayName} className="h-full w-full object-cover" /> : <div className="flex h-full w-full items-center justify-center text-xs text-stone-500">بدّلها</div>}
+                        {avatar ? <img src={avatar} alt={displayName} className="h-full w-full object-cover" /> : <div className="flex h-full w-full items-center justify-center text-xs text-stone-500">تِسوى</div>}
                       </div>
                       <div className="min-w-0">
                         <p className="truncate font-medium">{displayName}</p>

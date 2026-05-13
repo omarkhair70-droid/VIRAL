@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PageHeading } from "@/components/ui/page-heading";
 
 export const metadata: Metadata = {
-  title: "بدّلها Beta",
+  title: "تِسوى Beta",
   description: "بدّل الحاجة بدل ما تسيبها مركونة.",
 };
 
@@ -13,10 +13,10 @@ export default function BetaPage() {
   return (
     <section className="mx-auto max-w-4xl space-y-6 px-4 py-10">
       <Card className="bg-cream">
-        <PageHeading title="جرّب بدّلها في النسخة التجريبية" subtitle="دي نسخة تجريبية متحكَّم فيها عشان نتأكد إن الرحلة واضحة وآمنة قبل التوسّع." />
-        <p className="text-sm text-muted">ليه Beta؟ لأننا بنفتح بدّلها بالتدريج ونحسّن التجربة من ملاحظات المستخدمين الحقيقيين.</p>
+        <PageHeading title="جرّب تِسوى في النسخة التجريبية" subtitle="دي نسخة تجريبية متحكَّم فيها عشان نتأكد إن الرحلة واضحة وآمنة قبل التوسّع." />
+        <p className="text-sm text-muted">ليه Beta؟ لأننا بنفتح تِسوى بالتدريج ونحسّن التجربة من ملاحظات المستخدمين الحقيقيين.</p>
         <div className="mt-4">
-          <ShareActions title="بدّلها Beta" text="جرب بدّلها: بدّل الحاجة بدل ما تسيبها مركونة." urlPath="/beta" label="ابعتها لحد يجربها معاك" />
+          <ShareActions title="تِسوى Beta" text="جرب تِسوى: بدّل الحاجة بدل ما تسيبها مركونة." urlPath="/beta" label="ابعتها لحد يجربها معاك" />
         </div>
       </Card>
 

@@ -227,10 +227,10 @@ export default async function DashboardPage() {
               <CardTitle className="text-lg">أدوات الحساب</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2 text-sm text-stone-700">
-              <p>استخدم بدّلها من موبايلك بسهولة.</p>
+              <p>استخدم تِسوى من موبايلك بسهولة.</p>
             </CardContent>
             <CardFooter>
-              <ButtonLink href="/install" variant="secondary" size="sm">نزّل بدّلها على موبايلك</ButtonLink>
+              <ButtonLink href="/install" variant="secondary" size="sm">نزّل تِسوى على موبايلك</ButtonLink>
             </CardFooter>
           </Card>
         </div>

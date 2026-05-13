@@ -358,3 +358,18 @@
 - [ ] admin review link still appears only for admins
 - [ ] install CTA still available
 - [ ] build passes
+
+## Teswa Brand Rename QA
+- [ ] Header uses Teswa/Teswa Arabic logo asset, not Baddelha asset
+- [ ] Header subtitle uses "حاجتك لسه لها قيمة."
+- [ ] Footer shows updated Teswa brand line
+- [ ] Global page title/template use "تِسوى"
+- [ ] OpenGraph/application/apple metadata use "تِسوى"
+- [ ] Manifest name and short_name use "تِسوى"
+- [ ] Home logged-out hero uses Teswa naming and new brand line
+- [ ] Logged-in greeting fallback uses "تِسوى"
+- [ ] PWA install card says "ثبّت تِسوى"
+- [ ] Install page says "نزّل تِسوى"
+- [ ] No user-facing "بدّلها" / "Baddelha" references remain in app UI
+- [ ] Existing routes/business logic remain unchanged
+- [ ] `npm run build` passes

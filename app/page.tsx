@@ -8,9 +8,9 @@ import { PwaInstallCard } from "@/components/pwa-install-card";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
-  title: "بدّلها | سوق المقايضة",
+  title: "تِسوى | سوق المقايضة",
   description:
-    "بدّل الحاجة بدل ما تسيبها مركونة. اعرض حاجة، استقبل عروض، اتفقوا بهدوء، وبعد المقايضة قيّموا بعض.",
+    "تِسوى — حاجتك لسه لها قيمة. اعرض حاجة، استقبل عروض، واتفقوا بأمان في مكان عام.",
 };
 
 const steps = ["اعرض حاجة مركونة", "استقبل عروض", "افتح صفحة التنسيق", "قيّم بعد المقايضة"];
@@ -64,7 +64,7 @@ export default async function HomePage() {
       showPriorityBadge = true;
     } else if ((activeItemsCount ?? 0) === 0) {
       priorityTitle = "لسه ما عرضتش حاجة نشطة.";
-      prioritySubtitle = "ابدأ بحاجة واحدة واضحة، وسيب بدّلها يفتح لك أبواب مقايضة.";
+      prioritySubtitle = "ابدأ بحاجة واحدة واضحة، وسيب تِسوى يفتح لك أبواب مقايضة.";
       priorityCtaPrimary = { href: "/items/new" as const, label: "اعرض أول حاجة" };
       priorityCtaSecondary = null;
       showPriorityBadge = true;
@@ -76,7 +76,7 @@ export default async function HomePage() {
       <div className="mx-auto max-w-6xl space-y-5 px-4 py-6 md:space-y-7 md:py-10">
         <PwaInstallCard />
         <Card className="rounded-3xl bg-cream p-5 md:p-8">
-          <p className="text-sm text-muted">{displayName ? `أهلاً ${displayName}` : "أهلاً بيك في بدّلها"}</p>
+          <p className="text-sm text-muted">{displayName ? `أهلاً ${displayName}` : "أهلاً بيك في تِسوى"}</p>
           {showPriorityBadge ? <div className="mt-2"><StatusPill tone="warning">الأولوية دلوقتي</StatusPill></div> : null}
           <h1 className="mt-1 text-2xl font-bold text-ink md:text-3xl">{priorityTitle}</h1>
           <p className="mt-2 text-sm text-muted">{prioritySubtitle}</p>
@@ -111,7 +111,7 @@ export default async function HomePage() {
     <div className="mx-auto max-w-6xl space-y-10 px-4 py-10 md:py-14">
       <PwaInstallCard />
       <Card className="rounded-3xl bg-cream p-6 md:p-10">
-        <PageHeading eyebrow="بدّلها — Baddelha Swap" title="بدّل الحاجة بدل ما تسيبها مركونة." subtitle="بدّلها مساحة مقايضة عملية: اعرض حاجة، استقبل عروض، واتفقوا بأمان في مكان عام." />
+        <PageHeading eyebrow="تِسوى — Teswa" title="حاجتك لسه لها قيمة." subtitle="تِسوى مساحة مقايضة عملية: اعرض حاجة، استقبل عروض، واتفقوا بأمان في مكان عام." />
         <div className="mt-2 flex flex-wrap gap-3">
           <ButtonLink href="/items/new" size="lg">
             اعرض حاجة

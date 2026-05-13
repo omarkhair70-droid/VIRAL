@@ -24,9 +24,9 @@ export async function SiteHeader() {
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-2.5 sm:py-3">
         <Link href="/" className="min-w-0 flex-1">
           <span className="flex items-center gap-2">
-            <Image src="/brand/baddelha-horizontal.png" alt="بدّلها" width={168} height={36} className="h-8 w-auto shrink-0 sm:h-9" priority />
+            <Image src="/brand/teswa-logo-horizontal-ar.svg" alt="تِسوى" width={168} height={36} className="h-8 w-auto shrink-0 sm:h-9" priority />
           </span>
-          <span className="hidden text-xs text-muted sm:block">بدّل الحاجة بدل ما تسيبها مركونة.</span>
+          <span className="hidden text-xs text-muted sm:block">حاجتك لسه لها قيمة.</span>
         </Link>
 
         <div className="flex items-center gap-1 sm:hidden">
