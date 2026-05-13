@@ -46,7 +46,7 @@ begin
     raise exception 'Unsupported notification type';
   end if;
 
-  if notification_type like 'offer_%' or notification_type = 'deal_created' then
+  if notification_type in ('offer_received','offer_thinking','offer_accepted','offer_soft_rejected','offer_redirected','deal_created') then
     if target_offer_id is null then
       raise exception 'offer notifications require target_offer_id';
     end if;
