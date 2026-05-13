@@ -7,6 +7,7 @@ import { ButtonLink } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { PageHeading } from "@/components/ui/page-heading";
 import { isCurrentUserAdmin } from "@/lib/admin";
+import { getUnreadMessagesCount } from "@/lib/messages";
 import { createClient } from "@/lib/supabase/server";
 
 type OfferStatus = "pending" | "thinking" | "accepted";
@@ -27,6 +28,7 @@ export default async function DashboardPage() {
     { count: completedDealsCount },
     { count: pendingConfirmationsCount },
     { count: unreadNotificationsCount },
+    unreadMessagesCount,
     isAdmin,
   ] = await Promise.all([
     supabase.from("profiles").select("display_name,username,bio,city,area").eq("id", user.id).maybeSingle(),
@@ -41,6 +43,7 @@ export default async function DashboardPage() {
       .or(`requester_id.eq.${user.id},offerer_id.eq.${user.id}`)
       .eq("status", "completed_pending_confirmation"),
     supabase.from("notifications").select("id", { count: "exact", head: true }).eq("user_id", user.id).is("read_at", null),
+    getUnreadMessagesCount(user.id),
     isCurrentUserAdmin(supabase),
   ]);
 
@@ -70,6 +73,15 @@ export default async function DashboardPage() {
       href: "/deals" as const,
       cta: "افتح الصفقات",
       icon: "deal" as const,
+    },
+    {
+      key: "messages",
+      title: "رسائل غير مقروءة",
+      count: unreadMessagesCount,
+      note: "راجع آخر رسائل التنسيق في الصفقات.",
+      href: "/messages" as const,
+      cta: "افتح الرسائل",
+      icon: "chat" as const,
     },
     {
       key: "notifications",

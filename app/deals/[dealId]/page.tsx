@@ -86,6 +86,8 @@ export default async function DealDetailPage({ params, searchParams }: { params:
   const deal = data as unknown as DealRow;
   if (user.id !== deal.requester_id && user.id !== deal.offerer_id) notFound();
 
+  await supabase.rpc("mark_deal_thread_read", { p_deal_id: deal.id });
+
   const offered = firstOrNull(deal.offered_item);
   const requested = firstOrNull(deal.requested_item);
   if (!offered || !requested) notFound();

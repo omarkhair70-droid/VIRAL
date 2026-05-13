@@ -408,3 +408,14 @@
 - [ ] no navigation shell changes introduced.
 - [ ] no DB schema changes introduced.
 - [ ] `npm run build` passes.
+
+## Season 3 Phase 38 — Messaging 2.0 QA
+- [ ] `/messages` requires login and redirects logged-out users to `/login?next=/messages`.
+- [ ] Inbox lists deal-based conversations and links each card to `/deals/[dealId]#messages`.
+- [ ] Cards show other participant, swap context, latest message preview/timestamp, and unread badge/count.
+- [ ] Ordering is by latest message activity, with fallback to accepted/created deal time.
+- [ ] Opening `/deals/[dealId]` marks the thread read for that participant.
+- [ ] Sending from deal room still validates in app layer and now revalidates `/messages`.
+- [ ] DB blocks blank/trim-empty and >800-char message bodies.
+- [ ] Dashboard and `/deals` provide clear entry to message inbox.
+- [ ] No realtime behavior added yet (planned for Phase 39).
