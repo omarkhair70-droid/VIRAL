@@ -18,8 +18,8 @@ export default async function LoginPage({
 
   return (
     <section className="mx-auto max-w-xl space-y-4 px-4 py-10">
-      <h1 className="text-2xl font-bold md:text-3xl">ادخل علشان نعرف نرجعلك بردود العروض.</h1>
-      <p className="text-stone-700">الدخول بجوجل هو الأسرع. والإيميل متاح كاختيار احتياطي.</p>
+      <h1 className="text-2xl font-bold md:text-3xl">ادخل تِسوى وابدأ أول مقايضة.</h1>
+      <p className="text-stone-700">الدخول بجوجل هو الأسرع. وبعده هنجهز بروفايلك ونوصلك لأول خطوة.</p>
 
       {error ? (
         <div className="rounded-xl bg-red-50 p-4 text-red-700">
@@ -45,6 +45,7 @@ export default async function LoginPage({
         </button>
       </form>
 
+      <p className="text-sm text-stone-600">إيميلك مش بيظهر للناس.</p>
       <p className="text-center text-sm text-stone-600">أو كمل بالإيميل</p>
 
       <form action={sendMagicLink} className="space-y-3 rounded-2xl border border-stone-200 p-4">
