@@ -22,7 +22,7 @@ const safetySections = [
 export default function SafetyPage() {
   return (
     <section className="mx-auto max-w-5xl px-4 py-10">
-      <SectionHeading title="دليل الأمان في بدّلها" subtitle="نصايح بسيطة تساعدك تتفقوا بهدوء وتاخد قرار أريح." />
+      <SectionHeading title="دليل الأمان في تِسوى" subtitle="نصايح بسيطة تساعدك تتفقوا بهدوء وتاخد قرار أريح." />
       <div className="grid gap-4 md:grid-cols-2">
         {safetySections.map((section) => (
           <article key={section.title} className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">

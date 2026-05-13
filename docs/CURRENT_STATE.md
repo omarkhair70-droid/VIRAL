@@ -1,7 +1,7 @@
-# VIRAL / بدّلها — Current State (Phase 20.5)
+# VIRAL / تِسوى — Current State (Phase 20.5)
 
 ## What it is
-VIRAL (بدّلها) is an Arabic-first item swap marketplace MVP where users list items and exchange through offers and coordinated deals.
+VIRAL (تِسوى) is an Arabic-first item swap marketplace MVP where users list items and exchange through offers and coordinated deals.
 
 ## Product stage
 - **Controlled beta marketplace MVP** (not public launch ready).
@@ -99,7 +99,7 @@ If docs and implementation differ, **current code + SQL behavior wins**; docs mu
 
 
 ## App Feel 3.0 — Icon System Integration (May 12, 2026)
-- Official Baddelha UI icon system integrated into core mobile navigation, mobile header utility actions, and key empty states.
+- Official Teswa UI icon system integrated into core mobile navigation, mobile header utility actions, and key empty states.
 - Temporary mixed emoji/inline icon usage was replaced in these core surfaces to keep icon language unified.
 
 ## Phase 30 Item Detail 2.0 (May 12, 2026)
@@ -161,3 +161,7 @@ If docs and implementation differ, **current code + SQL behavior wins**; docs mu
 ## Post-Season-2 Polish — Navigation Active-State Edge Cases (May 12, 2026)
 - Mobile bottom-nav "حسابي" active state now remains accurate across `/dashboard*`, `/profile`, `/offers/[offerId]`, and `/deals/[dealId]`.
 - Offer creation route `/offers/new` remains neutral and does not incorrectly activate "حسابي".
+
+
+## Product brand rename note
+- Product branding is now Teswa / تِسوى, and UI/runtime brand assets and copy were updated accordingly.

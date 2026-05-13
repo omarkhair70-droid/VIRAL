@@ -77,26 +77,26 @@ export async function generateMetadata({ params }: { params: Promise<{ itemId: s
   const item = data as ItemMetadataRow | null;
   if (!item || !PUBLIC_METADATA_STATUSES.includes(item.status)) {
     return {
-      title: "إعلان على بدّلها",
-      description: "شوف الإعلانات العامة على بدّلها.",
+      title: "إعلان على تِسوى",
+      description: "شوف الإعلانات العامة على تِسوى.",
     };
   }
 
   const imageUrl = item.item_images?.find((img) => img.is_primary)?.image_url ?? item.item_images?.[0]?.image_url ?? null;
-  const description = item.description || "شوف الإعلان ده على بدّلها.";
+  const description = item.description || "شوف الإعلان ده على تِسوى.";
 
   return {
-    title: `${item.title} | بدّلها`,
+    title: `${item.title} | تِسوى`,
     description,
     openGraph: {
-      title: `${item.title} | بدّلها`,
+      title: `${item.title} | تِسوى`,
       description,
       type: "website",
       images: imageUrl ? [{ url: imageUrl }] : undefined,
     },
     twitter: {
       card: imageUrl ? "summary_large_image" : "summary",
-      title: `${item.title} | بدّلها`,
+      title: `${item.title} | تِسوى`,
       description,
       images: imageUrl ? [imageUrl] : undefined,
     },
@@ -268,7 +268,7 @@ export default async function ItemDetailPage({ params, searchParams }: { params:
             <ShareActions
               label={isOwner ? "شارك إعلانك" : "شارك الإعلان"}
               title={typed.title}
-              text="شوف الإعلان ده على بدّلها — بدّل الحاجة بدل ما تسيبها مركونة."
+              text="شوف الإعلان ده على تِسوى — بدّل الحاجة بدل ما تسيبها مركونة."
               urlPath={`/items/${typed.id}`}
             />
             {isOwner ? (

@@ -82,7 +82,7 @@ export function PwaInstallCard() {
             <AppIcon name="spark" className="h-4 w-4" />
           </span>
           <div>
-            <p className="font-semibold text-ink">ثبّت بدّلها على موبايلك</p>
+            <p className="font-semibold text-ink">ثبّت تِسوى على موبايلك</p>
             <p className="mt-1 text-sm text-muted">افتحه أسرع وخليه أقرب لتطبيق حقيقي.</p>
             <div className="mt-3 flex flex-wrap gap-2">
               <Button size="sm" onClick={installApp}>ثبّت التطبيق</Button>

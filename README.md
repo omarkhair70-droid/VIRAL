@@ -1,4 +1,4 @@
-# VIRAL / بدّلها
+# VIRAL / تِسوى
 
 منصة marketplace عربية للتبادل المباشر بين الأفراد (item-for-item swap)، حالياً في **Controlled Beta Marketplace MVP**.
 

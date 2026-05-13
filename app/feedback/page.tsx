@@ -17,7 +17,7 @@ export default async function FeedbackPage({ searchParams }: { searchParams: Pro
   if (!user) redirect("/login?next=/feedback");
 
   return <section className="mx-auto max-w-2xl space-y-4 px-4 py-10">
-    <PageHeading title="ابعت رأيك" subtitle="لو حاجة مش واضحة، أو قابلت مشكلة، ابعتلنا التفاصيل. ده بيساعدنا نطوّر بدّلها في البيتا." />
+    <PageHeading title="ابعت رأيك" subtitle="لو حاجة مش واضحة، أو قابلت مشكلة، ابعتلنا التفاصيل. ده بيساعدنا نطوّر تِسوى في البيتا." />
     <p className="flex items-center gap-2 text-sm text-muted"><AppIcon name="feedback" className="h-4 w-4" />لو أنت من أوائل مجربي البيتا، رأيك مهم حتى لو الملاحظة صغيرة.</p>
     {params.sent === "1" ? <Alert variant="success">وصلنا رأيك. شكرًا إنك بتساعدنا نحسّن التجربة. <Link className="underline" href="/dashboard/feedback">شوف feedback اللي بعته</Link></Alert> : null}
     {params.error ? <Alert variant="danger">تعذر إرسال الـ feedback دلوقتي. راجع البيانات وحاول تاني.</Alert> : null}
