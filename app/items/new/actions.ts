@@ -15,6 +15,16 @@ function parseImagePaths(raw: string): string[] {
 
 export type CreateItemResult = { ok: true; itemId: string } | { ok: false; error: "validation" | "publish" };
 
+
+async function cleanupUploadedImages(supabase: Awaited<ReturnType<typeof createClient>>, uploadedPaths: string[]) {
+  if (uploadedPaths.length === 0) return;
+
+  const { error } = await supabase.storage.from("item-images").remove(uploadedPaths);
+  if (error) {
+    console.error("Failed to cleanup uploaded item images", error);
+  }
+}
+
 export async function createItem(formData: FormData): Promise<CreateItemResult> {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -83,6 +93,7 @@ export async function createItem(formData: FormData): Promise<CreateItemResult> 
 
   if (error || !item) {
     console.error("Failed to create item", error);
+    await cleanupUploadedImages(supabase, uploadedPaths);
     return { ok: false, error: "publish" };
   }
 
@@ -99,6 +110,17 @@ export async function createItem(formData: FormData): Promise<CreateItemResult> 
   const { error: imageInsertError } = await supabase.from("item_images").insert(itemImagesPayload);
   if (imageInsertError) {
     console.error("Failed to insert item images", imageInsertError);
+
+    const { error: rollbackDeleteError } = await supabase.from("items").delete().eq("id", item.id);
+    if (rollbackDeleteError) {
+      console.error("Failed to delete item after image insert failure", rollbackDeleteError);
+      const { error: archiveFallbackError } = await supabase.from("items").update({ status: "archived" }).eq("id", item.id);
+      if (archiveFallbackError) {
+        console.error("Failed to archive item after rollback delete failure", archiveFallbackError);
+      }
+    }
+
+    await cleanupUploadedImages(supabase, uploadedPaths);
     return { ok: false, error: "publish" };
   }
 
