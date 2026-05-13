@@ -97,7 +97,7 @@
 ## R. Scale / Reliability / Monitoring
 - [ ] `npm run build` passes.
 - [ ] `npm run smoke` passes against local/preview URL.
-- [ ] `/api/health` returns `{ ok: true, app: "baddelha", status: "up" }`.
+- [ ] `/api/health` returns `{ ok: true, app: "teswa", status: "up" }`.
 - [ ] `/admin/ops` is admin-only.
 - [ ] `/admin/ops` shows aggregate counts only.
 - [ ] `/admin/ops` does not expose emails/messages/auth IDs.

@@ -165,3 +165,8 @@ If docs and implementation differ, **current code + SQL behavior wins**; docs mu
 
 ## Product brand rename note
 - Product branding is now Teswa / تِسوى, and UI/runtime brand assets and copy were updated accordingly.
+
+## Teswa Rebrand QA + Beta Readiness (May 13, 2026)
+- Teswa rebrand QA and beta readiness review completed.
+- See `docs/TESWA_REBRAND_QA_AND_BETA_READINESS.md` for formal findings and readiness status.
+
