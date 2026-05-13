@@ -14,6 +14,7 @@ type ProfileRow = {
   id: string;
   username: string | null;
   display_name: string | null;
+  avatar_url: string | null;
   profile_tagline: string | null;
   bio: string | null;
   city: string | null;
@@ -21,21 +22,26 @@ type ProfileRow = {
   successful_swaps_count: number;
 };
 
+function sanitizePeopleSearchQuery(raw: string) {
+  return raw.trim().slice(0, 80).replace(/[(),]/g, " ").replace(/\s+/g, " ").trim();
+}
+
 export default async function PeoplePage({ searchParams }: { searchParams?: Promise<{ q?: string }> }) {
   const params = (await searchParams) ?? {};
   const q = params.q?.trim() ?? "";
+  const safeQuery = sanitizePeopleSearchQuery(q);
   const supabase = await createClient();
 
   let query = supabase
     .from("profiles")
-    .select("id,username,display_name,profile_tagline,bio,city,area,successful_swaps_count")
+    .select("id,username,display_name,avatar_url,profile_tagline,bio,city,area,successful_swaps_count")
     .not("username", "is", null)
     .order("successful_swaps_count", { ascending: false })
     .order("created_at", { ascending: false })
     .limit(24);
 
-  if (q) {
-    query = query.or(`display_name.ilike.%${q}%,username.ilike.%${q}%,city.ilike.%${q}%,area.ilike.%${q}%`);
+  if (safeQuery) {
+    query = query.or(`display_name.ilike.%${safeQuery}%,username.ilike.%${safeQuery}%,city.ilike.%${safeQuery}%,area.ilike.%${safeQuery}%`);
   }
 
   const { data } = await query;
@@ -85,6 +91,7 @@ export default async function PeoplePage({ searchParams }: { searchParams?: Prom
               key={profile.id}
               displayName={profile.display_name?.trim() || profile.username || "مستخدم"}
               username={profile.username as string}
+              avatarUrl={profile.avatar_url}
               city={profile.city}
               area={profile.area}
               tagline={profile.profile_tagline}

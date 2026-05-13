@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { StatusPill } from "@/components/ui/status-pill";
 import { TrustBadges } from "@/components/trust-badges";
@@ -7,6 +8,7 @@ import type { TrustBadge } from "@/lib/trust-badges";
 type ProfileDirectoryCardProps = {
   displayName: string;
   username: string;
+  avatarUrl: string | null;
   city: string | null;
   area: string | null;
   tagline: string | null;
@@ -28,9 +30,19 @@ export function ProfileDirectoryCard(props: ProfileDirectoryCardProps) {
             <p className="text-base font-semibold text-ink">{props.displayName}</p>
             <p className="text-sm text-muted">@{props.username}</p>
           </div>
-          <div className="flex h-11 w-11 items-center justify-center rounded-full bg-sand text-sm font-semibold text-ink">
-            {props.displayName.charAt(0)}
-          </div>
+          {props.avatarUrl ? (
+            <Image
+              src={props.avatarUrl}
+              alt={props.displayName}
+              width={44}
+              height={44}
+              className="h-11 w-11 rounded-full object-cover"
+            />
+          ) : (
+            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-sand text-sm font-semibold text-ink">
+              {props.displayName.charAt(0)}
+            </div>
+          )}
         </div>
 
         {location ? <p className="text-sm text-muted">{location}</p> : <p className="text-sm text-muted">لسه مكمّلش بيانات المكان.</p>}
