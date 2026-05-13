@@ -41,31 +41,15 @@ async function validateOfferResponse(formData: FormData) {
   return { supabase, userId: user.id, offerId, offer: row };
 }
 
-async function insertEventAndNotify(params: {
+async function notifyOfferResponse(params: {
   supabase: Awaited<ReturnType<typeof createClient>>;
   offerId: string;
-  userId: string;
-  oldStatus: OfferStatus;
-  newStatus: OfferStatus;
-  eventType: "marked_thinking" | "accepted" | "soft_rejected" | "redirected";
-  note?: string;
   senderId: string;
-  notificationType: "offer_thinking" | "offer_accepted" | "offer_soft_rejected" | "offer_redirected";
+  notificationType: "offer_thinking" | "offer_soft_rejected" | "offer_redirected";
   notificationTitle: string;
   notificationBody: string;
 }) {
-  const { supabase } = params;
-  const { error: eventError } = await supabase.from("offer_events").insert({
-    offer_id: params.offerId,
-    actor_id: params.userId,
-    event_type: params.eventType,
-    old_status: params.oldStatus,
-    new_status: params.newStatus,
-    note: params.note?.trim() ? params.note.trim() : null,
-  });
-  if (eventError) throw eventError;
-
-  await createNotification(supabase, {
+  await createNotification(params.supabase, {
     targetUserId: params.senderId,
     notificationType: params.notificationType,
     notificationTitle: params.notificationTitle,
@@ -78,16 +62,12 @@ export async function markOfferThinking(formData: FormData) {
   try {
     const ctx = await validateOfferResponse(formData);
     const note = String(formData.get("note") ?? "");
-    const { error } = await ctx.supabase.from("offers").update({ status: "thinking", responded_at: new Date().toISOString() }).eq("id", ctx.offerId);
+    const { error } = await ctx.supabase.rpc("mark_offer_thinking", { p_offer_id: ctx.offerId, p_note: note });
     if (error) throw error;
-    await insertEventAndNotify({
+
+    await notifyOfferResponse({
       supabase: ctx.supabase,
       offerId: ctx.offerId,
-      userId: ctx.userId,
-      oldStatus: ctx.offer.status,
-      newStatus: "thinking",
-      eventType: "marked_thinking",
-      note,
       senderId: ctx.offer.sender_id,
       notificationType: "offer_thinking",
       notificationTitle: "صاحب الحاجة محتاج يفكر",
@@ -149,16 +129,12 @@ export async function softRejectOffer(formData: FormData) {
   try {
     const ctx = await validateOfferResponse(formData);
     const note = String(formData.get("note") ?? "");
-    const { error } = await ctx.supabase.from("offers").update({ status: "soft_rejected", responded_at: new Date().toISOString(), public_note: note.trim() ? note.trim() : null }).eq("id", ctx.offerId);
+    const { error } = await ctx.supabase.rpc("soft_reject_offer", { p_offer_id: ctx.offerId, p_note: note });
     if (error) throw error;
-    await insertEventAndNotify({
+
+    await notifyOfferResponse({
       supabase: ctx.supabase,
       offerId: ctx.offerId,
-      userId: ctx.userId,
-      oldStatus: ctx.offer.status,
-      newStatus: "soft_rejected",
-      eventType: "soft_rejected",
-      note,
       senderId: ctx.offer.sender_id,
       notificationType: "offer_soft_rejected",
       notificationTitle: "العرض ما ظبطش المرة دي",
@@ -181,16 +157,16 @@ export async function redirectOffer(formData: FormData) {
   try {
     const ctx = await validateOfferResponse(formData);
     const note = String(formData.get("note") ?? "");
-    const { error } = await ctx.supabase.from("offers").update({ status: "redirected", responded_at: new Date().toISOString(), redirect_type: redirectType, public_note: note.trim() ? note.trim() : null }).eq("id", ctx.offerId);
+    const { error } = await ctx.supabase.rpc("redirect_offer", {
+      p_offer_id: ctx.offerId,
+      p_redirect_type: redirectType,
+      p_note: note,
+    });
     if (error) throw error;
-    await insertEventAndNotify({
+
+    await notifyOfferResponse({
       supabase: ctx.supabase,
       offerId: ctx.offerId,
-      userId: ctx.userId,
-      oldStatus: ctx.offer.status,
-      newStatus: "redirected",
-      eventType: "redirected",
-      note,
       senderId: ctx.offer.sender_id,
       notificationType: "offer_redirected",
       notificationTitle: "صاحب الحاجة فتح باب تاني",
