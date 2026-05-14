@@ -5,7 +5,7 @@ import { PageShell } from "@/components/page-shell";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { Field, FormSection, HelperText, Label, TextInput, Textarea } from "@/components/ui/form";
 import { AvatarUpload, CoverUpload } from "@/components/ui/product-primitives";
-import { HeroPanel, HighlightPanel, InlineNotice, PageSection, SurfaceCard } from "@/components/ui/surfaces";
+import { HeroPanel, HighlightPanel, InlineNotice, PageSection, SoftPanel, SurfaceCard } from "@/components/ui/surfaces";
 import { createClient } from "@/lib/supabase/server";
 
 type PageParams = { searchParams?: Promise<{ updated?: string; error?: string }> };
@@ -73,5 +73,12 @@ export default async function ProfilePage({ searchParams }: PageParams) {
     </SurfaceCard>
 
     {username ? <ButtonLink href={`/users/${username}` as Route} variant="outline">شوف شكل بروفايلك للناس</ButtonLink> : null}
+
+    <SoftPanel className="space-y-3">
+      <h2 className="text-lg font-semibold">إدارة الحساب</h2>
+      <p className="text-sm text-app-text-secondary">لو لم تعد ترغب في استخدام تِسوى، يمكنك إرسال طلب حذف الحساب والبيانات المرتبطة.</p>
+      <ButtonLink href="/profile/delete-account" variant="outline">طلب حذف الحساب</ButtonLink>
+    </SoftPanel>
+
   </PageSection></PageShell>;
 }

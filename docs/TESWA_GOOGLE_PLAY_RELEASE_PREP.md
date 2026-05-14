@@ -63,12 +63,18 @@ Prepare Teswa for Google Play distribution through Trusted Web Activity (TWA) us
 - Created `docs/TESWA_ANDROID_RELEASE_DECISIONS.md` for app/package/screenshots/graphic decisions.
 - Created `docs/TESWA_RELEASE_COMPLIANCE_GAPS.md` for unresolved release risks and ownership decisions.
 
-### Pending decisions before Bubblewrap (GP-03)
+## 9) GP-02B completion summary (Account Deletion & Compliance Completion)
+### Delivered in GP-02B
+- Added public account deletion request flow at `/account-deletion`.
+- Added authenticated in-app account deletion request flow at `/profile/delete-account`.
+- Added database intake table and status lifecycle for deletion requests.
+- Updated privacy, data safety worksheet, and release compliance documentation to match implemented behavior.
+
+### Remaining blockers are human release decisions
 - Final production origin confirmation.
 - Final package ID confirmation.
-- Final support/privacy email confirmation.
-- Explicit account deletion/deletion-request compliance resolution.
+- Final support/privacy contact email confirmation.
+- Final Data Safety/Privacy wording sign-off in Play Console.
 
-### Branch condition for next phase
-- Proceed to **GP-03 — Bubblewrap Local Generation** only if the pending decisions above are finalized.
-- If account deletion/compliance scope remains unresolved, execute **GP-02B — Account Deletion / Legal Compliance Completion** first.
+## 10) Recommended next phase
+Proceed to **GP-03 — Bubblewrap Local Generation** once the human confirmations above are finalized.
