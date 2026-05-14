@@ -1,5 +1,6 @@
 const CACHE_PREFIX = "teswa";
 const CACHE_NAME = `${CACHE_PREFIX}-v1`;
+const LEGACY_CACHE_PREFIXES = ["baddelha"];
 const STATIC_ASSETS = ["/offline", "/icons/icon-192.png", "/icons/icon-512.png", "/icons/icon-maskable.png", "/manifest.webmanifest"];
 
 self.addEventListener("install", (event) => {
@@ -10,7 +11,15 @@ self.addEventListener("install", (event) => {
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
-      Promise.all(keys.filter((key) => key.startsWith(CACHE_PREFIX) && key !== CACHE_NAME).map((key) => caches.delete(key))),
+      Promise.all(
+        keys
+          .filter((key) => {
+            const isStaleCurrentPrefixCache = key.startsWith(CACHE_PREFIX) && key !== CACHE_NAME;
+            const isLegacyPrefixCache = LEGACY_CACHE_PREFIXES.some((prefix) => key.startsWith(prefix));
+            return isStaleCurrentPrefixCache || isLegacyPrefixCache;
+          })
+          .map((key) => caches.delete(key)),
+      ),
     ),
   );
   self.clients.claim();
