@@ -28,7 +28,7 @@ Phase 42A establishes the reusable UI foundation for Season 4 without redesignin
 
 ## 6) Button/CTA Taxonomy
 - Variants: `primary`, `secondary`, `outline`, `quiet`, `destructive`.
-- Sizes: `compact`, `md`, `lg`.
+- Sizes: `compact`, `sm`, `md`, `lg`.
 - Supports: `fullWidth`, `iconOnly`, disabled, `loading`.
 
 ## 7) Form System Rules

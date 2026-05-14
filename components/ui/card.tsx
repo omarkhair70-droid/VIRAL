@@ -1,12 +1,11 @@
 import type { HTMLAttributes } from "react";
-import { SurfaceCard } from "@/components/ui/surfaces";
 
 function cx(base: string, className?: string) {
   return `${base} ${className ?? ""}`;
 }
 
 export function Card({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
-  return <SurfaceCard className={className} {...props} />;
+  return <div className={cx("rounded-2xl border border-warmBorder bg-white p-5 shadow-sm", className)} {...props} />;
 }
 export function CardHeader({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
   return <div className={cx("mb-3 space-y-1", className)} {...props} />;

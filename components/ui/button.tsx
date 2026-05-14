@@ -4,12 +4,19 @@ import type { ButtonHTMLAttributes, ComponentPropsWithoutRef, ReactNode } from "
 type Variant = "primary" | "secondary" | "outline" | "quiet" | "destructive";
 type Size = "compact" | "sm" | "md" | "lg";
 
-type Shared = {
+type ButtonVisualProps = {
   variant?: Variant;
   size?: Size;
   fullWidth?: boolean;
-  loading?: boolean;
   iconOnly?: boolean;
+};
+
+type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & ButtonVisualProps & {
+  loading?: boolean;
+};
+
+type ButtonLinkProps = ComponentPropsWithoutRef<typeof Link> & ButtonVisualProps & {
+  children: ReactNode;
 };
 
 const variantClasses: Record<Variant, string> = {
@@ -27,15 +34,20 @@ const sizeClasses: Record<Size, string> = {
   lg: "min-h-12 rounded-button px-5 py-3 text-base",
 };
 
-function buttonClassName({ variant = "primary", size = "md", fullWidth, iconOnly, className }: Shared & { className?: string }) {
+function buttonClassName({ variant = "primary", size = "md", fullWidth, iconOnly, className }: ButtonVisualProps & { className?: string }) {
   return `inline-flex items-center justify-center gap-2 font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-focus focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-60 ${variantClasses[variant]} ${sizeClasses[size]} ${fullWidth ? "w-full" : ""} ${iconOnly ? "aspect-square px-0" : ""} ${className ?? ""}`;
 }
 
-export function Button({ variant = "primary", size = "md", className, type = "button", loading, children, disabled, fullWidth, iconOnly, ...props }: ButtonHTMLAttributes<HTMLButtonElement> & Shared) {
-  return <button type={type} className={buttonClassName({ variant, size, className, fullWidth, iconOnly })} aria-busy={loading || undefined} disabled={disabled || loading} {...props}>{loading ? "..." : children}</button>;
+export function Button({ variant = "primary", size = "md", className, type = "button", loading, children, disabled, fullWidth, iconOnly, ...props }: ButtonProps) {
+  return (
+    <button type={type} className={buttonClassName({ variant, size, className, fullWidth, iconOnly })} aria-busy={loading || undefined} disabled={disabled || loading} {...props}>
+      {loading ? <span aria-hidden="true" className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-current border-t-transparent" /> : null}
+      {children}
+    </button>
+  );
 }
 
-export function ButtonLink({ variant = "primary", size = "md", className, children, fullWidth, iconOnly, ...props }: ComponentPropsWithoutRef<typeof Link> & Shared & { children: ReactNode }) {
+export function ButtonLink({ variant = "primary", size = "md", className, children, fullWidth, iconOnly, ...props }: ButtonLinkProps) {
   return (
     <Link className={buttonClassName({ variant, size, className, fullWidth, iconOnly })} {...props}>
       {children}
