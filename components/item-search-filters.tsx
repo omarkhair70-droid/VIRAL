@@ -1,4 +1,6 @@
-import Link from "next/link";
+import { Button, ButtonLink } from "@/components/ui/button";
+import { FormActions, Select, TextInput } from "@/components/ui/form";
+import { SoftPanel } from "@/components/ui/surfaces";
 
 type CategoryOption = {
   id: string;
@@ -21,53 +23,54 @@ type ItemSearchFiltersProps = {
 };
 
 export function ItemSearchFilters({ categories, values }: ItemSearchFiltersProps) {
-  return (
-    <form action="/items" method="get" className="mb-6 rounded-2xl border border-stone-200 bg-white p-4">
-      <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-5">
-        <input
-          name="q"
-          defaultValue={values.q}
-          placeholder="دور على حاجة..."
-          className="rounded-xl border border-stone-300 px-3 py-2"
-        />
-        <select name="category" defaultValue={values.category} className="rounded-xl border border-stone-300 px-3 py-2">
-          <option value="">كل التصنيفات</option>
-          {categories.map((category) => (
-            <option key={category.id} value={category.slug}>
-              {category.name_ar}
-            </option>
-          ))}
-        </select>
-        <input
-          name="city"
-          defaultValue={values.city}
-          placeholder="المدينة"
-          className="rounded-xl border border-stone-300 px-3 py-2"
-        />
-        <select
-          name="condition"
-          defaultValue={values.condition}
-          className="rounded-xl border border-stone-300 px-3 py-2"
-        >
-          <option value="">كل الحالات</option>
-          <option value="almost_new">جديد تقريبًا</option>
-          <option value="good_used">مستخدم بحالة كويسة</option>
-          <option value="minor_issues">فيه عيوب بسيطة</option>
-          <option value="needs_repair">محتاج تصليح / عارف حالته</option>
-        </select>
-        <select name="sort" defaultValue={values.sort} className="rounded-xl border border-stone-300 px-3 py-2">
-          <option value="newest">الأحدث</option>
-          <option value="oldest">الأقدم</option>
-          <option value="title">العنوان (أ-ي)</option>
-        </select>
-      </div>
+  const hasAdvanced = Boolean(values.category || values.city || values.condition || values.sort !== "newest");
 
-      <div className="mt-3 flex flex-wrap items-center gap-2">
-        <button className="rounded-xl bg-clay px-4 py-2 text-white">فلتر</button>
-        <Link href="/items" className="rounded-xl border border-stone-300 px-4 py-2">
-          امسح الفلاتر
-        </Link>
-      </div>
-    </form>
+  return (
+    <SoftPanel className="space-y-3 p-4">
+      <form action="/items" method="get" className="space-y-3">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+          <TextInput name="q" defaultValue={values.q} placeholder="دور على حاجة للمقايضة..." className="sm:flex-1" />
+          <Button type="submit" size="sm">
+            ابحث
+          </Button>
+        </div>
+
+        <details className="rounded-xl border border-app-border bg-app-surface px-3 py-2" open={hasAdvanced}>
+          <summary className="cursor-pointer text-sm font-medium text-app-text-secondary">فلاتر متقدمة</summary>
+          <div className="mt-3 grid gap-2 md:grid-cols-2 lg:grid-cols-4">
+            <Select name="category" defaultValue={values.category}>
+              <option value="">كل التصنيفات</option>
+              {categories.map((category) => (
+                <option key={category.id} value={category.slug}>
+                  {category.name_ar}
+                </option>
+              ))}
+            </Select>
+            <TextInput name="city" defaultValue={values.city} placeholder="المدينة" />
+            <Select name="condition" defaultValue={values.condition}>
+              <option value="">كل الحالات</option>
+              <option value="almost_new">جديد تقريبًا</option>
+              <option value="good_used">مستخدم بحالة كويسة</option>
+              <option value="minor_issues">فيه عيوب بسيطة</option>
+              <option value="needs_repair">محتاج تصليح / عارف حالته</option>
+            </Select>
+            <Select name="sort" defaultValue={values.sort}>
+              <option value="newest">الأحدث</option>
+              <option value="oldest">الأقدم</option>
+              <option value="title">العنوان (أ-ي)</option>
+            </Select>
+          </div>
+        </details>
+
+        <FormActions>
+          <Button type="submit" variant="secondary" size="sm">
+            طبّق الفلاتر
+          </Button>
+          <ButtonLink href="/items" variant="quiet" size="sm">
+            امسح الفلاتر
+          </ButtonLink>
+        </FormActions>
+      </form>
+    </SoftPanel>
   );
 }

@@ -1,10 +1,9 @@
-
+import Link from "next/link";
+import type { Route } from "next";
 import { ItemCard } from "@/components/item-card";
 import { ItemSearchFilters } from "@/components/item-search-filters";
-import { Alert } from "@/components/ui/alert";
 import { ButtonLink } from "@/components/ui/button";
-import { EmptyState } from "@/components/ui/empty-state";
-import { PageHeading } from "@/components/ui/page-heading";
+import { InlineNotice, PageSection, PageShell, SoftPanel } from "@/components/ui/surfaces";
 import { createClient } from "@/lib/supabase/server";
 
 type MaybeArray<T> = T | T[] | null | undefined;
@@ -56,6 +55,17 @@ function parseCondition(value: string | null): Condition | null {
 function parseSort(value: string | null): Sort {
   if (value === "oldest" || value === "title") return value;
   return "newest";
+}
+
+function buildUrlWithCategory(category: string, params: { q: string; city: string; condition: Condition | null; sort: Sort }) {
+  const nextParams = new URLSearchParams();
+  if (params.q) nextParams.set("q", params.q);
+  if (params.city) nextParams.set("city", params.city);
+  if (params.condition) nextParams.set("condition", params.condition);
+  if (params.sort !== "newest") nextParams.set("sort", params.sort);
+  if (category) nextParams.set("category", category);
+  const serialized = nextParams.toString();
+  return serialized ? `/items?${serialized}` : "/items";
 }
 
 export default async function ItemsPage({ searchParams }: { searchParams: SearchParams }) {
@@ -115,50 +125,102 @@ export default async function ItemsPage({ searchParams }: { searchParams: Search
 
   const { data, error } = await query;
 
-  const items = ((data ?? []) as unknown as ItemListRawRow[]).map((item) => ({
-    ...item,
-    categoryName: firstOrNull(item.categories)?.name_ar ?? null,
-    imageUrl:
-      item.item_images?.find((img) => img.is_primary)?.image_url ?? item.item_images?.[0]?.image_url ?? null,
-    hasStory: Boolean(item.item_story || item.swap_reason || item.good_for),
-  }));
+  const items = ((data ?? []) as unknown as ItemListRawRow[]).map((item) => {
+    const images = [...(item.item_images ?? [])].sort((a, b) => Number(Boolean(b.is_primary)) - Number(Boolean(a.is_primary)));
+
+    return {
+      ...item,
+      categoryName: firstOrNull(item.categories)?.name_ar ?? null,
+      imageUrls: images.map((image) => image.image_url).filter((url): url is string => Boolean(url)),
+      imageUrl: images.find((img) => img.is_primary)?.image_url ?? images[0]?.image_url ?? null,
+      hasStory: Boolean(item.item_story || item.swap_reason || item.good_for),
+    };
+  });
 
   return (
-    <section className="mx-auto max-w-6xl px-4 py-10">
-      <PageHeading title={hasFilters ? "نتائج البحث" : "السوق"} subtitle={hasFilters ? `لقينا ${items.length} إعلان مناسب` : "إعلانات حقيقية من ناس بتدور على مقايضة مفيدة."} />
+    <PageShell className="max-w-6xl">
+      <PageSection className="space-y-4">
+        <SoftPanel className="space-y-3 p-5">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div className="space-y-1">
+              <h1 className="text-2xl font-bold text-app-text-primary">{hasFilters ? "نتائج البحث" : "السوق"}</h1>
+              <p className="text-sm text-app-text-secondary">
+                {hasFilters ? `لقينا ${items.length} إعلان مناسب للبحث بتاعك.` : "تصفح إعلانات المقايضة بسهولة واختر اللي يناسبك."}
+              </p>
+            </div>
+            <ButtonLink href="/items/new" size="sm">
+              اعرض حاجة
+            </ButtonLink>
+          </div>
 
-      <ItemSearchFilters
-        categories={(categoriesData ?? []).map((row) => ({ id: row.id, name_ar: row.name_ar, slug: row.slug }))}
-        values={{ q, category, city, condition: condition ?? "", sort }}
-      />
+          <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
+            <Link
+              href={buildUrlWithCategory("", { q, city, condition, sort }) as Route}
+              className={`shrink-0 rounded-full border px-3 py-1.5 text-sm ${!category ? "border-app-accent bg-app-accent text-white" : "border-app-border bg-app-surface text-app-text-secondary"}`}
+            >
+              الكل
+            </Link>
+            {(categoriesData ?? []).map((cat) => {
+              const active = category === cat.slug || category === cat.id;
+              return (
+                <Link
+                  key={cat.id}
+                  href={buildUrlWithCategory(cat.slug, { q, city, condition, sort }) as Route}
+                  className={`shrink-0 rounded-full border px-3 py-1.5 text-sm ${active ? "border-app-accent bg-app-accent text-white" : "border-app-border bg-app-surface text-app-text-secondary"}`}
+                >
+                  {cat.name_ar}
+                </Link>
+              );
+            })}
+          </div>
+        </SoftPanel>
 
-      {error ? <Alert variant="danger">مش قادرين نحمّل السوق دلوقتي. جرّب تاني.</Alert> : null}
+        <ItemSearchFilters
+          categories={(categoriesData ?? []).map((row) => ({ id: row.id, name_ar: row.name_ar, slug: row.slug }))}
+          values={{ q, category, city, condition: condition ?? "", sort }}
+        />
 
-      {items.length === 0 ? (
-        hasFilters ? (
-          <EmptyState
-            iconName="search"
-            title="مفيش نتائج بنفس الفلاتر دي."
-            subtitle="جرّب تخفف الفلاتر أو غيّر كلمات البحث. ولو عندك حاجة مناسبة اعرضها."
-            secondaryAction={<ButtonLink href="/items" variant="secondary">امسح الفلاتر</ButtonLink>}
-            action={<ButtonLink href="/items/new">اعرض حاجة</ButtonLink>}
-          />
+        {hasFilters ? (
+          <InlineNotice tone="accent" className="justify-between gap-2">
+            <span>البحث متفلتر — {items.length} نتيجة.</span>
+            <ButtonLink href="/items" size="compact" variant="quiet">
+              امسح الفلاتر
+            </ButtonLink>
+          </InlineNotice>
+        ) : null}
+
+        {error ? <InlineNotice tone="danger">مش قادرين نحمّل السوق دلوقتي. جرّب تاني.</InlineNotice> : null}
+
+        {items.length === 0 ? (
+          <SoftPanel className="space-y-3 p-6 text-center">
+            {hasFilters ? (
+              <>
+                <h2 className="text-xl font-semibold text-app-text-primary">مفيش نتائج بنفس الفلاتر دي.</h2>
+                <p className="text-sm text-app-text-secondary">جرّب تخفف الفلاتر أو غيّر كلمات البحث، أو اعرض حاجة تناسب اللي الناس بتدور عليه.</p>
+                <div className="flex flex-wrap justify-center gap-2">
+                  <ButtonLink href="/items" variant="secondary" size="sm">امسح الفلاتر</ButtonLink>
+                  <ButtonLink href="/items/new" size="sm">اعرض حاجة</ButtonLink>
+                </div>
+              </>
+            ) : (
+              <>
+                <h2 className="text-xl font-semibold text-app-text-primary">أول فرص المقايضة لسه مستنياك.</h2>
+                <p className="text-sm text-app-text-secondary">ابدأ بإعلان واضح بالصور، وخلي أول مقايضة في السوق تبدأ منك.</p>
+                <div className="flex flex-wrap justify-center gap-2">
+                  <ButtonLink href="/items/new" size="sm">اعرض حاجة</ButtonLink>
+                  <ButtonLink href="/feed" variant="secondary" size="sm">شوف العروض</ButtonLink>
+                </div>
+              </>
+            )}
+          </SoftPanel>
         ) : (
-          <EmptyState
-            iconName="empty-box"
-            title="السوق الحقيقي لسه بيتبني."
-            subtitle="ابدأ بأول حاجة عندك، أو شوف الناس عارضة إيه."
-            action={<ButtonLink href="/items/new">اعرض حاجة</ButtonLink>}
-            secondaryAction={<ButtonLink href="/feed" variant="secondary">شوف العروض</ButtonLink>}
-          />
-        )
-      ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {items.map((item) => (
-            <ItemCard key={item.id} item={item} />
-          ))}
-        </div>
-      )}
-    </section>
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {items.map((item) => (
+              <ItemCard key={item.id} item={item} />
+            ))}
+          </div>
+        )}
+      </PageSection>
+    </PageShell>
   );
 }
