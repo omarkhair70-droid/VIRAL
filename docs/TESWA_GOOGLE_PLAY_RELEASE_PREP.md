@@ -93,3 +93,18 @@ Proceed to **GP-03 — Bubblewrap Local Generation**.
 - Install `app-release-signed.apk` on an Android device.
 - Verify launch behavior opens as a Trusted Web Activity (no browser chrome/address bar visible).
 
+
+## 12) GP-05 completion summary (Play Console submission prep pack)
+### Delivered in GP-05
+- Confirmed TWA verification status on Android device (no browser chrome).
+- Prepared final Play Console submission prep documentation pack:
+  - `docs/TESWA_PLAY_CONSOLE_SUBMISSION_PACK.md`
+  - `docs/TESWA_PLAY_STORE_LISTING_PACK.md` (submission-ready updates)
+  - `docs/TESWA_STORE_ASSET_PRODUCTION_BRIEF.md`
+  - `docs/TESWA_PLAY_CONSOLE_APP_CONTENT_ANSWERS.md`
+  - `docs/TESWA_REVIEWER_ACCESS_STRATEGY.md`
+  - `docs/TESWA_GOOGLE_PLAY_FINAL_MANUAL_CHECKLIST.md`
+  - `docs/TESWA_DATA_SAFETY_WORKSHEET.md` (expanded worksheet)
+
+### Next phase
+Proceed to **GP-06 — Play Console Manual Submission Walkthrough**.

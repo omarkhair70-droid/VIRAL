@@ -1,33 +1,33 @@
-# TESWA Play Store Listing Pack (GP-02)
+# TESWA Play Store Listing Pack (GP-05 submission-ready)
 
 ## 1) App identity
 - **App Name (Arabic):** تِسوى
 - **Transliteration:** Teswa
 
-## 2) One-line positioning options
-1. **Possibility-first:** تِسوى بتفتح للأشياء باب قيمة جديدة بدل ما تنتهي في النسيان.
-2. **Functional/clear:** اعرض حاجتك، استقبل اقتراحات، ونسّق تبادل يناسبك في تِسوى.
-3. **Poetic but clear:** كل حاجة عندها حكاية وقيمة محتملة—تِسوى يساعدك تلاقيها.
+## 2) Final short description (Arabic)
+> اعرض حاجتك وافتح لها باب اقتراحات وقيمة جديدة.
 
-## 3) Short description candidates (Arabic)
-1. اعرض حاجتك وافتح لها باب اقتراحات وقيمة جديدة.
-2. اكتشف قيمة الأشياء من جديد عبر اقتراحات وتبادل منظم.
-3. منصة لإعلان الأشياء، استقبال العروض، وتنسيق تبادل بثقة.
+- Length target: within Play Console short-description limit (80 chars max).
+- Rationale: clear, truthful, Season 5 aligned, no exaggerated claims, no direct install CTA.
 
-## 4) Full description (Arabic)
-تِسوى هي منصة تساعدك تشوف قيمة الأشياء من منظور جديد. بدل ما الحاجة تفضل بدون استخدام، تقدر تعرضها وتفتح باب اقتراحات عملية من أشخاص مهتمين.
+## 3) Final full description (Arabic)
+تِسوى منصة تساعدك تعيد اكتشاف قيمة الأشياء بدل ما تفضل بدون استخدام.
 
-من خلال تِسوى تقدر:
-- تنشئ ملفك الشخصي وتعرّف الناس بطريقة التبادل المناسبة لك.
-- تنشر حاجاتك بصور ووصف واضح وحالة الاستخدام.
-- تستقبل اقتراحات وتناقش التفاصيل داخل مساحات تنسيق مخصصة.
-- تراجع تقييمات وتجارب بعد إتمام التبادل لدعم الثقة بين المستخدمين.
+تقدر تنشر الحاجة بصور ووصف واضح، وتفتح لها باب اقتراحات عملية من أشخاص مهتمين.
 
-التجربة في تِسوى مبنية على الوضوح والتنسيق: المحتوى العام يظهر عند النشر، بينما الرسائل والتنسيق الخاص يتم داخل مساحات مخصصة بين الأطراف المعنية.
+على تِسوى، لكل شخص بروفايل عام يوضح أسلوبه واهتماماته، علشان الاختيار والتنسيق يبقى أوضح.
 
-لو عندك حاجة لسه لها قيمة، تِسوى يساعدك تلاقي الشخص المناسب وتحوّلها لفرصة جديدة.
+بعد وصول الاقتراحات، يتم التنسيق عبر الرسائل ومساحات التفاهم بين الأطراف المعنية حتى الاتفاق.
 
-## 5) English listing draft (recommended)
+التجربة مبنية على الثقة: تقدر تراجع التقييمات بعد التجارب وتكوّن صورة أوضح قبل أي خطوة.
+
+الخصوصية واضحة: المنشورات العامة تظهر حسب ما يختاره المستخدم عند النشر، بينما الرسائل والتنسيق الخاص يظل بين المشاركين فقط.
+
+لو عندك حاجة ممكن تِسوى أكثر عند غيرك، تِسوى يساعدك توصل للشخص المناسب.
+
+## 4) Optional English listing draft
+**Optional unless an English store listing is later added.**
+
 - **App name:** Teswa
 - **Short description:** List your item, receive proposals, and unlock new value through exchange.
 
@@ -44,13 +44,13 @@ Teswa is designed for clarity: published content is visible when users choose to
 
 If your item still has potential, Teswa helps you turn it into a new opportunity.
 
-## 6) Category recommendation
+## 5) Category recommendation
 - **Primary recommendation:** Lifestyle
-- **Alternative (if listing strategy prefers utility framing):** Shopping
-- **Note:** Final category should be confirmed in Play Console by testing store discovery fit and policy implications.
+- **Alternative:** Shopping
+- **Note:** Final category decision is manual in Play Console.
 
-## 7) Contact/website fields needed before submission
-- **Website URL:** https://baddelha.app (needs human confirmation as final public website field)
-- **Support email:** needs human confirmation
-- **Privacy policy URL:** https://baddelha.app/privacy (route added in GP-02; domain still needs final human confirmation)
-- **Developer name/display name:** needs human confirmation
+## 6) Contact, website, and policy fields for submission
+- **Website URL:** `https://viral-one-delta.vercel.app`
+- **Privacy policy URL:** `https://viral-one-delta.vercel.app/privacy`
+- **Support email:** must be confirmed manually before submission
+- **Developer display name:** must be confirmed manually before submission
