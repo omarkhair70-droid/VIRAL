@@ -1,20 +1,30 @@
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { SoftPanel } from "@/components/ui/surfaces";
 
 export function PeopleDirectorySearch({ query }: { query: string }) {
   return (
-    <form className="rounded-2xl border border-warmBorder bg-white p-4" action="/people" method="get">
-      <label htmlFor="people-search" className="mb-2 block text-sm font-medium text-ink">دوّر على ناس بالاسم أو اليوزر أو المدينة</label>
-      <div className="flex flex-wrap items-center gap-2">
-        <input
-          id="people-search"
-          name="q"
-          defaultValue={query}
-          placeholder="مثال: القاهرة أو ahmed"
-          className="h-11 min-w-[220px] flex-1 rounded-xl border border-warmBorder px-3 text-sm outline-none ring-0 focus:border-ink"
-        />
-        <button type="submit" className="h-11 rounded-xl bg-ink px-4 text-sm font-medium text-white">ابحث</button>
-        {query ? <Link href="/people" className="text-sm text-muted underline underline-offset-2">مسح البحث</Link> : null}
-      </div>
-    </form>
+    <SoftPanel>
+      <form action="/people" method="get" className="space-y-3">
+        <label htmlFor="people-search" className="type-label block text-app-text-secondary">
+          دور على ناس بالاسم أو اليوزر أو المدينة
+        </label>
+        <div className="flex flex-wrap items-center gap-2">
+          <input
+            id="people-search"
+            name="q"
+            defaultValue={query}
+            placeholder="مثال: القاهرة أو ahmed"
+            className="min-h-11 min-w-[220px] flex-1 rounded-button border border-app-border bg-app-surface px-3 text-sm text-app-text-primary outline-none transition focus:border-app-accent focus:ring-2 focus:ring-app-focus"
+          />
+          <Button type="submit" size="md">ابحث</Button>
+          {query ? (
+            <Link href="/people" className="text-sm text-app-text-muted underline decoration-app-border underline-offset-4 hover:text-app-text-primary">
+              مسح البحث
+            </Link>
+          ) : null}
+        </div>
+      </form>
+    </SoftPanel>
   );
 }

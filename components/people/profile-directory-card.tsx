@@ -1,7 +1,8 @@
-import Link from "next/link";
 import Image from "next/image";
-import { Card, CardContent } from "@/components/ui/card";
-import { StatusPill } from "@/components/ui/status-pill";
+import type { Route } from "next";
+import { ButtonLink } from "@/components/ui/button";
+import { MetricPill } from "@/components/ui/product-primitives";
+import { SoftPanel, SurfaceCard } from "@/components/ui/surfaces";
 import { TrustBadges } from "@/components/trust-badges";
 import type { TrustBadge } from "@/lib/trust-badges";
 
@@ -23,44 +24,45 @@ export function ProfileDirectoryCard(props: ProfileDirectoryCardProps) {
   const summary = props.tagline || props.bio;
 
   return (
-    <Card className="h-full rounded-3xl border-warmBorder">
-      <CardContent className="space-y-3 p-5">
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <p className="text-base font-semibold text-ink">{props.displayName}</p>
-            <p className="text-sm text-muted">@{props.username}</p>
-          </div>
+    <SurfaceCard className="h-full p-0">
+      <div className="flex h-full flex-col gap-4 p-panel-md">
+        <div className="flex items-start gap-3">
           {props.avatarUrl ? (
-            <Image
-              src={props.avatarUrl}
-              alt={props.displayName}
-              width={44}
-              height={44}
-              className="h-11 w-11 rounded-full object-cover"
-            />
+            <Image src={props.avatarUrl} alt={props.displayName} width={56} height={56} className="h-14 w-14 rounded-full object-cover ring-1 ring-app-border" />
           ) : (
-            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-sand text-sm font-semibold text-ink">
+            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-app-soft text-lg font-semibold text-app-text-secondary ring-1 ring-app-border">
               {props.displayName.charAt(0)}
             </div>
           )}
+          <div className="min-w-0 flex-1 space-y-1">
+            <p className="truncate text-base font-semibold text-app-text-primary">{props.displayName}</p>
+            <p className="truncate text-sm text-app-text-muted">@{props.username}</p>
+            <p className="truncate text-sm text-app-text-muted">{location || "المكان غير مضاف لسه"}</p>
+          </div>
         </div>
 
-        {location ? <p className="text-sm text-muted">{location}</p> : <p className="text-sm text-muted">لسه مكمّلش بيانات المكان.</p>}
-        {summary ? <p className="line-clamp-2 text-sm text-ink">{summary}</p> : <p className="text-sm text-muted">بيجهّز بروفايله علشان المقايضات تكون أوضح.</p>}
+        <SoftPanel className="p-3">
+          <p className="line-clamp-2 text-sm text-app-text-secondary">{summary || "مقدّم نبذة بسيطة عن طريقته في المقايضة قريبًا."}</p>
+        </SoftPanel>
 
         <div className="flex flex-wrap gap-2">
-          <StatusPill tone="pending">مقايضات مكتملة: {props.successfulSwapsCount}</StatusPill>
-          <StatusPill tone="success">حاجات نشطة: {props.activeItemsCount}</StatusPill>
+          <MetricPill label="مقايضات مكتملة" value={props.successfulSwapsCount} dense />
+          <MetricPill label="حاجات نشطة" value={props.activeItemsCount} dense />
         </div>
 
-        {props.trustBadges.length ? <TrustBadges badges={props.trustBadges.slice(0, 3)} /> : <p className="text-xs text-muted">لسه مفيش إشارات ثقة كفاية.</p>}
-
-        <div className="pt-1">
-          <Link href={`/users/${props.username}`} className="inline-flex h-9 items-center rounded-xl border border-warmBorder bg-sand px-3 text-sm font-medium text-ink">
-            افتح البروفايل
-          </Link>
+        <div className="space-y-2">
+          <p className="text-xs text-app-text-muted">إشارات ثقة من تقييمات ومقايضات سابقة</p>
+          {props.trustBadges.length ? (
+            <TrustBadges badges={props.trustBadges} compact maxVisible={2} />
+          ) : (
+            <p className="text-xs text-app-text-muted">لسه مفيش إشارات كفاية.</p>
+          )}
         </div>
-      </CardContent>
-    </Card>
+
+        <ButtonLink href={`/users/${props.username}` as Route} variant="outline" size="sm" className="mt-auto self-start">
+          افتح البروفايل
+        </ButtonLink>
+      </div>
+    </SurfaceCard>
   );
 }

@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
-import { PageHeading } from "@/components/ui/page-heading";
-import { createClient } from "@/lib/supabase/server";
 import { PeopleDirectorySearch } from "@/components/people/people-directory-search";
 import { ProfileDirectoryCard } from "@/components/people/profile-directory-card";
+import { ButtonLink } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/product-primitives";
+import { HeroPanel, PageSection, PageShell, SoftPanel } from "@/components/ui/surfaces";
 import { buildTrustBadges, type TrustCounts } from "@/lib/trust-badges";
+import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
   title: "ناس تِسوى",
@@ -46,12 +48,10 @@ export default async function PeoplePage({ searchParams }: { searchParams?: Prom
 
   const { data } = await query;
   const profiles = ((data as ProfileRow[] | null) ?? []).filter((p) => Boolean(p.username));
-
   const profileIds = profiles.map((p) => p.id);
+
   const [{ data: items }, { data: reviews }] = await Promise.all([
-    profileIds.length
-      ? supabase.from("items").select("owner_id,id").eq("status", "active").in("owner_id", profileIds)
-      : Promise.resolve({ data: [] }),
+    profileIds.length ? supabase.from("items").select("owner_id,id").eq("status", "active").in("owner_id", profileIds) : Promise.resolve({ data: [] }),
     profileIds.length
       ? supabase.from("reviews").select("reviewee_id,clear_description,good_communication,on_time,respectful_swapper").in("reviewee_id", profileIds)
       : Promise.resolve({ data: [] }),
@@ -72,41 +72,55 @@ export default async function PeoplePage({ searchParams }: { searchParams?: Prom
   });
 
   return (
-    <section className="mx-auto max-w-6xl space-y-5 px-4 py-8 md:space-y-6 md:py-10">
-      <PageHeading
-        eyebrow="مجتمع تِسوى"
-        title="ناس بتبدّل بجد."
-        subtitle="استكشف بروفايلات ناس على تِسوى، وشوف أسلوبهم في المقايضة، والثقة اللي بنوها، والحاجات اللي بيعرضوها."
-      />
-      <PeopleDirectorySearch query={q} />
+    <PageShell className="max-w-6xl space-y-6">
+      <PageSection>
+        <HeroPanel className="space-y-3">
+          <p className="type-meta text-app-text-muted">مجتمع تِسوى</p>
+          <h1 className="text-2xl font-semibold text-app-text-primary md:text-3xl">ناس بتبدّل بجد.</h1>
+          <p className="max-w-3xl text-sm text-app-text-secondary md:text-base">
+            استكشف بروفايلات حقيقية، وافهم أسلوب كل شخص في المقايضة، والثقة اللي بناها من التعاملات، والحاجات اللي لسه متاحة عنده.
+          </p>
+          <ButtonLink href="/items" variant="secondary" size="sm">تصفّح السوق</ButtonLink>
+        </HeroPanel>
 
-      {!profiles.length ? (
-        <div className="rounded-2xl border border-warmBorder bg-white p-5 text-sm text-muted">
-          {q ? "ملقيناش نتائج للبحث ده. جرّب اسم أو مدينة تانية." : "لسه بنكبر مجتمع تِسوى. ارجع تاني قريب واكتشف ناس أكتر."}
-        </div>
-      ) : (
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {profiles.map((profile) => (
-            <ProfileDirectoryCard
-              key={profile.id}
-              displayName={profile.display_name?.trim() || profile.username || "مستخدم"}
-              username={profile.username as string}
-              avatarUrl={profile.avatar_url}
-              city={profile.city}
-              area={profile.area}
-              tagline={profile.profile_tagline}
-              bio={profile.bio}
-              successfulSwapsCount={profile.successful_swaps_count ?? 0}
-              activeItemsCount={itemsCount.get(profile.id) ?? 0}
-              trustBadges={buildTrustBadges({
-                counts: trustCounts.get(profile.id) ?? { clear_description: 0, good_communication: 0, on_time: 0, respectful_swapper: 0 },
-                successfulSwapsCount: profile.successful_swaps_count ?? 0,
-                includeBeta: true,
-              })}
-            />
-          ))}
-        </div>
-      )}
-    </section>
+        <PeopleDirectorySearch query={q} />
+
+        {safeQuery ? (
+          <SoftPanel className="py-3">
+            <p className="text-sm text-app-text-secondary">نتائج البحث عن: <span className="font-medium text-app-text-primary">{safeQuery}</span></p>
+          </SoftPanel>
+        ) : null}
+
+        {!profiles.length ? (
+          <EmptyState
+            title={safeQuery ? "ملقيناش حد بنفس البحث ده." : "ناس تِسوى هيظهروا هنا."}
+            body={safeQuery ? "جرّب اسم تاني أو مدينة مختلفة، وهتلاقي بروفايلات أقرب للي بتدور عليه." : "كمّل بروفايلك أو تصفّح السوق، والناس اللي بتبدّل هتظهر هنا بشكل تلقائي."}
+            tone="info"
+          />
+        ) : (
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {profiles.map((profile) => (
+              <ProfileDirectoryCard
+                key={profile.id}
+                displayName={profile.display_name?.trim() || profile.username || "مستخدم"}
+                username={profile.username as string}
+                avatarUrl={profile.avatar_url}
+                city={profile.city}
+                area={profile.area}
+                tagline={profile.profile_tagline}
+                bio={profile.bio}
+                successfulSwapsCount={profile.successful_swaps_count ?? 0}
+                activeItemsCount={itemsCount.get(profile.id) ?? 0}
+                trustBadges={buildTrustBadges({
+                  counts: trustCounts.get(profile.id) ?? { clear_description: 0, good_communication: 0, on_time: 0, respectful_swapper: 0 },
+                  successfulSwapsCount: profile.successful_swaps_count ?? 0,
+                  includeBeta: true,
+                })}
+              />
+            ))}
+          </div>
+        )}
+      </PageSection>
+    </PageShell>
   );
 }
