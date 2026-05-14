@@ -95,5 +95,5 @@ revoke all on function public.mark_deal_thread_read(uuid) from public;
 grant execute on function public.mark_deal_thread_read(uuid) to authenticated;
 
 alter table public.deal_messages
-  add constraint deal_messages_body_not_blank check (char_length(btrim(body)) > 0),
+  add constraint deal_messages_body_not_blank check (char_length(regexp_replace(body, '[[:space:]]', '', 'g')) > 0),
   add constraint deal_messages_body_max_length check (char_length(body) <= 800);
