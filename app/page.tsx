@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ButtonLink } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { StatusPill } from "@/components/ui/status-pill";
-import { PageHeading } from "@/components/ui/page-heading";
 import { PwaInstallCard } from "@/components/pwa-install-card";
+import { ButtonLink } from "@/components/ui/button";
+import { StatusPill } from "@/components/ui/status-pill";
+import { HeroPanel, HighlightPanel, InlineNotice, PageSection, PageShell, SoftPanel, SurfaceCard } from "@/components/ui/surfaces";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
@@ -12,7 +11,6 @@ export const metadata: Metadata = {
   description:
     "تِسوى — حاجتك لسه لها قيمة. اعرض حاجة، استقبل عروض، واتفقوا بأمان في مكان عام.",
 };
-
 
 export default async function HomePage() {
   const supabase = await createClient();
@@ -33,6 +31,7 @@ export default async function HomePage() {
   const { count: featuredCount } = await supabase.from("featured_story_items").select("item_id", { count: "exact", head: true });
   const { count: publishedDropsCount } = await supabase.from("creator_drops").select("id", { count: "exact", head: true }).eq("status", "published");
   const showStoryEntry = (featuredCount ?? 0) > 0 || (publishedDropsCount ?? 0) > 0;
+
   if (user) {
     const [{ data: profile }, { count: offersNeedAttentionCount }, { count: pendingDealsCount }, { count: activeItemsCount }] = await Promise.all([
       supabase.from("profiles").select("display_name,username,bio,city,area").eq("id", user.id).maybeSingle(),
@@ -79,66 +78,69 @@ export default async function HomePage() {
 
   if (user) {
     return (
-      <div className="mx-auto max-w-6xl space-y-5 px-4 py-6 md:space-y-7 md:py-10">
-        <PwaInstallCard />
-        <Card className="rounded-3xl bg-cream p-5 md:p-8">
-          <p className="text-sm text-muted">{displayName ? `أهلاً ${displayName}` : "أهلاً بيك في تِسوى"}</p>
-          {showPriorityBadge ? <div className="mt-2"><StatusPill tone="warning">الأولوية دلوقتي</StatusPill></div> : null}
-          <h1 className="mt-1 text-2xl font-bold text-ink md:text-3xl">{priorityTitle}</h1>
-          <p className="mt-2 text-sm text-muted">{prioritySubtitle}</p>
-          <div className="mt-4 flex flex-wrap gap-2.5">
-            <ButtonLink href={priorityCtaPrimary.href} size="lg">{priorityCtaPrimary.label}</ButtonLink>
-            {priorityCtaSecondary ? <ButtonLink href={priorityCtaSecondary.href} variant="secondary" size="lg">{priorityCtaSecondary.label}</ButtonLink> : null}
-          </div>
-        </Card>
+      <PageShell className="max-w-6xl py-6 md:py-10">
+        <PageSection className="space-y-5 md:space-y-6">
+          <PwaInstallCard />
 
-        <section className="grid gap-3 sm:grid-cols-3">
-          <Link className="rounded-2xl border border-warmBorder bg-white p-4 text-sm font-medium text-ink" href="/dashboard">حسابي وعروضي</Link>
-          <Link className="rounded-2xl border border-warmBorder bg-white p-4 text-sm font-medium text-ink" href="/messages">مركز الرسائل</Link>
-          <Link className="rounded-2xl border border-warmBorder bg-white p-4 text-sm font-medium text-ink" href="/profile">{profileQuickLinkLabel}</Link>
-        </section>
+          <HeroPanel className="space-y-4 bg-[#f9efe2]">
+            <p className="type-support">{displayName ? `أهلاً ${displayName}` : "أهلاً بيك في تِسوى"}</p>
+            {showPriorityBadge ? <StatusPill tone="warning">الأولوية دلوقتي</StatusPill> : null}
+            <h1 className="type-headline">{priorityTitle}</h1>
+            <p className="type-support">{prioritySubtitle}</p>
+            <div className="flex flex-wrap gap-2.5">
+              <ButtonLink href={priorityCtaPrimary.href} size="lg">{priorityCtaPrimary.label}</ButtonLink>
+              {priorityCtaSecondary ? <ButtonLink href={priorityCtaSecondary.href} variant="secondary" size="lg">{priorityCtaSecondary.label}</ButtonLink> : null}
+            </div>
+          </HeroPanel>
 
-        <Card className="rounded-3xl p-5 md:p-6">
-          <CardHeader className="p-0"><CardTitle>ابدأ من هنا</CardTitle></CardHeader>
-          <CardContent className="p-0 pt-3">
-            <ul className="space-y-2 text-sm text-muted">
-              <li>1) اعرض حاجة بصور واضحة ووصف صريح.</li>
-              <li>2) تابع العروض والرسائل أول بأول.</li>
-              <li>3) لما الصفقة تبدأ، نسّق من غرفة الصفقة وأكّد بعد التبادل الحقيقي في مكان عام وآمن.</li>
-            </ul>
-          </CardContent>
-        </Card>
+          <section className="grid gap-3 sm:grid-cols-3">
+            <SurfaceCard className="p-0"><Link className="block p-4" href="/dashboard"><p className="type-card-title">حسابي وعروضي</p><p className="type-meta mt-1">تابع عروضك وحاجاتك وإشعاراتك المهمة.</p></Link></SurfaceCard>
+            <SurfaceCard className="p-0"><Link className="block p-4" href="/messages"><p className="type-card-title">مركز الرسائل</p><p className="type-meta mt-1">افتح المحادثات اللي فيها تنسيق فعلي دلوقتي.</p></Link></SurfaceCard>
+            <SurfaceCard className="p-0"><Link className="block p-4" href="/profile"><p className="type-card-title">{profileQuickLinkLabel}</p><p className="type-meta mt-1">عدّل صورتك ومعلومات الثقة قبل أي مقايضة جديدة.</p></Link></SurfaceCard>
+          </section>
 
-        {showOnboardingChecklist ? (
-          <Card className="rounded-3xl p-5 md:p-6">
-            <CardHeader className="p-0"><CardTitle>ابدأ رحلتك في تِسوى</CardTitle></CardHeader>
-            <CardContent className="p-0 pt-3">
-              <ul className="space-y-2 text-sm text-muted">
-                <li className="flex items-center justify-between gap-3 rounded-xl border border-warmBorder bg-sand p-3">
-                  <span>{isProfileComplete ? "✅ أكمل بروفايلك" : "◻️ أكمل بروفايلك"}</span>
-                  <Link href="/profile" className="text-xs font-medium text-ink underline underline-offset-2">افتح</Link>
+          {showOnboardingChecklist ? (
+            <HighlightPanel className="space-y-4">
+              <div>
+                <p className="type-meta">جاهز تنشّط حسابك؟</p>
+                <h2 className="type-card-title mt-1">خطوتين واضحين ويبدأ التبديل فعليًا</h2>
+              </div>
+              <ul className="space-y-2 text-sm">
+                <li className="flex items-center justify-between gap-3 rounded-surface-compact border border-app-border bg-app-surface p-3">
+                  <span className="font-medium text-app-text-primary">{isProfileComplete ? "✅ أكملت بروفايلك" : "◻️ أكمل بروفايلك"}</span>
+                  <ButtonLink href="/profile" variant="quiet" size="compact">افتح</ButtonLink>
                 </li>
-                <li className="flex items-center justify-between gap-3 rounded-xl border border-warmBorder bg-sand p-3">
-                  <span>{hasActiveItems ? "✅ اعرض أول حاجة" : "◻️ اعرض أول حاجة"}</span>
-                  <Link href="/items/new" className="text-xs font-medium text-ink underline underline-offset-2">ابدأ</Link>
+                <li className="flex items-center justify-between gap-3 rounded-surface-compact border border-app-border bg-app-surface p-3">
+                  <span className="font-medium text-app-text-primary">{hasActiveItems ? "✅ عرضت أول حاجة" : "◻️ اعرض أول حاجة"}</span>
+                  <ButtonLink href="/items/new" variant="quiet" size="compact">ابدأ</ButtonLink>
                 </li>
-                <li className="flex items-center justify-between gap-3 rounded-xl border border-warmBorder bg-sand p-3">
-                  <span>💬 بعد قبول أول عرض، رسائل التنسيق هتظهر لك هنا.</span>
-                  <Link href="/messages" className="text-xs font-medium text-ink underline underline-offset-2">افتح</Link>
+                <li className="rounded-surface-compact border border-app-border bg-app-surface p-3 text-app-text-secondary">
+                  💬 بعد قبول أول عرض، رسائل التنسيق هتظهر لك مباشرة في مركز الرسائل.
                 </li>
               </ul>
-            </CardContent>
-          </Card>
-        ) : null}
-        {showStoryEntry ? <Card className="rounded-3xl p-5"><h2 className="text-xl font-semibold">حاجات ليها حكاية</h2><p className="text-sm text-muted">اختيارات ودروب متجمعة يدويًا من أقوى القصص.</p><div className="mt-3"><ButtonLink href="/drops" variant="secondary">افتح الدروب</ButtonLink></div></Card> : null}
-        <Card className="rounded-3xl p-5 md:p-6">
-          <CardHeader className="p-0"><CardTitle>ناس على تِسوى</CardTitle></CardHeader>
-          <CardContent className="space-y-3 p-0 pt-3">
-            <p className="text-sm text-muted">اتعرف على بروفايلات ناس بتبدّل بجد، إشارات ثقتهم، والحاجات النشطة اللي بيعرضوها.</p>
+            </HighlightPanel>
+          ) : (
+            <SoftPanel>
+              <h2 className="type-card-title">ابدأ من هنا</h2>
+              <ul className="mt-3 space-y-2 text-sm text-app-text-secondary">
+                <li>1) اعرض حاجة بصور واضحة ووصف صريح.</li>
+                <li>2) تابع العروض والرسائل أول بأول.</li>
+                <li>3) نسّق من غرفة الصفقة وأكّد بعد التبادل الحقيقي في مكان عام وآمن.</li>
+              </ul>
+            </SoftPanel>
+          )}
+
+          {showStoryEntry ? <SoftPanel><h2 className="type-card-title">حاجات ليها حكاية</h2><p className="type-support mt-1">اختيارات ودروب متجمعة يدويًا من أقوى القصص.</p><div className="mt-3"><ButtonLink href="/drops" variant="secondary">افتح الدروب</ButtonLink></div></SoftPanel> : null}
+
+          <SurfaceCard className="space-y-3">
+            <div>
+              <h2 className="type-card-title">ناس على تِسوى</h2>
+              <p className="type-support mt-1">اتعرف على ناس بتبدّل بجد، وإشارات ثقتهم، والحاجات النشطة اللي بيعرضوها.</p>
+            </div>
             <ButtonLink href="/people" variant="secondary">استكشف الناس</ButtonLink>
-          </CardContent>
-        </Card>
-      </div>
+          </SurfaceCard>
+        </PageSection>
+      </PageShell>
     );
   }
 
@@ -150,59 +152,83 @@ export default async function HomePage() {
     .limit(3);
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6 px-4 py-10 md:space-y-8 md:py-14">
-      <PwaInstallCard />
-      <Card className="rounded-3xl bg-cream p-6 md:p-10">
-        <PageHeading eyebrow="تِسوى — Teswa" title="حاجتك لسه لها قيمة." subtitle="سجّل، اعرض حاجة عندك، استقبل عروض من ناس حقيقية، ونسّق المقايضة من داخل تِسوى." />
-        <div className="mt-3 flex flex-wrap gap-3">
-          <ButtonLink href="/login?next=/items/new" size="lg">
-            ابدأ وسجّل
-          </ButtonLink>
-          <ButtonLink href="/items" variant="secondary" size="lg">
-            شوف السوق
-          </ButtonLink>
-          <Link href="/how-it-works" className="self-center text-sm text-muted underline underline-offset-2">
-            اعرف تِسوى بتشتغل إزاي
-          </Link>
-        </div>
-      </Card>
+    <PageShell className="max-w-6xl py-10 md:py-14">
+      <PageSection className="space-y-6 md:space-y-8">
+        <PwaInstallCard />
 
-      <section className="grid gap-3 sm:grid-cols-3">
-        <Card className="rounded-2xl p-4"><p className="text-sm font-semibold text-ink">اعرض</p><p className="mt-1 text-sm text-muted">انشر حاجة بصور ووصف واضح.</p></Card>
-        <Card className="rounded-2xl p-4"><p className="text-sm font-semibold text-ink">استقبل عروض</p><p className="mt-1 text-sm text-muted">ناس تقترح عليك حاجات مناسبة.</p></Card>
-        <Card className="rounded-2xl p-4"><p className="text-sm font-semibold text-ink">نسّق بأمان</p><p className="mt-1 text-sm text-muted">كمّلوا التفاصيل من الرسائل وغرفة الصفقة.</p></Card>
-      </section>
+        <HeroPanel className="space-y-4 bg-[#f9efe2] p-panel-lg md:p-panel-xl">
+          <p className="type-meta">تِسوى — Teswa</p>
+          <h1 className="type-display">حاجتك لسه لها قيمة.</h1>
+          <p className="type-lead text-app-text-secondary">سجّل، اعرض حاجة عندك، استقبل عروض من ناس حقيقية، ونسّق المقايضة من داخل تِسوى.</p>
+          <div className="flex flex-wrap gap-3">
+            <ButtonLink href="/login?next=/items/new" size="lg">ابدأ وسجّل</ButtonLink>
+            <ButtonLink href="/items" variant="secondary" size="lg">شوف السوق</ButtonLink>
+            <Link href="/how-it-works" className="self-center text-sm text-app-text-muted underline underline-offset-2">اعرف تِسوى بتشتغل إزاي</Link>
+          </div>
+        </HeroPanel>
 
-      <Card className="rounded-3xl p-6 md:p-8">
-        <CardHeader><CardTitle>إزاي البداية بتحصل؟</CardTitle></CardHeader>
-        <ol className="mt-4 grid gap-3 sm:grid-cols-3">
-          {["سجّل", "اعرض", "بدّل"].map((step, index) => (
-            <li key={step} className="rounded-xl border border-warmBorder bg-sand p-4 text-sm font-medium text-ink">
-              <span className="mb-2 block text-xs text-muted">خطوة {index + 1}</span>
-              {step}
-            </li>
-          ))}
-        </ol>
-      </Card>
+        <SurfaceCard className="space-y-4">
+          <div>
+            <p className="type-meta">آلية المقايضة</p>
+            <h2 className="type-headline mt-1">ثلاث حركات بسيطة تخليك تبدأ بثقة</h2>
+          </div>
+          <div className="grid gap-3 md:grid-cols-3">
+            {["اعرض حاجة بصور ووصف واضح.", "استقبل عروض مناسبة من ناس حقيقية.", "نسّق بأمان من الرسائل وغرفة الصفقة."].map((step, index) => (
+              <SoftPanel key={step} className="space-y-1">
+                <p className="type-meta">0{index + 1}</p>
+                <p className="type-card-title">{index === 0 ? "اعرض" : index === 1 ? "استقبل عروض" : "نسّق بأمان"}</p>
+                <p className="type-support">{step}</p>
+              </SoftPanel>
+            ))}
+          </div>
+        </SurfaceCard>
 
-      <Card className="rounded-3xl p-6">
-        <CardContent className="grid gap-3 p-0 text-sm text-muted sm:grid-cols-3">
-          <p className="rounded-xl bg-sand p-4">مفيش أرقام موبايل عامة.</p>
-          <p className="rounded-xl bg-sand p-4">التقييمات بعد المقايضة المكتملة.</p>
-          <p className="rounded-xl bg-sand p-4">الاتفاق في مكان عام وآمن.</p>
-        </CardContent>
-      </Card>
-      {showStoryEntry ? <Card className="rounded-3xl p-6"><h2 className="text-xl font-semibold">حاجات ليها حكاية</h2><p className="text-sm text-muted">اختيارات قصصية ودروب منسقة بعناية.</p><div className="mt-3"><ButtonLink href="/drops" variant="secondary">استكشف الدروب</ButtonLink></div></Card> : null}
-      <Card className="rounded-3xl p-6 md:p-8">
-        <CardHeader className="p-0">
-          <CardTitle>اتعرف على ناس على تِسوى</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4 p-0 pt-3">
-          <p className="text-sm text-muted">تِسوى فيها ناس حقيقية بتبدّل، لكل واحد أسلوبه في المقايضة وإشارات الثقة والحاجات النشطة بتاعته.</p>
-          {peoplePreview?.length ? <div className="grid gap-2 sm:grid-cols-3">{peoplePreview.map((person) => <Link key={person.username} href={`/users/${person.username}`} className="rounded-xl border border-warmBorder bg-sand p-3 text-sm text-ink"><p className="font-semibold">{person.display_name || person.username}</p><p className="text-xs text-muted">@{person.username}</p><p className="mt-1 text-xs text-muted">{[person.city, person.area].filter(Boolean).join(" - ") || "الموقع غير مكتمل"}</p></Link>)}</div> : null}
+        <HighlightPanel className="space-y-4">
+          <div>
+            <p className="type-meta">إزاي البداية بتحصل؟</p>
+            <h2 className="type-card-title mt-1">سجّل، اعرض، وابدأ أول مقايضة</h2>
+          </div>
+          <ol className="grid gap-2 sm:grid-cols-3">
+            {["سجّل", "اعرض", "بدّل"].map((step, index) => (
+              <li key={step} className="rounded-surface-compact border border-app-border bg-app-surface p-3 text-sm font-medium text-app-text-primary">
+                <span className="type-meta mb-1 block">خطوة {index + 1}</span>
+                {step}
+              </li>
+            ))}
+          </ol>
+          <InlineNotice tone="accent">ابدأ بحاجة واحدة كويسة، والباقي بييجي بسهولة مع أول عرض جاد.</InlineNotice>
+        </HighlightPanel>
+
+        <SurfaceCard className="space-y-3">
+          <h2 className="type-card-title">الثقة والأمان في المقايضة</h2>
+          <div className="grid gap-2 text-sm text-app-text-secondary sm:grid-cols-3">
+            <SoftPanel>مفيش أرقام موبايل عامة.</SoftPanel>
+            <SoftPanel>التقييمات بعد المقايضة المكتملة.</SoftPanel>
+            <SoftPanel>الاتفاق في مكان عام وآمن.</SoftPanel>
+          </div>
+        </SurfaceCard>
+
+        {showStoryEntry ? <SoftPanel><h2 className="type-card-title">حاجات ليها حكاية</h2><p className="type-support mt-1">اختيارات قصصية ودروب منسقة بعناية.</p><div className="mt-3"><ButtonLink href="/drops" variant="secondary">استكشف الدروب</ButtonLink></div></SoftPanel> : null}
+
+        <SurfaceCard className="space-y-4">
+          <div>
+            <h2 className="type-card-title">اتعرف على ناس على تِسوى</h2>
+            <p className="type-support mt-1">ناس حقيقية بتبدّل بجد. شوف أماكنهم وإشارات الثقة وبدايات نشاطهم.</p>
+          </div>
+          {peoplePreview?.length ? (
+            <div className="grid gap-2 sm:grid-cols-3">
+              {peoplePreview.map((person) => (
+                <Link key={person.username} href={`/users/${person.username}`} className="rounded-surface-compact border border-app-border bg-app-soft p-3 text-sm text-app-text-primary">
+                  <p className="font-semibold">{person.display_name || person.username}</p>
+                  <p className="text-xs text-app-text-muted">@{person.username}</p>
+                  <p className="mt-1 text-xs text-app-text-muted">{[person.city, person.area].filter(Boolean).join(" - ") || "الموقع غير مكتمل"}</p>
+                </Link>
+              ))}
+            </div>
+          ) : null}
           <div><ButtonLink href="/people" variant="secondary">استكشف الناس</ButtonLink></div>
-        </CardContent>
-      </Card>
-    </div>
+        </SurfaceCard>
+      </PageSection>
+    </PageShell>
   );
 }

@@ -1,3 +1,7 @@
+import { Button } from "@/components/ui/button";
+import { Field, FormActions, Label, TextInput } from "@/components/ui/form";
+import { StateBlock } from "@/components/ui/product-primitives";
+import { HeroPanel, InlineNotice, PageSection, PageShell, SoftPanel, SurfaceCard } from "@/components/ui/surfaces";
 import { sendMagicLink, signInWithGoogle } from "./actions";
 
 function normalizeNextPath(next: string | null | undefined) {
@@ -17,54 +21,62 @@ export default async function LoginPage({
   const error = params.error;
 
   return (
-    <section className="mx-auto max-w-xl space-y-4 px-4 py-10">
-      <h1 className="text-2xl font-bold md:text-3xl">ادخل تِسوى وابدأ أول مقايضة.</h1>
-      <p className="text-stone-700">الدخول بجوجل هو الأسرع. وبعده هنجهز بروفايلك ونوصلك لأول خطوة.</p>
+    <PageShell className="max-w-4xl py-10 sm:py-14">
+      <PageSection className="grid items-start gap-4 lg:grid-cols-[1.05fr_0.95fr]">
+        <HeroPanel className="space-y-4">
+          <p className="type-meta">تسجيل الدخول</p>
+          <h1 className="type-display">ادخل تِسوى وابدأ أول مقايضة.</h1>
+          <p className="type-lead text-app-text-secondary">الدخول بجوجل هو الأسرع. وبعده هنجهز بروفايلك ونوصلك لأول خطوة من غير تعقيد.</p>
+          <InlineNotice tone="accent">إيميلك مش بيظهر للناس.</InlineNotice>
+        </HeroPanel>
 
-      {error ? (
-        <div className="rounded-xl bg-red-50 p-4 text-red-700">
-          {error === "empty_email"
-            ? "اكتب الإيميل الأول."
-            : error === "google_failed"
-              ? "معرفناش نفتح دخول جوجل دلوقتي. راجع إعدادات Google Provider في Supabase."
-              : "ماعرفناش نبعت اللينك دلوقتي. جرّب تاني."}
-        </div>
-      ) : null}
+        <SurfaceCard className="space-y-4">
+          {error ? (
+            <StateBlock
+              tone="danger"
+              title="في مشكلة في الدخول"
+              body={error === "empty_email"
+                ? "اكتب الإيميل الأول."
+                : error === "google_failed"
+                  ? "معرفناش نفتح دخول جوجل دلوقتي. راجع إعدادات Google Provider في Supabase."
+                  : "ماعرفناش نبعت اللينك دلوقتي. جرّب تاني."}
+            />
+          ) : null}
 
-      {sent ? (
-        <div className="rounded-xl bg-emerald-50 p-4 text-emerald-800">
-          <p>بعتنالك لينك الدخول على الإيميل.</p>
-          <p>افتحه وكمل من نفس المتصفح.</p>
-        </div>
-      ) : null}
+          {sent ? (
+            <StateBlock
+              tone="success"
+              title="لينك الدخول اتبعت"
+              body="افتح الإيميل وكمل من نفس المتصفح علشان تسجيل الدخول يتم بسهولة."
+            />
+          ) : null}
 
-      <form action={signInWithGoogle} className="space-y-3 rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
-        <input type="hidden" name="next" value={next} />
-        <button type="submit" className="w-full rounded-xl bg-clay px-4 py-2 font-medium text-white">
-          الدخول بجوجل
-        </button>
-      </form>
+          <form action={signInWithGoogle} className="space-y-3">
+            <input type="hidden" name="next" value={next} />
+            <Button type="submit" size="lg" fullWidth>
+              الدخول بجوجل
+            </Button>
+          </form>
 
-      <p className="text-sm text-stone-600">إيميلك مش بيظهر للناس.</p>
-      <p className="text-center text-sm text-stone-600">أو كمل بالإيميل</p>
-
-      <form action={sendMagicLink} className="space-y-3 rounded-2xl border border-stone-200 p-4">
-        <input type="hidden" name="next" value={next} />
-        <label htmlFor="email" className="block text-sm font-medium text-stone-800">
-          الإيميل
-        </label>
-        <input
-          id="email"
-          name="email"
-          type="email"
-          required
-          placeholder="name@example.com"
-          className="w-full rounded-xl border border-stone-300 px-3 py-2"
-        />
-        <button type="submit" className="w-full rounded-xl bg-stone-900 px-4 py-2 font-medium text-white">
-          ابعتهولي لينك الدخول
-        </button>
-      </form>
-    </section>
+          <SoftPanel className="space-y-3">
+            <p className="type-meta text-center">أو كمل بالإيميل</p>
+            <form action={sendMagicLink} className="space-y-3">
+              <input type="hidden" name="next" value={next} />
+              <Field>
+                <Label htmlFor="email" required>
+                  الإيميل
+                </Label>
+                <TextInput id="email" name="email" type="email" required placeholder="name@example.com" />
+              </Field>
+              <FormActions>
+                <Button type="submit" variant="secondary" fullWidth>
+                  ابعتهولي لينك الدخول
+                </Button>
+              </FormActions>
+            </form>
+          </SoftPanel>
+        </SurfaceCard>
+      </PageSection>
+    </PageShell>
   );
 }
