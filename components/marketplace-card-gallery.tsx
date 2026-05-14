@@ -1,5 +1,7 @@
 "use client";
 
+import type { Route } from "next";
+import Link from "next/link";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { GalleryIndicator, MediaFrame } from "@/components/ui/product-primitives";
@@ -7,21 +9,25 @@ import { GalleryIndicator, MediaFrame } from "@/components/ui/product-primitives
 type MarketplaceCardGalleryProps = {
   images: string[];
   title: string;
+  href: Route;
 };
 
-export function MarketplaceCardGallery({ images, title }: MarketplaceCardGalleryProps) {
+export function MarketplaceCardGallery({ images, title, href }: MarketplaceCardGalleryProps) {
   const [index, setIndex] = useState(0);
   const total = images.length;
 
-  if (total === 0) {
-    return <MediaFrame alt={title} ratio="portrait" fallback={<div className="flex h-full items-center justify-center text-sm text-app-text-muted">لا توجد صورة</div>} />;
-  }
-
-  const current = images[index] ?? images[0];
+  const current = total === 0 ? null : images[index] ?? images[0];
 
   return (
     <div className="relative">
-      <MediaFrame src={current} alt={title} ratio="portrait" />
+      <Link href={href} className="block" aria-label={`افتح إعلان ${title}`}>
+        <MediaFrame
+          src={current}
+          alt={title}
+          ratio="portrait"
+          fallback={<div className="flex h-full items-center justify-center text-sm text-app-text-muted">لا توجد صورة</div>}
+        />
+      </Link>
 
       {total > 1 ? (
         <>
