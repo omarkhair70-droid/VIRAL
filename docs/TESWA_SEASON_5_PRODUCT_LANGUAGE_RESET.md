@@ -89,3 +89,10 @@ These will be handled intentionally in later phases, especially Phase 54, Phase 
 - `condition` and `desire_mode` now use expressive choice cards powered by centralized Teswa language, with enum values unchanged.
 - Backend/server action contracts, field names, and persistence behavior remain unchanged.
 - Item-edit vocabulary parity is intentionally deferred to a later consistency phase.
+
+## Phase 56 implementation note — Thing Card & Value Question Page
+- Explore cards now read as **Possibility Cards** that foreground openness, story spark, and why the thing is interesting, instead of listing-summary behavior.
+- The public thing page now frames each item as a **value question** with clearer invitation language around “what this is worth to me.”
+- Transparency (`condition`) remains visible and explicit, but is treated as a truth layer rather than the primary curiosity hook.
+- Detail-page offer CTA and support copy were reframed to Season 5 language, while the full Offer Composer rewrite remains deferred to **Phase 57**.
+- No backend, schema, route, or data-contract changes were introduced in this phase.
