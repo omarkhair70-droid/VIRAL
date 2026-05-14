@@ -54,3 +54,21 @@ Prepare Teswa for Google Play distribution through Trusted Web Activity (TWA) us
 
 ## 7) Recommended next phase
 **GP-02 — Store Listing, Policy & Android Release Pack**
+
+## 8) GP-02 completion summary (Store Listing, Policy & Android Release Pack)
+### Delivered in GP-02
+- Added a public privacy policy route: `/privacy`.
+- Created `docs/TESWA_PLAY_STORE_LISTING_PACK.md` for Play listing copy.
+- Created `docs/TESWA_DATA_SAFETY_WORKSHEET.md` for Play Data Safety mapping support.
+- Created `docs/TESWA_ANDROID_RELEASE_DECISIONS.md` for app/package/screenshots/graphic decisions.
+- Created `docs/TESWA_RELEASE_COMPLIANCE_GAPS.md` for unresolved release risks and ownership decisions.
+
+### Pending decisions before Bubblewrap (GP-03)
+- Final production origin confirmation.
+- Final package ID confirmation.
+- Final support/privacy email confirmation.
+- Explicit account deletion/deletion-request compliance resolution.
+
+### Branch condition for next phase
+- Proceed to **GP-03 — Bubblewrap Local Generation** only if the pending decisions above are finalized.
+- If account deletion/compliance scope remains unresolved, execute **GP-02B — Account Deletion / Legal Compliance Completion** first.

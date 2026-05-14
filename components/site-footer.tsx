@@ -7,6 +7,7 @@ export function SiteFooter() {
         <Link className="type-support transition-colors duration-200 hover:text-app-text-primary motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-focus focus-visible:ring-offset-2" href="/how-it-works">إزاي بتشتغل</Link>
         <Link className="type-support transition-colors duration-200 hover:text-app-text-primary motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-focus focus-visible:ring-offset-2" href="/safety">الأمان</Link>
         <Link className="type-support transition-colors duration-200 hover:text-app-text-primary motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-focus focus-visible:ring-offset-2" href="/drops">حركة القيمة</Link>
+        <Link className="type-support transition-colors duration-200 hover:text-app-text-primary motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-focus focus-visible:ring-offset-2" href="/privacy">سياسة الخصوصية</Link>
         <span className="type-meta text-app-text-muted">حاجتك لسه لها قيمة.</span>
       </div>
     </footer>
