@@ -75,3 +75,10 @@ These will be handled intentionally in later phases, especially Phase 54, Phase 
 - Logged-in urgency logic (offers, pending completion, profile completion, first active item) is preserved, but visually demoted into a compact coordination pulse so curiosity remains the page identity.
 - Home now emphasizes live possibility rails (surprise/flexible openness, story-rich items, curiosity prompt framing) using existing active-item data only.
 - Explore structural overhaul and broader discovery architecture remain intentionally deferred to **Phase 54**.
+
+## Phase 54 implementation note — Explore Beyond Marketplace Search
+- `/items` is now framed as an Explore surface led by discovery worlds first, rather than category/search-first marketplace behavior.
+- Search is still available and useful, but intentionally moved to a secondary narrowing section.
+- Category filtering still exists for utility, but it no longer defines the first discovery layer.
+- Visible sort controls were removed from Explore UI; legacy `sort` params are still parsed for backward compatibility.
+- Global Thing Card and Value Question reframing remains deferred to **Phase 56**.
