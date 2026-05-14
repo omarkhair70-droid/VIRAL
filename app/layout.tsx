@@ -8,10 +8,10 @@ import { SiteHeader } from "@/components/site-header";
 export const metadata: Metadata = {
   metadataBase: new URL("https://baddelha.app"),
   title: {
-    default: "تِسوى | سوق المقايضة",
+    default: "تِسوى | حاجتك ممكن تِسوى إيه عند غيرك؟",
     template: "%s | تِسوى",
   },
-  description: "تِسوى — حاجتك لسه لها قيمة. اعرض حاجة، استقبل عروض، واتفقوا على مقايضة أوضح وأأمن.",
+  description: "تِسوى مساحة تعرض فيها الحاجات اللي خرجت من حياتك، وتشوف قيمتها وهي بتتغيّر في عيون ناس تانية من خلال اقتراحات ومقايضات غير متوقعة.",
   applicationName: "تِسوى",
   manifest: "/manifest.webmanifest",
   appleWebApp: {
@@ -27,8 +27,8 @@ export const metadata: Metadata = {
     apple: [{ url: "/icons/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
   },
   openGraph: {
-    title: "تِسوى | سوق المقايضة",
-    description: "تِسوى — حاجتك لسه لها قيمة. اعرض حاجة، استقبل عروض، واتفقوا على مقايضة أوضح وأأمن.",
+    title: "تِسوى | حاجتك ممكن تِسوى إيه عند غيرك؟",
+    description: "تِسوى مساحة تعرض فيها الحاجات اللي خرجت من حياتك، وتشوف قيمتها وهي بتتغيّر في عيون ناس تانية من خلال اقتراحات ومقايضات غير متوقعة.",
     type: "website",
     locale: "ar_EG",
   },
