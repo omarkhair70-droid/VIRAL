@@ -18,7 +18,7 @@ export function OfferItemCard({ itemId, title, imageUrl, category, conditionLabe
       <div className="space-y-1.5">
         <Link href={`/items/${itemId}`} className="line-clamp-2 font-semibold text-app-text-primary hover:underline">{title}</Link>
         <p className="text-sm text-app-text-muted">{category ?? "بدون تصنيف"}</p>
-        <p className="text-sm text-app-text-muted">الحالة: {conditionLabel}</p>
+        <p className="text-sm text-app-text-muted">اللي لازم يتعرف: {conditionLabel}</p>
         {ownerName ? <p className="text-xs text-app-text-muted">صاحبها: {ownerName}</p> : null}
       </div>
       <Link href={`/items/${itemId}`} className="inline-flex min-h-10 rounded-button bg-transparent px-3 py-2 text-sm text-app-text-muted hover:bg-app-soft">افتح الحاجة</Link>
