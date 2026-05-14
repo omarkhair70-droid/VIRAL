@@ -27,12 +27,12 @@ export function OfferComposerClient({ requestedItem, ownItems, categories, hasSo
       </div>
     </SurfaceCard>
 
-    {mode === "existing_item" ? <SurfaceCard className="space-y-3"><h3 className="text-lg font-semibold">جهّز الحاجة اللي هتقدّمها</h3>
+    <SurfaceCard className={`space-y-3 ${mode === "existing_item" ? "" : "hidden"}`}><h3 className="text-lg font-semibold">جهّز الحاجة اللي هتقدّمها</h3>
       {ownItems.length === 0 ? <InlineNotice tone="warning">لسه ماعندكش حاجات نشطة. اختار وضع &quot;نزّل حاجة جديدة كعرض&quot;.</InlineNotice> : ownItems.map((item) => <label key={item.id} className={`grid cursor-pointer grid-cols-[auto_84px_1fr] items-center gap-3 rounded-surface-compact border p-3 ${offeredItemId === item.id ? "border-clay bg-app-accent-soft" : "border-app-border"}`}><input checked={offeredItemId === item.id} onChange={() => setOfferedItemId(item.id)} type="radio" name="offered_item_id" value={item.id} className="size-4" /><MediaFrame src={item.imageUrl} alt={item.title} ratio="square" /><div><p className="font-semibold">{item.title}</p><p className="text-xs text-app-text-muted">{item.category ?? "بدون تصنيف"} · {item.conditionLabel}</p></div></label>)}
       {selectedItem ? <SoftPanel><p className="text-xs text-app-text-muted">اختيارك الحالي</p><p className="font-semibold">{selectedItem.title}</p></SoftPanel> : null}
-    </SurfaceCard> : null}
+    </SurfaceCard>
 
-    {mode === "new_item" ? <SurfaceCard className="space-y-4"><h3 className="text-lg font-semibold">جهّز الحاجة الجديدة كعرض</h3>
+    <SurfaceCard className={`space-y-4 ${mode === "new_item" ? "" : "hidden"}`}><h3 className="text-lg font-semibold">جهّز الحاجة الجديدة كعرض</h3>
       <FormSection>
         <Field><Label htmlFor="title">عنوان الحاجة</Label><TextInput id="title" name="title" placeholder="مثال: مكتب خشب زان" /></Field>
         <Field><Label htmlFor="category_id">التصنيف</Label><Select id="category_id" name="category_id" defaultValue=""><option value="">اختار تصنيف</option>{categories.map((c) => <option value={c.id} key={c.id}>{c.name_ar}</option>)}</Select></Field>
@@ -45,7 +45,7 @@ export function OfferComposerClient({ requestedItem, ownItems, categories, hasSo
         <Field><Label htmlFor="desire_text" optional>تفاصيل اللي محتاجه</Label><Textarea id="desire_text" name="desire_text" placeholder="اكتب أمثلة تساعد الطرف التاني يفهم تفضيلاتك" /></Field>
         <Field><Label htmlFor="wanted_tags" optional>كلمات مفتاحية</Label><TextInput id="wanted_tags" name="wanted_tags" placeholder="مثال: مكتب, ديكور" /></Field>
       </FormSection>
-    </SurfaceCard> : null}
+    </SurfaceCard>
 
     <HighlightPanel className="space-y-2"><h3 className="text-lg font-semibold">خلي عرضك أقرب للي صاحب الحاجة مستنيه</h3><p className="text-sm">{requestedItem.desireText ? `صاحب الحاجة موضح إنه بيدوّر على: ${requestedItem.desireText}` : "مفيش رغبة مكتوبة، فركّز في الرسالة على الفايدة والحالة والتبادل المتوقع."}</p></HighlightPanel>
 
