@@ -69,3 +69,9 @@ The following are known and deferred, not forgotten:
 - transactional offer CTA phrasing in some flows.
 
 These will be handled intentionally in later phases, especially Phase 54, Phase 56, and Phase 57, rather than through risky repo-wide find/replace.
+
+## 9) Phase 53 implementation note — Possibility Feed / New Home
+- Home is now the first concrete expression of the reset: a **Possibility Feed** front door, not a marketplace explainer and not a task dashboard.
+- Logged-in urgency logic (offers, pending completion, profile completion, first active item) is preserved, but visually demoted into a compact coordination pulse so curiosity remains the page identity.
+- Home now emphasizes live possibility rails (surprise/flexible openness, story-rich items, curiosity prompt framing) using existing active-item data only.
+- Explore structural overhaul and broader discovery architecture remain intentionally deferred to **Phase 54**.
