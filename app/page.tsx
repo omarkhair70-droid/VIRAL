@@ -86,12 +86,14 @@ export default async function HomePage() {
   const [
     { count: featuredCount },
     { count: publishedDropsCount },
+    { count: movingItemsCount },
     { data: surpriseItemsRaw },
     { data: storyItemsRaw },
     { data: curiosityItemsRaw },
   ] = await Promise.all([
     supabase.from("featured_story_items").select("item_id", { count: "exact", head: true }),
     supabase.from("creator_drops").select("id", { count: "exact", head: true }).eq("status", "published"),
+    supabase.from("items").select("id", { count: "exact", head: true }).eq("status", "active").gt("offer_count", 0),
     supabase
       .from("items")
       .select("id,title,desire_mode,desire_text,city,area,item_story,swap_reason,good_for,item_images(image_url)")
@@ -114,7 +116,7 @@ export default async function HomePage() {
       .limit(3),
   ]);
 
-  const showStoryEntry = (featuredCount ?? 0) > 0 || (publishedDropsCount ?? 0) > 0;
+  const showMotionEntry = (featuredCount ?? 0) > 0 || (publishedDropsCount ?? 0) > 0 || (movingItemsCount ?? 0) > 0;
   const surpriseItems = (surpriseItemsRaw ?? []) as HomeItem[];
   const storyItems = (storyItemsRaw ?? []) as HomeItem[];
   const curiosityItems = (curiosityItemsRaw ?? []) as HomeItem[];
@@ -217,7 +219,7 @@ export default async function HomePage() {
           items={storyItems.slice(0, 6)}
         />
 
-        {showStoryEntry ? <SoftPanel><h2 className="type-card-title">اختيارات تِسوى التي تحكي أكثر مما تشرح</h2><p className="type-support mt-1">لو عايز جرعة قصص مركزة، هتلاقيها في الدروب.</p><div className="mt-3"><ButtonLink href="/drops" variant="secondary">افتح الدروب</ButtonLink></div></SoftPanel> : null}
+        {showMotionEntry ? <SoftPanel><h2 className="type-card-title">حركة القيمة في تِسوى</h2><p className="type-support mt-1">شوف حاجات بدأت تستقبل اقتراحات، حكايات خرجت للنور، ودروب بتجمع زوايا مختلفة من العالم.</p><div className="mt-3"><ButtonLink href="/drops" variant="secondary">افتح حركة القيمة</ButtonLink></div></SoftPanel> : null}
 
         {user ? (
           <section className="grid gap-3 sm:grid-cols-3">

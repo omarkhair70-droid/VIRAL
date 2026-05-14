@@ -104,3 +104,10 @@ These will be handled intentionally in later phases, especially Phase 54, Phase 
 - Inline new-item offer mode now uses expressive meaning controls for `condition` and `desire_mode` without changing enum values.
 - Broken `/feed` usage in offer detail was removed in favor of a valid explore route.
 - Backend actions, schema, and status contracts remain unchanged.
+
+## Phase 58 implementation note — Public Motion of Value
+- `/drops` now acts as the first public motion hub instead of a curation-only page identity.
+- It combines three safe public layers: active things already receiving proposals through `offer_count`, story-led featured items, and curated creator drops.
+- Home now links to this broader motion layer, not only story/drop curation.
+- Offer details and deal details remain private; this phase surfaces movement, not private content.
+- No schema, backend contracts, or status-model changes were introduced.
