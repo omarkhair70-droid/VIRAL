@@ -1,8 +1,7 @@
 import { randomUUID } from "crypto";
 import Link from "next/link";
-import { Alert } from "@/components/ui/alert";
-import { PageHeading } from "@/components/ui/page-heading";
 import { ItemForm } from "@/components/item-form";
+import { InlineNotice, HeroPanel, PageSection, PageShell, SoftPanel } from "@/components/ui/surfaces";
 import { createClient } from "@/lib/supabase/server";
 import { createItem } from "./actions";
 
@@ -19,14 +18,25 @@ export default async function NewItemPage({ searchParams }: { searchParams: Prom
     .order("sort_order", { ascending: true });
 
   return (
-    <section className="mx-auto max-w-3xl space-y-5 px-4 py-10">
-      <PageHeading title="اعرض حاجة وشوف تِسوى إيه عند غيرك" subtitle="صورها، قول اللي لازم يتعرف، وافتح باب العروض بدل ما تفضل مركونة." />
-      {params.error ? <Alert variant="danger">مش قادرين نكمل دلوقتي. جرّب تاني كمان شوية.</Alert> : null}
-      {categoriesError ? <Alert variant="danger">مش قادرين نحمّل التصنيفات دلوقتي. جرّب تاني كمان شوية.</Alert> : null}
+    <PageShell className="max-w-3xl space-y-5">
+      <PageSection>
+        <HeroPanel className="space-y-2">
+          <p className="text-xs font-medium text-app-text-muted">مش إعلان. احتمال.</p>
+          <h1 className="text-2xl font-semibold text-app-text-primary">افتح للحاجة باب جديد</h1>
+          <p className="text-sm text-app-text-secondary">صورها، قول حقيقتها، احكي ليه خرجت من حياتك، وسيب الناس تقول هي شايفاها تِسوى إيه.</p>
+        </HeroPanel>
+        <SoftPanel>
+          <p className="text-sm text-app-text-secondary">مش لازم تكون الحاجة نادرة أو غالية. المهم إنك تعرضها بصدق وتسيب الباب مفتوحًا لقراءات جديدة.</p>
+        </SoftPanel>
+      </PageSection>
+
+      {params.error ? <InlineNotice tone="danger">مش قادرين نكمل دلوقتي. جرّب تاني كمان شوية.</InlineNotice> : null}
+      {categoriesError ? <InlineNotice tone="danger">مش قادرين نحمّل التصنيفات دلوقتي. جرّب تاني كمان شوية.</InlineNotice> : null}
       {!user ? (
-        <Alert variant="warning">ممكن تجهز الإعلان الأول، ولما تدوس نشر لازم تسجل دخول. <Link href="/login?next=/items/new" className="underline">سجّل دخول</Link></Alert>
+        <InlineNotice tone="warning">ممكن تجهّز الحاجة كلها الأول، ولما تفتح لها باب العروض هتحتاج تسجّل دخول. <Link href="/login?next=/items/new" className="underline">سجّل دخول</Link></InlineNotice>
       ) : null}
+
       <ItemForm categories={categories ?? []} prefill={params.prefill ?? ""} action={createItem} authRequired={!user} userId={user?.id ?? null} draftItemId={draftItemId} />
-    </section>
+    </PageShell>
   );
 }

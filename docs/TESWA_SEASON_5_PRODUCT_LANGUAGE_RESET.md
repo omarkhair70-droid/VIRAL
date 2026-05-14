@@ -82,3 +82,10 @@ These will be handled intentionally in later phases, especially Phase 54, Phase 
 - Category filtering still exists for utility, but it no longer defines the first discovery layer.
 - Visible sort controls were removed from Explore UI; legacy `sort` params are still parsed for backward compatibility.
 - Global Thing Card and Value Question reframing remains deferred to **Phase 56**.
+
+## Phase 55 implementation note — Publish Flow Reframe
+- Publish now presents as opening a value question for a thing that left your life, not creating a listing.
+- The 6-step flow now guides from visibility and naming to truth, story, offer openness, then review-before-release.
+- `condition` and `desire_mode` now use expressive choice cards powered by centralized Teswa language, with enum values unchanged.
+- Backend/server action contracts, field names, and persistence behavior remain unchanged.
+- Item-edit vocabulary parity is intentionally deferred to a later consistency phase.
