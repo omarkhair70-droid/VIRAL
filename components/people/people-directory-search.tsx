@@ -6,7 +6,7 @@ export function PeopleDirectorySearch({ query }: { query: string }) {
   return (
     <SoftPanel>
       <form action="/people" method="get" className="space-y-3">
-        <label htmlFor="people-search" className="type-label block text-app-text-secondary">
+        <label htmlFor="people-search" className="type-meta block text-app-text-secondary">
           دور على ناس بالاسم أو اليوزر أو المدينة
         </label>
         <div className="flex flex-wrap items-center gap-2">

@@ -66,3 +66,11 @@ body {
     padding-bottom: calc(env(safe-area-inset-bottom) + 0.5rem);
   }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+  }
+}
