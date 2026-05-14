@@ -50,7 +50,7 @@ function PossibilityRail({ title, subtitle, items }: { title: string; subtitle: 
       <div className="grid gap-3 md:grid-cols-3">
         {items.map((item) => (
           <Link key={item.id} href={itemHref(item)} className="rounded-surface-compact border border-app-border bg-app-soft p-3 transition hover:bg-app-surface">
-            <div className="aspect-[4/3] overflow-hidden rounded-card bg-app-border/40">
+            <div className="aspect-[4/3] overflow-hidden rounded-surface-compact bg-app-border/40">
               {item.item_images?.[0]?.image_url ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={item.item_images[0].image_url} alt={item.title || "عنصر من تِسوى"} className="h-full w-full object-cover" />
