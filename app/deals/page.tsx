@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { EmptyState } from "@/components/ui/empty-state";
+import { PageHeading } from "@/components/ui/page-heading";
 import { createClient } from "@/lib/supabase/server";
 
 type DealRow = { id: string; status: string; created_at: string; offered_item: { title: string }[] | null; requested_item: { title: string }[] | null };
@@ -35,7 +36,12 @@ export default async function DealsPage() {
 
   return (
     <section className="mx-auto max-w-4xl space-y-4 px-4 py-10">
-      <div className="flex flex-wrap items-center justify-between gap-3"><h1 className="text-3xl font-bold">صفقاتي</h1><Link href="/messages" className="inline-flex rounded-lg border px-3 py-2 text-sm">افتح مركز الرسائل</Link></div><p className="text-sm text-stone-600">جاري التنسيق: لسه بتتفقوا. مستني تأكيد: الطرفين محتاجين يأكدوا الإتمام. تمت المقايضة: الصفقة خلصت واتقفلت.</p><p className="text-sm text-stone-600">افتح الصفقة لمتابعة رسائل التنسيق.</p>
+      <PageHeading
+        title="صفقاتي"
+        subtitle="تابع صفقاتك، اعرف كل واحدة وصلت لفين، وارجع لرسائل التنسيق وقت ما تحتاج."
+        actions={<Link href="/messages" className="inline-flex rounded-lg border px-3 py-2 text-sm">افتح مركز الرسائل</Link>}
+      />
+      <p className="text-sm text-stone-600">جاري التنسيق: لسه بتتفقوا. مستني تأكيد: الطرفين محتاجين يأكدوا الإتمام. تمت المقايضة: الصفقة خلصت واتقفلت.</p><p className="text-sm text-stone-600">افتح الصفقة لمتابعة رسائل التنسيق.</p>
       <div className="grid gap-2 rounded-xl border bg-white p-3 text-sm sm:grid-cols-5">
         <p>الكل: <span className="font-semibold">{grouped.all.length}</span></p>
         <p>جاري التنسيق: <span className="font-semibold">{grouped.coordinating.length}</span></p>

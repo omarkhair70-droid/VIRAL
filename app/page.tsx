@@ -94,7 +94,7 @@ export default async function HomePage() {
 
         <section className="grid gap-3 sm:grid-cols-3">
           <Link className="rounded-2xl border border-warmBorder bg-white p-4 text-sm font-medium text-ink" href="/dashboard">حسابي وعروضي</Link>
-          <Link className="rounded-2xl border border-warmBorder bg-white p-4 text-sm font-medium text-ink" href="/notifications">الإشعارات</Link>
+          <Link className="rounded-2xl border border-warmBorder bg-white p-4 text-sm font-medium text-ink" href="/messages">مركز الرسائل</Link>
           <Link className="rounded-2xl border border-warmBorder bg-white p-4 text-sm font-medium text-ink" href="/profile">{profileQuickLinkLabel}</Link>
         </section>
 
@@ -103,8 +103,8 @@ export default async function HomePage() {
           <CardContent className="p-0 pt-3">
             <ul className="space-y-2 text-sm text-muted">
               <li>1) اعرض حاجة بصور واضحة ووصف صريح.</li>
-              <li>2) تابع الإشعارات أول بأول عشان مايفوتكش أي عرض.</li>
-              <li>3) لما تتفقوا، كمّلوا المقايضة في مكان عام وآمن.</li>
+              <li>2) تابع العروض والرسائل أول بأول.</li>
+              <li>3) لما الصفقة تبدأ، نسّق من غرفة الصفقة وأكّد بعد التبادل الحقيقي في مكان عام وآمن.</li>
             </ul>
           </CardContent>
         </Card>
@@ -122,8 +122,9 @@ export default async function HomePage() {
                   <span>{hasActiveItems ? "✅ اعرض أول حاجة" : "◻️ اعرض أول حاجة"}</span>
                   <Link href="/items/new" className="text-xs font-medium text-ink underline underline-offset-2">ابدأ</Link>
                 </li>
-                <li className="rounded-xl border border-warmBorder bg-sand p-3">
-                  <span>🔜 تابع العروض والرسائل</span>
+                <li className="flex items-center justify-between gap-3 rounded-xl border border-warmBorder bg-sand p-3">
+                  <span>💬 بعد قبول أول عرض، رسائل التنسيق هتظهر لك هنا.</span>
+                  <Link href="/messages" className="text-xs font-medium text-ink underline underline-offset-2">افتح</Link>
                 </li>
               </ul>
             </CardContent>
@@ -152,7 +153,7 @@ export default async function HomePage() {
     <div className="mx-auto max-w-6xl space-y-6 px-4 py-10 md:space-y-8 md:py-14">
       <PwaInstallCard />
       <Card className="rounded-3xl bg-cream p-6 md:p-10">
-        <PageHeading eyebrow="تِسوى — Teswa" title="حاجتك لسه لها قيمة." subtitle="سجّل، اعرض حاجة عندك، وابدأ تستقبل عروض مقايضة من ناس حقيقية." />
+        <PageHeading eyebrow="تِسوى — Teswa" title="حاجتك لسه لها قيمة." subtitle="سجّل، اعرض حاجة عندك، استقبل عروض من ناس حقيقية، ونسّق المقايضة من داخل تِسوى." />
         <div className="mt-3 flex flex-wrap gap-3">
           <ButtonLink href="/login?next=/items/new" size="lg">
             ابدأ وسجّل
@@ -169,7 +170,7 @@ export default async function HomePage() {
       <section className="grid gap-3 sm:grid-cols-3">
         <Card className="rounded-2xl p-4"><p className="text-sm font-semibold text-ink">اعرض</p><p className="mt-1 text-sm text-muted">انشر حاجة بصور ووصف واضح.</p></Card>
         <Card className="rounded-2xl p-4"><p className="text-sm font-semibold text-ink">استقبل عروض</p><p className="mt-1 text-sm text-muted">ناس تقترح عليك حاجات مناسبة.</p></Card>
-        <Card className="rounded-2xl p-4"><p className="text-sm font-semibold text-ink">اتفق بأمان</p><p className="mt-1 text-sm text-muted">كمّلوا الصفقة من داخل تِسوى.</p></Card>
+        <Card className="rounded-2xl p-4"><p className="text-sm font-semibold text-ink">نسّق بأمان</p><p className="mt-1 text-sm text-muted">كمّلوا التفاصيل من الرسائل وغرفة الصفقة.</p></Card>
       </section>
 
       <Card className="rounded-3xl p-6 md:p-8">

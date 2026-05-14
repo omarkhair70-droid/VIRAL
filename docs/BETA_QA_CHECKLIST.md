@@ -454,3 +454,13 @@
 - [ ] Shell badge path uses lightweight RPC `get_unread_deal_messages_count` (not `getUnreadMessagesCount(...)` conversation builder).
 - [ ] No global realtime shell badge refresh behavior was added.
 - [ ] `npm run build` passes.
+
+## AB. Season 3 Phase 41 — Clarity & Cohesion Pass
+- [ ] logged-in home quick card now promotes messages (instead of notifications)
+- [ ] logged-out hero copy mentions in-app coordination
+- [ ] onboarding checklist no longer frames messages as "coming soon"
+- [ ] dashboard unread message attention count still appears and uses RPC-backed count path
+- [ ] dashboard urgent attention grid remains clean with 4 cards
+- [ ] deals page uses cohesive `PageHeading` + messages CTA
+- [ ] messages page shows deals CTA + realtime-aware subtitle
+- [ ] `npm run build` passes

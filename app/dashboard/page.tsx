@@ -7,7 +7,6 @@ import { ButtonLink } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { PageHeading } from "@/components/ui/page-heading";
 import { isCurrentUserAdmin } from "@/lib/admin";
-import { getUnreadMessagesCount } from "@/lib/messages";
 import { createClient } from "@/lib/supabase/server";
 
 type OfferStatus = "pending" | "thinking" | "accepted";
@@ -28,7 +27,7 @@ export default async function DashboardPage() {
     { count: completedDealsCount },
     { count: pendingConfirmationsCount },
     { count: unreadNotificationsCount },
-    unreadMessagesCount,
+    unreadMessagesResult,
     isAdmin,
   ] = await Promise.all([
     supabase.from("profiles").select("display_name,username,bio,city,area").eq("id", user.id).maybeSingle(),
@@ -43,9 +42,11 @@ export default async function DashboardPage() {
       .or(`requester_id.eq.${user.id},offerer_id.eq.${user.id}`)
       .eq("status", "completed_pending_confirmation"),
     supabase.from("notifications").select("id", { count: "exact", head: true }).eq("user_id", user.id).is("read_at", null),
-    getUnreadMessagesCount(user.id),
+supabase.rpc("get_unread_deal_messages_count"),
     isCurrentUserAdmin(supabase),
   ]);
+
+  const unreadMessagesCount = unreadMessagesResult.error ? 0 : Number(unreadMessagesResult.data ?? 0);
 
   const received = (receivedOffers ?? []).map((offer) => offer.status as OfferStatus);
   const sent = (sentOffers ?? []).map((offer) => offer.status as OfferStatus);
@@ -97,12 +98,12 @@ export default async function DashboardPage() {
 
   return (
     <PageShell title="حسابي">
-      <PageHeading title="حسابي" subtitle="مركز حسابك: راجع المهم دلوقتي، تابع نشاطك، وعدّل بروفايلك." />
+      <PageHeading title="حسابي" subtitle="مركز حسابك: راجع المهم دلوقتي، تابع نشاطك ورسائلك، وعدّل بروفايلك." />
 
       <section className="space-y-3">
         <h2 className="text-xl font-semibold">المهم دلوقتي</h2>
         {urgentAttentionItems.length > 0 ? (
-          <div className="grid gap-3 md:grid-cols-3">
+          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
             {urgentAttentionItems.map((item) => (
               <Card key={item.key}>
                 <CardHeader>

@@ -212,3 +212,12 @@ If docs and implementation differ, **current code + SQL behavior wins**; docs mu
 - Footer now carries secondary public/support navigation: إزاي بتشتغل, الأمان, الدروب.
 - Active-state coverage expanded across market/people/messages/publish/account/notifications routes in shell nav rendering.
 - No global realtime shell badge refresh loop was added; Phase 39 realtime messaging behavior remains scoped to messaging surfaces.
+
+## Season 3 Phase 41 — Clarity & Cohesion Pass (2026-05-14)
+- Logged-in home now promotes Messages in quick actions, updates "ابدأ من هنا" guidance to reflect offers + messages + deal-room coordination, and removes "coming soon" messaging language from onboarding checklist copy.
+- Logged-out home hero/value copy now reflects the complete Season 3 loop: real people, offers, and in-app coordination.
+- Dashboard unread messages attention count now uses the lightweight `public.get_unread_deal_messages_count()` RPC path (aligned with Phase 40 shell badge strategy) with safe fallback.
+- Dashboard urgent attention layout now scales cleanly for up to four concurrent cards (offers, deals, messages, notifications).
+- Deals and Messages pages now use more cohesive heading/actions language to reinforce workflow relationship: deals as progress surface, messages as coordination surface.
+- Season 3 is now closed as one coherent product layer: People discovery (Phase 37), Messaging foundation (Phase 38), Realtime messaging (Phase 39), Navigation Shell 3.0 (Phase 40), and clarity/cohesion closeout (Phase 41).
+- No new schema, migration, RPC, policy, or realtime architecture changes were introduced in this phase.
