@@ -192,3 +192,14 @@ If docs and implementation differ, **current code + SQL behavior wins**; docs mu
 - Added DB guardrails on `deal_messages.body` to reject blank/trim-empty and over-800-char messages.
 - Added entry points to `/messages` from Dashboard and `/deals`.
 - Realtime messaging intentionally deferred to Season 3 Phase 39.
+
+## Season 3 Phase 39 — Real-Time Messaging (2026-05-14)
+- Added realtime publication migration for `public.deal_messages` and `public.deal_message_reads` (idempotent checks against `pg_publication_tables`).
+- Deal room message thread now subscribes to `deal_messages` INSERT events filtered by current deal ID and renders incoming messages live.
+- Thread message state now deduplicates by message ID across initial SSR data, reconnect delivery, and post-send refreshes.
+- Active visible thread now auto-calls `mark_deal_thread_read(...)` for inbound (non-self) realtime messages.
+- Hidden-tab inbound messages are deferred and marked read once visibility returns to `visible`.
+- Inbox `/messages` now has realtime refresh helper subscribing to `deal_messages` INSERT and current-user `deal_message_reads` INSERT/UPDATE with debounced `router.refresh()`.
+- Subtle realtime connection state copy now appears in both deal thread and inbox.
+- Sender UX now includes pending state on submit button (`جاري الإرسال...`) without changing server-action semantics.
+- Realtime remains intentionally deal-scoped only (no open DMs, typing indicators, read receipts UI, or presence).

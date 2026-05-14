@@ -419,3 +419,18 @@
 - [ ] DB blocks blank/trim-empty and >800-char message bodies.
 - [ ] Dashboard and `/deals` provide clear entry to message inbox.
 - [ ] No realtime behavior added yet (planned for Phase 39).
+
+## Season 3 Phase 39 — Real-Time Messaging QA
+- [ ] Open same deal in two browsers: user A sends and user B sees message appear without refresh.
+- [ ] Realtime thread subscription is deal-scoped (`deal_id` filter) and does not show unrelated messages.
+- [ ] Dedupe holds: send + server refresh + realtime insert/reconnect does not duplicate bubbles.
+- [ ] If thread is open + visible, inbound realtime message gets marked read (unread clears in `/messages`).
+- [ ] If thread tab is hidden on inbound, unread remains until tab becomes visible again (or thread reloads).
+- [ ] Deal thread status copy transitions appropriately across connecting/live/degraded states.
+- [ ] `/messages` inbox updates latest preview/sort after new message insert (via debounced realtime refresh).
+- [ ] `/messages` unread count updates after inbound message.
+- [ ] `/messages` unread state refreshes when `deal_message_reads` changes in another tab/session.
+- [ ] Inbox realtime status copy transitions appropriately across reconnect/live/degraded states.
+- [ ] Realtime does not expose messages outside participant scope (RLS preserved).
+- [ ] No expansion to open DMs, typing indicators, read receipts UI, attachments, or presence.
+- [ ] `npm run build` passes.

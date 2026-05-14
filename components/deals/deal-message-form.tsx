@@ -1,3 +1,4 @@
+import { DealMessageSubmitButton } from "@/components/deals/deal-message-submit-button";
 import { sendDealMessage } from "@/app/deals/[dealId]/actions";
 
 export function DealMessageForm({ dealId }: { dealId: string }) {
@@ -18,7 +19,7 @@ export function DealMessageForm({ dealId }: { dealId: string }) {
         placeholder="اكتب رسالة تنسيق بسيطة..."
       />
       <p className="text-xs text-stone-600">خليك واضح ومختصر. ما تبعتش عنوانك أو بيانات حساسة بدري.</p>
-      <button className="rounded-lg bg-clay px-4 py-2 text-sm text-white">ابعت الرسالة</button>
+      <DealMessageSubmitButton />
     </form>
   );
 }

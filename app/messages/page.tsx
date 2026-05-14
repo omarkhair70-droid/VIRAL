@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { MessageConversationCard } from "@/components/messages/message-conversation-card";
+import { MessagesRealtimeRefresh } from "@/components/messages/messages-realtime-refresh";
 import { EmptyState } from "@/components/ui/empty-state";
 import { PageHeading } from "@/components/ui/page-heading";
 import { getMessageConversationsForUser } from "@/lib/messages";
@@ -16,6 +17,7 @@ export default async function MessagesPage() {
   return (
     <section className="mx-auto max-w-5xl space-y-4 px-4 py-8">
       <PageHeading title="رسائلي" subtitle="تابع محادثات التنسيق المرتبطة بصفقاتك، وارجع لأي رسالة محتاجة رد." />
+      <MessagesRealtimeRefresh currentUserId={user.id} />
       {conversations.length === 0 ? (
         <EmptyState
           iconName="chat"
