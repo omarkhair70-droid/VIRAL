@@ -125,15 +125,17 @@ export default async function ItemDetailPage({ params, searchParams }: { params:
   const isOwner = user?.id === typed.owner_id;
   const location = [typed.city, typed.area].filter(Boolean).join(" - ");
   const hasStory = Boolean(typed.item_story || typed.swap_reason || typed.good_for);
-  const moreFromOwnerQuery = await supabase
-    .from("items")
-    .select("id,title,city,area,item_images(image_url,is_primary)")
-    .eq("owner_id", typed.owner_id)
-    .eq("status", "active")
-    .neq("id", typed.id)
-    .order("created_at", { ascending: false })
-    .limit(3);
-  const { data: ownerReviewRows } = await supabase.from("reviews").select("clear_description,good_communication,on_time,respectful_swapper").eq("reviewee_id", typed.owner_id);
+  const [moreFromOwnerQuery, { data: ownerReviewRows }] = await Promise.all([
+    supabase
+      .from("items")
+      .select("id,title,city,area,item_images(image_url,is_primary)")
+      .eq("owner_id", typed.owner_id)
+      .eq("status", "active")
+      .neq("id", typed.id)
+      .order("created_at", { ascending: false })
+      .limit(3),
+    supabase.from("reviews").select("clear_description,good_communication,on_time,respectful_swapper").eq("reviewee_id", typed.owner_id),
+  ]);
   const ownerTrustCounts: TrustCounts = (ownerReviewRows ?? []).reduce(
     (acc, row) => ({ clear_description: acc.clear_description + (row.clear_description ? 1 : 0), good_communication: acc.good_communication + (row.good_communication ? 1 : 0), on_time: acc.on_time + (row.on_time ? 1 : 0), respectful_swapper: acc.respectful_swapper + (row.respectful_swapper ? 1 : 0) }),
     { clear_description: 0, good_communication: 0, on_time: 0, respectful_swapper: 0 },

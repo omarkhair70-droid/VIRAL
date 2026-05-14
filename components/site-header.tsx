@@ -1,26 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { AppIcon } from "@/components/ui/app-icon";
-import { createClient } from "@/lib/supabase/server";
+import { getShellRequestState } from "@/lib/shell-request-state";
 import { SiteHeaderNav } from "@/components/site-header-nav";
 
 export async function SiteHeader() {
-  const supabase = await createClient();
-  const { data } = await supabase.auth.getUser();
-  const loggedIn = Boolean(data.user);
-
-  let unreadNotificationsCount = 0;
-  let unreadMessagesCount = 0;
-
-  if (data.user) {
-    const [{ count }, { data: unreadMessagesData, error: unreadMessagesError }] = await Promise.all([
-      supabase.from("notifications").select("id", { count: "exact", head: true }).eq("user_id", data.user.id).is("read_at", null),
-      supabase.rpc("get_unread_deal_messages_count"),
-    ]);
-
-    unreadNotificationsCount = count ?? 0;
-    if (!unreadMessagesError) unreadMessagesCount = Number(unreadMessagesData ?? 0);
-  }
+  const { loggedIn, unreadNotificationsCount, unreadMessagesCount } = await getShellRequestState();
 
   return (
     <header className="sticky top-0 z-20 border-b border-warmBorder bg-sand/95 backdrop-blur">
