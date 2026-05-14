@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ShareActions } from "@/components/share-actions";
 import { TrustBadges } from "@/components/trust-badges";
-import { StatusPill } from "@/components/ui/status-pill";
+import { ButtonLink } from "@/components/ui/button";
+import { MediaFrame, MetricPill, TrustChip } from "@/components/ui/product-primitives";
+import { HeroPanel, HighlightPanel, InlineNotice, PageSection, PageShell, SoftPanel, SurfaceCard } from "@/components/ui/surfaces";
 import { buildTrustBadges, selectedTrustTraitsFromReview, type TrustCounts } from "@/lib/trust-badges";
 import { createClient } from "@/lib/supabase/server";
 
@@ -30,21 +31,113 @@ export default async function UserProfilePage({ params, searchParams }: { params
   const trustBadges = buildTrustBadges({ counts: trustCounts, successfulSwapsCount: typed.successful_swaps_count, includeBeta: true });
   const displayName = typed.display_name || typed.username || "مستخدم"; const location = [typed.city, typed.area].filter(Boolean).join(" - ");
 
-  return <section className="mx-auto max-w-5xl space-y-6 px-4 py-8">
-    <div className="overflow-hidden rounded-2xl border bg-white"><div className="h-36 w-full bg-gradient-to-r from-stone-200 to-amber-100">{typed.cover_url ? <Image src={typed.cover_url} alt="cover" width={1200} height={240} className="h-full w-full object-cover" /> : null}</div><div className="p-5"><div className="-mt-16 mb-3">{typed.avatar_url ? <Image src={typed.avatar_url} alt={displayName} width={96} height={96} className="h-24 w-24 rounded-full border-4 border-white object-cover" /> : <div className="flex h-24 w-24 items-center justify-center rounded-full border-4 border-white bg-stone-100 text-2xl font-bold">{displayName.charAt(0)}</div>}</div><h1 className="text-2xl font-bold">{displayName}</h1><p className="text-stone-600">@{typed.username}</p>{typed.profile_tagline ? <p className="mt-1 text-sm text-stone-700">{typed.profile_tagline}</p> : null}<p className="mt-2 text-sm text-stone-600">{location || "لسه مكملش بيانات المكان"}</p>{typed.bio ? <p className="mt-2 text-stone-700">{typed.bio}</p> : null}<p className="mt-2 text-xs text-stone-500">عضو من {new Date(typed.created_at).toLocaleDateString("ar-EG")}</p></div></div>
+  return (
+    <PageShell>
+      <PageSection>
+        <HeroPanel className="overflow-hidden p-0">
+          <MediaFrame src={typed.cover_url} alt={`غلاف ${displayName}`} ratio="hero" fallback={<div className="h-full w-full bg-gradient-to-r from-stone-200 to-amber-100" />} />
+          <div className="space-y-4 p-panel-lg">
+            <div className="-mt-20 inline-flex rounded-full border-4 border-app-surface bg-app-surface">
+              {typed.avatar_url ? (
+                <img src={typed.avatar_url} alt={displayName} className="h-24 w-24 rounded-full object-cover" />
+              ) : (
+                <div className="flex h-24 w-24 items-center justify-center rounded-full bg-app-soft text-2xl font-bold text-app-text-secondary">{displayName.charAt(0)}</div>
+              )}
+            </div>
+            <div className="space-y-2">
+              <h1 className="text-3xl font-semibold text-app-text-primary">{displayName}</h1>
+              <p className="text-sm text-app-text-muted">@{typed.username}</p>
+              {typed.profile_tagline ? <p className="text-base text-app-text-secondary">{typed.profile_tagline}</p> : null}
+              <p className="text-sm text-app-text-muted">{location || "لسه مكملش بيانات المكان"} • عضو من {new Date(typed.created_at).toLocaleDateString("ar-EG")}</p>
+              {typed.bio ? <p className="max-w-3xl text-sm text-app-text-secondary">{typed.bio}</p> : null}
+            </div>
+          </div>
+        </HeroPanel>
 
-    <div className="rounded-2xl border bg-white p-4"><p className="mb-2 text-sm text-stone-700">شارك البروفايل مع حد ممكن يلاقي عنده حاجة مناسبة.</p>{typed.username ? <ShareActions label="شارك البروفايل" title={`${displayName} على تِسوى`} text="شوف بروفايل المقايضات والتقييمات على تِسوى." urlPath={`/users/${typed.username}`} /> : null}</div>
+        <SurfaceCard className="space-y-3">
+          <p className="text-sm text-app-text-secondary">لو تعرف حد مهتم بنفس النوع من المقايضات، شاركه البروفايل ده.</p>
+          {typed.username ? <ShareActions label="شارك البروفايل" title={`${displayName} على تِسوى`} text="شوف بروفايل المقايضات والتقييمات على تِسوى." urlPath={`/users/${typed.username}`} /> : null}
+          {query.reported === "1" ? <InlineNotice tone="warning">تم إرسال البلاغ. شكرًا إنك ساعدتنا نحافظ على التجربة.</InlineNotice> : null}
+          {user && user.id !== typed.id ? <Link href={`/report?username=${encodeURIComponent(username)}&returnTo=${encodeURIComponent(`/users/${username}`)}`} className="text-sm text-app-text-muted underline underline-offset-2">بلّغ عن المستخدم</Link> : null}
+        </SurfaceCard>
 
-    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4"><div className="rounded-xl border bg-stone-50 p-4"><p className="text-sm text-stone-600">الحاجات المتاحة</p><p className="text-2xl font-bold">{items?.length ?? 0}</p></div><div className="rounded-xl border bg-stone-50 p-4"><p className="text-sm text-stone-600">مقايضات مكتملة</p><p className="text-2xl font-bold">{typed.successful_swaps_count}</p></div><div className="rounded-xl border bg-stone-50 p-4"><p className="text-sm text-stone-600">كل التقييمات</p><p className="text-2xl font-bold">{reviewCount}</p></div><div className="rounded-xl border bg-stone-50 p-4"><p className="text-sm text-stone-600">متوسط التقييم</p><p className="text-2xl font-bold">{averageRating ? averageRating.toFixed(1) : "-"}</p><p className="text-xs text-stone-500">صفقات مقبولة: {dealsCount ?? 0}</p></div></div>
-    <div className="space-y-2 rounded-2xl border bg-white p-4"><h2 className="text-base font-semibold">إشارات الثقة</h2><TrustBadges badges={trustBadges} /></div>
+        <HighlightPanel className="space-y-3">
+          <h2 className="text-lg font-semibold text-app-text-primary">ملخص النشاط والسمعة</h2>
+          <div className="flex flex-wrap gap-2">
+            <MetricPill label="حاجات متاحة" value={items?.length ?? 0} />
+            <MetricPill label="مقايضات مكتملة" value={typed.successful_swaps_count} />
+            <MetricPill label="كل التقييمات" value={reviewCount} />
+            <MetricPill label="متوسط التقييم" value={averageRating ? averageRating.toFixed(1) : "-"} />
+          </div>
+          <p className="text-xs text-app-text-muted">صفقات مقبولة: {dealsCount ?? 0}</p>
+        </HighlightPanel>
 
-    {query.reported === "1" ? <p className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-emerald-800">تم إرسال البلاغ. شكرًا إنك ساعدتنا نحافظ على التجربة.</p> : null}
-    {user && user.id !== typed.id ? <Link href={`/report?username=${encodeURIComponent(username)}&returnTo=${encodeURIComponent(`/users/${username}`)}`} className="text-sm text-stone-600 hover:underline">بلّغ عن المستخدم</Link> : null}
+        <SurfaceCard className="space-y-3">
+          <h2 className="text-lg font-semibold text-app-text-primary">سمعة المقايضة</h2>
+          <p className="text-sm text-app-text-secondary">الإشارات دي مبنية من مقايضات مكتملة وتقييمات فعلية على تِسوى.</p>
+          {trustBadges.length ? <TrustBadges badges={trustBadges} /> : <InlineNotice>لسه مفيش إشارات ثقة كفاية تظهر هنا.</InlineNotice>}
+        </SurfaceCard>
 
-    <div className="rounded-2xl border bg-white p-4"><h2 className="text-xl font-semibold">بيحب يبدّل إيه؟</h2>{typed.interests || typed.preferred_categories || typed.swap_preferences ? <div className="mt-2 space-y-2 text-stone-700">{typed.interests ? <p><span className="font-medium">اهتماماته:</span> {typed.interests}</p> : null}{typed.preferred_categories ? <p><span className="font-medium">الفئات المفضلة:</span> {typed.preferred_categories}</p> : null}{typed.swap_preferences ? <p><span className="font-medium">تفضيلاته:</span> {typed.swap_preferences}</p> : null}</div> : <p className="mt-2 text-stone-600">لسه ما كتبش اهتماماته في المقايضة.</p>}</div>
+        <SurfaceCard className="space-y-3">
+          <h2 className="text-xl font-semibold text-app-text-primary">بيحب يبدّل إيه؟</h2>
+          {typed.interests || typed.preferred_categories || typed.swap_preferences ? (
+            <div className="grid gap-2 text-sm text-app-text-secondary">
+              {typed.interests ? <SoftPanel className="space-y-1"><p className="type-label">اهتماماته</p><p>{typed.interests}</p></SoftPanel> : null}
+              {typed.preferred_categories ? <SoftPanel className="space-y-1"><p className="type-label">الفئات المفضلة</p><p>{typed.preferred_categories}</p></SoftPanel> : null}
+              {typed.swap_preferences ? <SoftPanel className="space-y-1"><p className="type-label">تفضيلاته</p><p>{typed.swap_preferences}</p></SoftPanel> : null}
+            </div>
+          ) : (
+            <InlineNotice>لسه ما كتبش اهتماماته في المقايضة.</InlineNotice>
+          )}
+        </SurfaceCard>
 
-    <div className="space-y-3"><h2 className="text-xl font-semibold">آراء الناس بعد المقايضة</h2><p className="text-sm text-stone-600">الآراء دي بتظهر بعد مقايضات مكتملة فقط.</p><p className="text-sm text-stone-700">متوسط التقييم: {averageRating ? averageRating.toFixed(1) : "-"} • عدد التقييمات: {reviewCount}</p>{latestReviews.length ? latestReviews.map((review) => { const reviewer = review.reviewer?.[0]; const selectedSignals = selectedTrustTraitsFromReview(review); return <article key={review.id} className="rounded-xl border bg-white p-4"><p className="text-sm text-stone-500">{new Date(review.created_at).toLocaleDateString("ar-EG")}</p><p className="font-semibold">{reviewer?.display_name ?? reviewer?.username ?? "مستخدم"} • {review.rating}/5</p>{review.comment ? <p className="mt-1 text-sm text-stone-700">{review.comment}</p> : null}{selectedSignals.length ? <div className="mt-2 flex flex-wrap gap-1.5">{selectedSignals.map((signal) => <span key={signal} className="rounded-full border border-stone-200 bg-stone-50 px-2 py-0.5 text-[11px] text-stone-600">{signal}</span>)}</div> : null}</article>; }) : <p className="rounded-xl border bg-white p-4 text-stone-600">لسه مفيش تقييمات.</p>}</div>
+        <SurfaceCard className="space-y-4">
+          <div className="space-y-1">
+            <h2 className="text-xl font-semibold text-app-text-primary">آراء الناس بعد المقايضة</h2>
+            <p className="text-sm text-app-text-secondary">الآراء دي بتظهر بعد مقايضات مكتملة فقط.</p>
+            <p className="text-sm text-app-text-muted">متوسط التقييم: {averageRating ? averageRating.toFixed(1) : "-"} • عدد التقييمات: {reviewCount}</p>
+          </div>
+          {latestReviews.length ? latestReviews.map((review) => {
+            const reviewer = review.reviewer?.[0];
+            const selectedSignals = selectedTrustTraitsFromReview(review);
+            return (
+              <SoftPanel key={review.id} className="space-y-2">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <p className="font-medium text-app-text-primary">{reviewer?.display_name ?? reviewer?.username ?? "مستخدم"}</p>
+                  <p className="text-xs text-app-text-muted">{new Date(review.created_at).toLocaleDateString("ar-EG")}</p>
+                </div>
+                <p className="text-sm text-app-text-secondary">التقييم: {review.rating}/5</p>
+                {review.comment ? <p className="text-sm text-app-text-secondary">{review.comment}</p> : null}
+                {selectedSignals.length ? <div className="flex flex-wrap gap-1.5">{selectedSignals.map((signal) => <TrustChip key={signal} tone="meta" dense>{signal}</TrustChip>)}</div> : null}
+              </SoftPanel>
+            );
+          }) : <InlineNotice>لسه مفيش تقييمات.</InlineNotice>}
+        </SurfaceCard>
 
-    <div className="space-y-3"><h2 className="text-xl font-semibold">الحاجات المتاحة منه</h2>{items?.length ? <div className="grid gap-3 sm:grid-cols-2">{items.map((item) => { const image = Array.isArray((item as { item_images?: { image_url: string; is_primary: boolean }[] }).item_images) ? (item as { item_images?: { image_url: string; is_primary: boolean }[] }).item_images?.find((img) => img.is_primary)?.image_url ?? (item as { item_images?: { image_url: string; is_primary: boolean }[] }).item_images?.[0]?.image_url : null; return <Link key={item.id} href={`/items/${item.id}`} className="rounded-xl border bg-white p-3">{image ? <Image src={image} alt={item.title} width={320} height={180} className="mb-2 h-36 w-full rounded-lg object-cover" /> : null}<div className="mb-1 flex flex-wrap gap-1">{(item as { item_story?: string | null; swap_reason?: string | null; good_for?: string | null }).item_story || (item as { swap_reason?: string | null }).swap_reason || (item as { good_for?: string | null }).good_for ? <StatusPill tone="pending">ليها حكاية</StatusPill> : null}</div><p className="font-semibold">{item.title}</p><p className="mt-1 text-sm text-stone-600">{[item.city, item.area].filter(Boolean).join(" - ") || "بدون موقع"}</p></Link>; })}</div> : <p className="rounded-xl border bg-white p-4 text-stone-600">لسه مفيش حاجات متاحة للمقايضة.</p>}{user?.id === typed.id ? <Link href="/items/new" className="inline-flex rounded-xl border px-4 py-2 text-sm">اعرض حاجة جديدة</Link> : null}</div>
-  </section>;
+        <SurfaceCard className="space-y-3">
+          <h2 className="text-xl font-semibold text-app-text-primary">الحاجات المتاحة منه</h2>
+          {items?.length ? (
+            <div className="grid gap-3 sm:grid-cols-2">
+              {items.map((item) => {
+                const image = Array.isArray((item as { item_images?: { image_url: string; is_primary: boolean }[] }).item_images) ? (item as { item_images?: { image_url: string; is_primary: boolean }[] }).item_images?.find((img) => img.is_primary)?.image_url ?? (item as { item_images?: { image_url: string; is_primary: boolean }[] }).item_images?.[0]?.image_url : null;
+                return (
+                  <Link key={item.id} href={`/items/${item.id}`} className="rounded-surface-compact border border-app-border bg-app-surface p-3 transition hover:border-app-accent/40 hover:bg-app-soft">
+                    <MediaFrame src={image} alt={item.title} ratio="wide" />
+                    <div className="mt-2 space-y-1">
+                      {(item as { item_story?: string | null; swap_reason?: string | null; good_for?: string | null }).item_story || (item as { swap_reason?: string | null }).swap_reason || (item as { good_for?: string | null }).good_for ? <TrustChip tone="info" dense>ليها حكاية</TrustChip> : null}
+                      <p className="font-semibold text-app-text-primary">{item.title}</p>
+                      <p className="text-sm text-app-text-muted">{[item.city, item.area].filter(Boolean).join(" - ") || "بدون موقع"}</p>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          ) : (
+            <InlineNotice>لسه مفيش حاجات متاحة للمقايضة.</InlineNotice>
+          )}
+          {user?.id === typed.id ? <ButtonLink href="/items/new" variant="outline" size="sm">اعرض حاجة جديدة</ButtonLink> : null}
+        </SurfaceCard>
+      </PageSection>
+    </PageShell>
+  );
 }
