@@ -26,9 +26,14 @@ Notes:
 - Theme/background color: use current manifest/app values (no new values introduced here)
 - Final support/privacy email: deferred until Play submission prep
 
-## 5) Digital Asset Links dependency
-`assetlinks.json` cannot be finalized until the real signing certificate fingerprint exists.
-This step belongs to **GP-04 / post-signing** execution.
+## 5) Digital Asset Links status (GP-04)
+- Signing certificate fingerprint now exists.
+- `assetlinks.json` has been prepared for the current Vercel origin: `https://viral-one-delta.vercel.app`.
+- Final live verification is still required after deployment.
+
+Recorded values:
+- Package ID: `app.teswa.android`
+- SHA-256 fingerprint: `F3:03:09:68:B0:54:A3:DC:CE:84:9B:3E:56:05:7D:A4:8C:45:62:BD:BA:1F:2F:D9:45:52:67:B2:61:37:4A:2F`
 
 ## 6) Screenshot plan (Play listing storyboard)
 

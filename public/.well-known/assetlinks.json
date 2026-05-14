@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "app.teswa.android",
+      "sha256_cert_fingerprints": [
+        "F3:03:09:68:B0:54:A3:DC:CE:84:9B:3E:56:05:7D:A4:8C:45:62:BD:BA:1F:2F:D9:45:52:67:B2:61:37:4A:2F"
+      ]
+    }
+  }
+]
