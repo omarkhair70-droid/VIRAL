@@ -28,8 +28,10 @@ export default async function HomePage() {
   let isProfileComplete = false;
   let hasActiveItems = false;
 
-  const { count: featuredCount } = await supabase.from("featured_story_items").select("item_id", { count: "exact", head: true });
-  const { count: publishedDropsCount } = await supabase.from("creator_drops").select("id", { count: "exact", head: true }).eq("status", "published");
+  const [{ count: featuredCount }, { count: publishedDropsCount }] = await Promise.all([
+    supabase.from("featured_story_items").select("item_id", { count: "exact", head: true }),
+    supabase.from("creator_drops").select("id", { count: "exact", head: true }).eq("status", "published"),
+  ]);
   const showStoryEntry = (featuredCount ?? 0) > 0 || (publishedDropsCount ?? 0) > 0;
 
   if (user) {
