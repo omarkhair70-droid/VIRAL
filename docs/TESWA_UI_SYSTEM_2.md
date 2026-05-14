@@ -78,9 +78,9 @@ All upcoming redesign phases should consume these shared tokens/primitives first
 - These primitives are the base for Phase 44/45 gallery-first card/detail work.
 
 ### Focused Flow Chrome Guidance
-- Added opt-in focused layout capability at route-group level: `app/(focused)/layout.tsx` using `FocusedFlowShell`.
-- Default app shell/nav/header/footer remain unchanged.
-- Future onboarding/publish/auth focused flows should move into `(focused)` only when explicitly intended.
+- `FocusedFlowShell` is available as an inner composition primitive for future focused pages/steps.
+- Phase 42B does **not** enable true global shell suppression (root `app/layout.tsx` chrome is unchanged).
+- Real suppression of global header/footer/mobile nav requires a dedicated future layout-architecture pass when a true focused route is introduced.
 
 ### Motion / Interaction Foundation
 - Subtle transitions on upload/media/state primitives.
