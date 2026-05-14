@@ -158,12 +158,12 @@ export default async function DealDetailPage({ params, searchParams }: { params:
           <section id="messages" className="space-y-4 rounded-2xl border bg-white p-4 md:p-5">
             <div className="space-y-1">
               <h2 className="flex items-center gap-2 text-xl font-semibold"><AppIcon name="chat" className="size-5 text-clay" />رسائل تنسيق الصفقة</h2>
-              <p className="text-sm text-stone-700">الرسائل هنا للتنسيق فقط. مفيش شات لحظي لسه، الرسائل بتظهر بعد الإرسال أو تحديث الصفحة.</p>
+              <p className="text-sm text-stone-700">الرسائل هنا للتنسيق فقط. التحديث اللحظي شغال وقت التنسيق، وهتلاقي الرسائل الجديدة بتظهر تلقائيًا.</p>
               <p className="text-sm text-stone-700">ما تشاركش بيانات حساسة بدري، ولو في رسالة مش مريحة بلّغ عنها.</p>
             </div>
             {query.message === "sent" ? <p className="rounded-lg border border-emerald-200 bg-emerald-50 p-2 text-sm text-emerald-800">تم إرسال الرسالة.</p> : null}
             {query.messageError ? <p className="rounded-lg border border-rose-200 bg-rose-50 p-2 text-sm text-rose-800">{messageErrorMap[query.messageError] ?? messageErrorMap.send_failed}</p> : null}
-            <DealMessageThread messages={messages} currentUserId={user.id} dealId={deal.id} />
+            <DealMessageThread messages={messages} currentUserId={user.id} dealId={deal.id} otherParticipantName={otherParticipantProfile?.display_name ?? otherParticipantProfile?.username ?? "مستخدم"} />
             {canSendMessage ? <DealMessageForm dealId={deal.id} /> : <p className="rounded-xl border border-stone-200 bg-stone-50 p-3 text-sm text-stone-700">الرسائل اتقفلت لأن حالة الصفقة اتغيرت. تقدر ترجع للرسائل القديمة بس.</p>}
             {otherParticipantProfile?.display_name || otherParticipantProfile?.username ? <p className="text-xs text-stone-500">بتنسّق حاليًا مع {otherParticipantProfile.display_name ?? otherParticipantProfile.username}.</p> : null}
           </section>
