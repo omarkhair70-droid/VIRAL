@@ -47,7 +47,7 @@ export function OfferComposerClient({ requestedItem, ownItems, categories, hasSo
 
         <Field><Label>لو اتنشرت لاحقًا، فاتح بابها لإيه؟</Label><div className="grid gap-2">{Object.entries(TESWA_DESIRE_MODE_LANGUAGE).map(([value, meta]) => <label key={value} className="cursor-pointer rounded-xl border border-app-border p-3"><input type="radio" name="desire_mode" value={value} defaultChecked={value === "flexible"} className="ml-2" /> <span className="font-semibold">{meta.label}</span><p className="mt-1 text-xs text-app-text-muted">{meta.helper}</p></label>)}</div></Field>
 
-        <Field><Label htmlFor="desire_text" optional>لو اتنشرت لاحقًا، فاتح بابها لإيه؟</Label><Textarea id="desire_text" name="desire_text" placeholder="اكتب أمثلة تساعد الطرف التاني يفهم تفضيلاتك" /></Field>
+        <Field><Label htmlFor="desire_text" optional>لو عندك توضيح إضافي، اكتبه</Label><Textarea id="desire_text" name="desire_text" placeholder="اكتب أمثلة تساعد الطرف التاني يفهم تفضيلاتك" /></Field>
         <Field><Label htmlFor="wanted_tags" optional>كلمات مفتاحية</Label><TextInput id="wanted_tags" name="wanted_tags" placeholder="مثال: مكتب, ديكور" /></Field>
       </FormSection>
     </SurfaceCard>
