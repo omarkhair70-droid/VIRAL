@@ -11,7 +11,7 @@ type SiteHeaderNavProps = {
   unreadMessagesCount: number;
 };
 
-function isMarketActive(pathname: string) {
+function isExploreActive(pathname: string) {
   return pathname === "/items" || (pathname.startsWith("/items/") && pathname !== "/items/new");
 }
 
@@ -27,12 +27,12 @@ export function SiteHeaderNav({ loggedIn, unreadNotificationsCount, unreadMessag
   const notificationsActive = pathname.startsWith("/notifications");
 
   if (!loggedIn) {
-    return <nav className="hidden max-w-full items-center justify-end gap-1.5 text-sm sm:flex sm:gap-2"><Link className={`${itemClass} ${isMarketActive(pathname) ? activeClass : ""}`} href="/items">السوق</Link><Link className={`${itemClass} ${peopleActive ? activeClass : ""}`} href="/people">الناس</Link><Link className={`${itemClass} ${pathname.startsWith("/how-it-works") ? activeClass : ""}`} href="/how-it-works">إزاي بتشتغل</Link><Link className={`${itemClass} ${pathname.startsWith("/safety") ? activeClass : ""}`} href="/safety">الأمان</Link><AuthButton loggedIn={false} /></nav>;
+    return <nav className="hidden max-w-full items-center justify-end gap-1.5 text-sm sm:flex sm:gap-2"><Link className={`${itemClass} ${isExploreActive(pathname) ? activeClass : ""}`} href="/items">استكشف</Link><Link className={`${itemClass} ${peopleActive ? activeClass : ""}`} href="/people">الناس</Link><Link className={`${itemClass} ${pathname.startsWith("/how-it-works") ? activeClass : ""}`} href="/how-it-works">إزاي بتشتغل</Link><Link className={`${itemClass} ${pathname.startsWith("/safety") ? activeClass : ""}`} href="/safety">الأمان</Link><AuthButton loggedIn={false} /></nav>;
   }
 
   return (
     <nav className="hidden max-w-full items-center justify-end gap-1.5 text-sm sm:flex sm:gap-2">
-      <Link className={`${itemClass} ${isMarketActive(pathname) ? activeClass : ""}`} href="/items">السوق</Link>
+      <Link className={`${itemClass} ${isExploreActive(pathname) ? activeClass : ""}`} href="/items">استكشف</Link>
       <Link className={`${itemClass} ${peopleActive ? activeClass : ""}`} href="/people">الناس</Link>
       <Link className={`relative ${itemClass} ${messagesActive ? activeClass : ""}`} href="/messages">
         الرسائل

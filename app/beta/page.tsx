@@ -25,8 +25,8 @@ export default function BetaPage() {
         <CardContent>
         <ul className="mt-3 list-inside list-disc space-y-1 text-muted">
           <li>اعرض حاجة عندك بصور واضحة.</li>
-          <li>الناس تبعتلك عروض مقايضة.</li>
-          <li>لما تقبل عرض، تتفتح صفحة تنسيق.</li>
+          <li>الناس تبعت لك اقتراحات.</li>
+          <li>لما تقبل اقتراح، تتفتح صفحة تنسيق.</li>
           <li>بعد المقايضة، الطرفين يقيّموا بعض.</li>
         </ul>
         </CardContent>
@@ -49,7 +49,7 @@ export default function BetaPage() {
         <CardContent>
           <ul className="list-inside list-disc space-y-1 text-muted">
             <li>جرّب تنشر حاجة.</li>
-            <li>ابعت عرض لو لقيت حاجة مناسبة.</li>
+            <li>ابعت اقتراحًا لو لقيت حاجة مناسبة.</li>
             <li>لو حاجة مش واضحة ابعت feedback.</li>
           </ul>
           <div className="mt-4 flex flex-wrap gap-2">
@@ -61,7 +61,7 @@ export default function BetaPage() {
 
       <div className="flex flex-wrap gap-3">
         <ButtonLink href="/items/new">ابدأ واعرض حاجة</ButtonLink>
-        <ButtonLink href="/items" variant="secondary">شوف السوق</ButtonLink>
+        <ButtonLink href="/items" variant="secondary">استكشف الاحتمالات</ButtonLink>
         <ButtonLink href="/how-it-works" variant="secondary">إزاي بتشتغل؟</ButtonLink>
       </div>
     </section>

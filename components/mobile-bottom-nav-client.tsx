@@ -8,7 +8,7 @@ type MobileBottomNavClientProps = {
   unreadMessagesCount: number;
 };
 
-function isMarketActive(pathname: string) {
+function isExploreActive(pathname: string) {
   return pathname === "/items" || (pathname.startsWith("/items/") && pathname !== "/items/new");
 }
 
@@ -19,7 +19,7 @@ export function MobileBottomNavClient({ unreadMessagesCount }: MobileBottomNavCl
   const activeNavItemClass = "bg-white text-app-text-primary shadow-sm ring-1 ring-app-border";
   const inactiveNavItemClass = "text-app-text-muted";
 
-  const marketActive = isMarketActive(pathname);
+  const exploreActive = isExploreActive(pathname);
   const peopleActive = pathname === "/people" || pathname.startsWith("/users/");
   const publishActive = pathname === "/items/new";
   const messagesActive = pathname.startsWith("/messages");
@@ -33,9 +33,9 @@ export function MobileBottomNavClient({ unreadMessagesCount }: MobileBottomNavCl
     <nav className="mobile-bottom-nav fixed inset-x-0 bottom-0 z-30 border-t border-warmBorder bg-app-soft/95 px-3 pt-2 backdrop-blur sm:hidden" aria-label="التنقل السفلي">
       <ul className="mx-auto grid max-w-md grid-cols-5 gap-1.5 text-center text-[11px] font-medium">
         <li>
-          <Link aria-current={marketActive ? "page" : undefined} className={`${navItemClass} ${marketActive ? activeNavItemClass : inactiveNavItemClass}`} href="/items">
+          <Link aria-current={exploreActive ? "page" : undefined} className={`${navItemClass} ${exploreActive ? activeNavItemClass : inactiveNavItemClass}`} href="/items">
             <AppIcon name="market" className="h-4 w-4" />
-            <span className="mt-0.5">السوق</span>
+            <span className="mt-0.5">استكشف</span>
           </Link>
         </li>
         <li>
