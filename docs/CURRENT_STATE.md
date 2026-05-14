@@ -183,3 +183,12 @@ If docs and implementation differ, **current code + SQL behavior wins**; docs mu
 - People search added via URL param `q` (display name, username, city, area) with clear reset and no-results states.
 - Home page now includes community discovery entry for both logged-out and logged-in users without changing transactional priority behavior.
 - No navigation shell changes and no new DB schema introduced in this phase.
+
+## Season 3 Phase 38 — Messaging 2.0 Foundation (2026-05-13)
+- Added logged-in `/messages` inbox for deal-scoped conversations.
+- Added unread/read foundation via `deal_message_reads` + `mark_deal_thread_read(...)` RPC.
+- Inbox cards now show participant identity, swap context, latest message preview, unread badge, and route to `/deals/[dealId]#messages`.
+- Opening a deal room marks the thread read (participant-safe).
+- Added DB guardrails on `deal_messages.body` to reject blank/trim-empty and over-800-char messages.
+- Added entry points to `/messages` from Dashboard and `/deals`.
+- Realtime messaging intentionally deferred to Season 3 Phase 39.

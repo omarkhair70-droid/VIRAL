@@ -229,5 +229,6 @@ export async function sendDealMessage(formData: FormData) {
   }
 
   revalidatePath(`/deals/${dealId}`);
+  revalidatePath("/messages");
   redirect(`/deals/${dealId}?message=sent#messages`);
 }
