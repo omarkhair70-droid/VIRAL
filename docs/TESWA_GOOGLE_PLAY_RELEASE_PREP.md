@@ -41,16 +41,16 @@ Prepare Teswa for Google Play distribution through Trusted Web Activity (TWA) us
 - Final Play Store listing assets and listing copy.
 - Privacy policy final URL and Data safety declarations.
 - Bubblewrap project generation on local developer machine.
-- Android package ID finalization.
 - Signing keystore generation and secure key management.
 - `assetlinks.json` creation only after final signing fingerprint exists.
 - Android App Bundle (AAB) build and smoke validation.
 - Google Play Console submission flow.
 
-## 6) Domain/origin note
-- Current canonical origin in repository metadata appears to be `https://baddelha.app`.
-- This origin must be explicitly confirmed before Bubblewrap initialization.
-- Do not silently change production origin during release packaging prep.
+## 6) Current live origin for GP-03
+- Current working production deployment: `https://viral-one-delta.vercel.app`
+- GP-03 Bubblewrap init should use: `https://viral-one-delta.vercel.app/manifest.webmanifest`
+- A future branded custom domain may still be adopted before final Play Store submission.
+- If the production origin changes later, Bubblewrap/TWA configuration and Asset Links must be updated accordingly before final release.
 
 ## 7) Recommended next phase
 **GP-02 — Store Listing, Policy & Android Release Pack**
@@ -70,11 +70,11 @@ Prepare Teswa for Google Play distribution through Trusted Web Activity (TWA) us
 - Added database intake table and status lifecycle for deletion requests.
 - Updated privacy, data safety worksheet, and release compliance documentation to match implemented behavior.
 
-### Remaining blockers are human release decisions
-- Final production origin confirmation.
-- Final package ID confirmation.
-- Final support/privacy contact email confirmation.
-- Final Data Safety/Privacy wording sign-off in Play Console.
+### Remaining blockers moved to final submission prep (not GP-03 blockers)
+- Production origin is now confirmed and no longer blocks GP-03.
+- Package ID is now selected for GP-03.
+- Support/privacy contact emails remain deferred until store submission prep.
+- Final custom-domain decision remains a pre-submission release polish decision, not a GP-03 blocker.
 
 ## 10) Recommended next phase
-Proceed to **GP-03 — Bubblewrap Local Generation** once the human confirmations above are finalized.
+Proceed to **GP-03 — Bubblewrap Local Generation**.

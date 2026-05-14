@@ -1,36 +1,30 @@
-# TESWA Android Release Decisions (GP-02)
+# TESWA Android Release Decisions (GP-02C)
 
-## 1) Confirmed current origin
-- Current canonical origin in repo/docs: `https://baddelha.app`
-- Status: **Needs final human confirmation before GP-03**
+## 1) Current live origin for GP-03
+- Current live origin for GP-03: `https://viral-one-delta.vercel.app`
+- Status: Confirmed for local Bubblewrap generation and Android testing.
+- Note: A branded custom domain may still replace this before final Play submission.
 
 ## 2) App name
 - App name: **تِسوى**
 - Launcher label recommendation: **تِسوى**
 
-## 3) Package ID decision support
-Recommended shortlist:
-1. `app.baddelha.teswa`
-2. `app.teswa.mobile`
-3. `com.teswa.app`
+## 3) Final GP-03 package ID
+- `app.teswa.android`
 
-Pros/cons summary:
-- `app.baddelha.teswa`: strongest continuity with current domain identity; slightly longer.
-- `app.teswa.mobile`: clean and brand-forward; depends less on domain permanence.
-- `com.teswa.app`: classic Android style and readable; may need uniqueness checks.
+Notes:
+- This is the selected application ID for the Android project generated in GP-03.
+- It should be treated as the intended release package ID unless a deliberate change is made before any Play Console publication.
+- Do not change it casually after Play release.
 
-**Final package ID must be chosen before GP-03 and should not be changed after Play release.**
-
-## 4) TWA/Bubblewrap inputs needed in GP-03
-- Manifest URL
-- App name
-- Package ID
-- Launcher name
-- Theme/background color
-- Start URL
-- Signing keystore + password decisions
-- Version name/code decisions
-- Final production origin confirmation
+## 4) TWA/Bubblewrap inputs for GP-03
+- Manifest URL: `https://viral-one-delta.vercel.app/manifest.webmanifest`
+- App name: `تِسوى`
+- Launcher label: `تِسوى`
+- Package ID: `app.teswa.android`
+- Start URL: `/`
+- Theme/background color: use current manifest/app values (no new values introduced here)
+- Final support/privacy email: deferred until Play submission prep
 
 ## 5) Digital Asset Links dependency
 `assetlinks.json` cannot be finalized until the real signing certificate fingerprint exists.

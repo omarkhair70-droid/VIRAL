@@ -6,7 +6,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://baddelha.app"),
+  metadataBase: new URL("https://viral-one-delta.vercel.app"),
   title: {
     default: "تِسوى | حاجتك ممكن تِسوى إيه عند غيرك؟",
     template: "%s | تِسوى",
