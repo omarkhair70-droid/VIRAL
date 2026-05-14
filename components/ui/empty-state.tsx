@@ -13,7 +13,7 @@ type EmptyStateProps = {
 
 export function EmptyState({ title, subtitle, action, secondaryAction, iconName, iconClassName }: EmptyStateProps) {
   return (
-    <Card className="rounded-panel border border-app-border bg-app-surface text-center shadow-[0_10px_24px_rgba(31,41,55,0.05)]">
+    <Card className="rounded-surface border border-app-border bg-app-surface text-center shadow-[0_10px_24px_rgba(31,41,55,0.05)]">
       <CardContent className="space-y-3 p-panel-md">
         {iconName ? (
           <div className="flex justify-center text-app-text-muted">

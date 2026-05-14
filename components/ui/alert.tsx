@@ -9,5 +9,5 @@ const variants: Record<Variant, string> = {
 };
 
 export function Alert({ variant = "info", className, ...props }: HTMLAttributes<HTMLDivElement> & { variant?: Variant }) {
-  return <div className={`rounded-panel border p-panel-sm type-support ${variants[variant]} ${className ?? ""}`} role="status" {...props} />;
+  return <div className={`rounded-surface-compact border p-panel-sm type-support ${variants[variant]} ${className ?? ""}`} role="status" {...props} />;
 }

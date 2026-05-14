@@ -2,7 +2,7 @@ export function ImageFrame({ imageUrl, title, ratio = "video" }: { imageUrl: str
   const ratioClass = ratio === "square" ? "aspect-square" : "aspect-video";
 
   return (
-    <div className={`${ratioClass} overflow-hidden rounded-panel border border-app-border bg-app-soft`}>
+    <div className={`${ratioClass} overflow-hidden rounded-surface border border-app-border bg-app-soft`}>
       {imageUrl ? (
         <img src={imageUrl} alt={title} className="h-full w-full object-cover" />
       ) : (
