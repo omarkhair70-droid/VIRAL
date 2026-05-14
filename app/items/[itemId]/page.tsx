@@ -11,6 +11,7 @@ import { createClient } from "@/lib/supabase/server";
 import { ItemDetailGallery } from "./_components/item-detail-gallery";
 import { HeroPanel, HighlightPanel, InlineNotice, PageSection, PageShell, SoftPanel, SurfaceCard } from "@/components/ui/surfaces";
 import { MediaFrame } from "@/components/ui/product-primitives";
+import { getTeswaConditionLabel, getTeswaDesireModeLabel } from "@/lib/teswa-product-language";
 
 type MaybeArray<T> = T | T[] | null | undefined;
 
@@ -52,18 +53,6 @@ type ItemDetailRawRow = {
 };
 
 const PUBLIC_METADATA_STATUSES: ItemStatus[] = ["active", "reserved", "swapped"];
-const conditionLabels = {
-  almost_new: "جديد تقريبًا",
-  good_used: "مستخدم بحالة كويسة",
-  minor_issues: "فيه عيوب بسيطة",
-  needs_repair: "محتاج تصليح / عارف حالته",
-};
-const desireLabels = {
-  specific: "بدور على حاجة معينة",
-  flexible: "مرن في نوع الحاجة",
-  surprise: "مفتوح لأي حاجة مناسبة",
-};
-
 export async function generateMetadata({ params }: { params: Promise<{ itemId: string }> }): Promise<Metadata> {
   const { itemId } = await params;
   const supabase = await createClient();
@@ -151,7 +140,7 @@ export default async function ItemDetailPage({ params, searchParams }: { params:
         <div className="space-y-4">
           <div className="flex flex-wrap gap-2">
             <StatusPill>{firstOrNull(typed.categories)?.name_ar ?? "بدون تصنيف"}</StatusPill>
-            <StatusPill tone="warning">{conditionLabels[typed.condition]}</StatusPill>
+            <StatusPill tone="warning">{getTeswaConditionLabel(typed.condition)}</StatusPill>
             {hasStory ? <StatusPill tone="pending">ليها حكاية</StatusPill> : null}
           </div>
           <h1 className="text-3xl font-bold text-ink md:text-4xl">{typed.title}</h1>
@@ -185,7 +174,7 @@ export default async function ItemDetailPage({ params, searchParams }: { params:
 
           <HighlightPanel className="space-y-3">
             <p className="text-lg font-semibold">صاحبها بيدور على إيه؟</p>
-            <StatusPill tone="pending">{desireLabels[typed.desire_mode]}</StatusPill>
+            <StatusPill tone="pending">{getTeswaDesireModeLabel(typed.desire_mode)}</StatusPill>
             {typed.desire_text ? <p className="text-sm leading-7 text-app-text-secondary">{typed.desire_text}</p> : null}
             {typed.item_wanted_tags?.length ? (
               <div className="flex flex-wrap gap-2">
@@ -211,8 +200,8 @@ export default async function ItemDetailPage({ params, searchParams }: { params:
           ) : null}
 
           <SurfaceCard className="space-y-3">
-            <p className="text-lg font-semibold">الحالة والتفاصيل</p>
-            <p className="text-sm font-medium text-ink">{conditionLabels[typed.condition]}</p>
+            <p className="text-lg font-semibold">اللي لازم يتعرف بوضوح</p>
+            <p className="text-sm font-medium text-ink">{getTeswaConditionLabel(typed.condition)}</p>
             {typed.condition_notes ? <p className="text-sm leading-7 text-app-text-secondary">{typed.condition_notes}</p> : null}
             {typed.description ? <p className="text-sm leading-7 text-app-text-secondary">{typed.description}</p> : null}
           </SurfaceCard>
