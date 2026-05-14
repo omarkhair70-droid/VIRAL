@@ -16,7 +16,11 @@ export default async function MessagesPage() {
 
   return (
     <section className="mx-auto max-w-5xl space-y-4 px-4 py-8">
-      <PageHeading title="رسائلي" subtitle="تابع محادثات التنسيق المرتبطة بصفقاتك، وارجع لأي رسالة محتاجة رد." />
+      <PageHeading
+        title="رسائلي"
+        subtitle="تابع محادثات التنسيق المرتبطة بصفقاتك، والرسائل الجديدة هتظهر لحظيًا."
+        actions={<Link href="/deals" className="inline-flex rounded-lg border px-3 py-2 text-sm">افتح الصفقات</Link>}
+      />
       <MessagesRealtimeRefresh currentUserId={user.id} />
       {conversations.length === 0 ? (
         <EmptyState
