@@ -96,3 +96,11 @@ These will be handled intentionally in later phases, especially Phase 54, Phase 
 - Transparency (`condition`) remains visible and explicit, but is treated as a truth layer rather than the primary curiosity hook.
 - Detail-page offer CTA and support copy were reframed to Season 5 language, while the full Offer Composer rewrite remains deferred to **Phase 57**.
 - No backend, schema, route, or data-contract changes were introduced in this phase.
+
+## Phase 57 implementation note — Offer Reframe
+- Offer creation now reads as answering a value question, not submitting a generic swap transaction.
+- New-offer page, composer, and review block now frame the user’s item as their interpretation of value.
+- Offer detail and response surfaces now use proposal language while preserving offer/deal status logic.
+- Inline new-item offer mode now uses expressive meaning controls for `condition` and `desire_mode` without changing enum values.
+- Broken `/feed` usage in offer detail was removed in favor of a valid explore route.
+- Backend actions, schema, and status contracts remain unchanged.
