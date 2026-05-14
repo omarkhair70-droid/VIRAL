@@ -2,27 +2,13 @@
 
 import { useMemo, useState } from "react";
 import { AppIcon } from "@/components/ui/app-icon";
-import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Field, FormSection, HelperText, Label, Select, Textarea, TextInput } from "@/components/ui/form";
+import { MediaFrame, MediaUploadBlock } from "@/components/ui/product-primitives";
+import { HighlightPanel, InlineNotice, SoftPanel, SurfaceCard } from "@/components/ui/surfaces";
 
-type OwnItem = {
-  id: string;
-  title: string;
-  conditionLabel: string;
-  category: string | null;
-  imageUrl: string | null;
-};
-
-type RequestedItem = {
-  id: string;
-  title: string;
-  conditionLabel: string;
-  category: string | null;
-  ownerName: string;
-  imageUrl: string | null;
-  desireText: string | null;
-};
+type OwnItem = { id: string; title: string; conditionLabel: string; category: string | null; imageUrl: string | null };
+type RequestedItem = { id: string; title: string; conditionLabel: string; category: string | null; ownerName: string; imageUrl: string | null; desireText: string | null };
 
 export function OfferComposerClient({ requestedItem, ownItems, categories, hasSourceOffer }: { requestedItem: RequestedItem; ownItems: OwnItem[]; categories: Array<{ id: string; name_ar: string }>; hasSourceOffer: boolean }) {
   const [mode, setMode] = useState<"existing_item" | "new_item">("existing_item");
@@ -30,114 +16,43 @@ export function OfferComposerClient({ requestedItem, ownItems, categories, hasSo
   const selectedItem = useMemo(() => ownItems.find((item) => item.id === offeredItemId) ?? null, [ownItems, offeredItemId]);
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
 
-  return (
-    <div className="space-y-5">
-      <input type="hidden" name="offer_mode" value={mode} />
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">اختار طريقة العرض</CardTitle>
-          <CardDescription>حدّد إذا كنت هتستخدم حاجة منشورة بالفعل أو تضيف حاجة جديدة بسرعة.</CardDescription>
-        </CardHeader>
-        <CardContent className="grid gap-3 sm:grid-cols-2">
-          <button type="button" onClick={() => setMode("existing_item")} className={`rounded-xl border p-3 text-right transition ${mode === "existing_item" ? "border-clay bg-sand" : "border-warmBorder bg-white"}`}>
-            <p className="font-semibold">اختار من حاجاتك</p>
-            <p className="text-sm text-muted">اختار حاجة أنت عارضها بالفعل.</p>
-          </button>
-          <button type="button" onClick={() => setMode("new_item")} className={`rounded-xl border p-3 text-right transition ${mode === "new_item" ? "border-clay bg-sand" : "border-warmBorder bg-white"}`}>
-            <p className="font-semibold">نزّل حاجة جديدة كعرض</p>
-            <p className="text-sm text-muted">هتنشر حاجة جديدة وتتبعت فورًا كعرض.</p>
-          </button>
-        </CardContent>
-      </Card>
+  return <div className="space-y-4">
+    <input type="hidden" name="offer_mode" value={mode} />
 
-      <Card className={mode === "existing_item" ? "" : "hidden"}>
-        <CardHeader>
-          <CardTitle className="text-lg">اختيار الحاجة المعروضة</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          {ownItems.length === 0 ? <Alert>لسه ماعندكش حاجات نشطة. اختار وضع &quot;نزّل حاجة جديدة كعرض&quot;.</Alert> : null}
-          {ownItems.map((item) => (
-            <label key={item.id} className={`flex cursor-pointer items-center gap-3 rounded-xl border p-3 ${offeredItemId === item.id ? "border-clay bg-sand" : "border-warmBorder"}`}>
-              <input checked={offeredItemId === item.id} onChange={() => setOfferedItemId(item.id)} type="radio" name="offered_item_id" value={item.id} className="size-4" />
-              {item.imageUrl ? <img src={item.imageUrl} alt={item.title} className="size-16 rounded-lg object-cover" /> : <div className="size-16 rounded-lg bg-stone-100" />}
-              <div className="min-w-0">
-                <p className="truncate font-semibold">{item.title}</p>
-                <p className="text-xs text-muted">{item.category ?? "بدون تصنيف"} · {item.conditionLabel}</p>
-              </div>
-            </label>
-          ))}
-        </CardContent>
-      </Card>
+    <SurfaceCard className="space-y-3">
+      <h3 className="text-lg font-semibold">اختار طريقة العرض</h3>
+      <p className="text-sm text-app-text-secondary">حدّد إذا كنت هتستخدم حاجة منشورة بالفعل أو تنزّل حاجة جديدة كعرض مباشر.</p>
+      <div className="grid gap-3 sm:grid-cols-2">
+        {[["existing_item", "اختار من حاجاتك", "اختيار سريع من الحاجات النشطة."] as const, ["new_item", "نزّل حاجة جديدة كعرض", "تنشر حاجة جديدة وتتبعِت فورًا كعرض."] as const].map(([value, title, desc]) => <button key={value} type="button" onClick={() => setMode(value)} className={`rounded-surface border p-4 text-right transition ${mode === value ? "border-clay bg-app-accent-soft" : "border-app-border bg-app-surface"}`}><p className="font-semibold">{title}</p><p className="mt-1 text-xs text-app-text-muted">{desc}</p></button>)}
+      </div>
+    </SurfaceCard>
 
-      <Card className={mode === "new_item" ? "" : "hidden"}>
-        <CardHeader>
-          <CardTitle className="text-lg">نزّل حاجة جديدة كعرض</CardTitle>
-          <CardDescription>الحاجة اللي هتنزلها هنا هتبقى إعلان ظاهر في السوق كمان.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-2">
-            <input name="title" placeholder="عنوان الحاجة" className="w-full rounded-xl border px-3 py-2" />
-            <select name="category_id" className="w-full rounded-xl border px-3 py-2"><option value="">اختار تصنيف</option>{categories.map((c) => <option value={c.id} key={c.id}>{c.name_ar}</option>)}</select>
-            <label className="block text-sm text-muted" htmlFor="image_file">اختار صورة من جهازك</label>
-            <input
-              id="image_file"
-              name="image_file"
-              type="file"
-              accept="image/jpeg,image/png,image/webp"
-              required={mode === "new_item"}
-              onChange={(event) => {
-                const selectedFile = event.target.files?.[0] ?? null;
-                if (!selectedFile) {
-                  setImagePreviewUrl(null);
-                  return;
-                }
-                setImagePreviewUrl(URL.createObjectURL(selectedFile));
-              }}
-              className="w-full rounded-xl border px-3 py-2 text-sm"
-            />
-            {imagePreviewUrl ? <img src={imagePreviewUrl} alt="معاينة الصورة" className="h-28 w-full rounded-xl object-cover" /> : null}
-            <textarea name="description" placeholder="وصف" className="w-full rounded-xl border px-3 py-2" />
-            <select name="condition" defaultValue="good_used" className="w-full rounded-xl border px-3 py-2"><option value="almost_new">جديد تقريبًا</option><option value="good_used">مستخدم بحالة كويسة</option><option value="minor_issues">فيه عيوب بسيطة</option><option value="needs_repair">محتاج تصليح / عارف حالته</option></select>
-            <textarea name="condition_notes" placeholder="ملاحظات الحالة" className="w-full rounded-xl border px-3 py-2" />
-            <div className="grid gap-2 sm:grid-cols-2"><input name="city" placeholder="المدينة" className="rounded-xl border px-3 py-2" /><input name="area" placeholder="المنطقة" className="rounded-xl border px-3 py-2" /></div>
-            <select name="desire_mode" defaultValue="flexible" className="w-full rounded-xl border px-3 py-2"><option value="specific">بدور على حاجة معينة</option><option value="flexible">عندي حاجات في بالي، بس فاجئني</option><option value="surprise">فاجئني تمامًا</option></select>
-            <textarea name="desire_text" placeholder="عايز إيه" className="w-full rounded-xl border px-3 py-2" />
-            <input name="wanted_tags" placeholder="مثال: مكتب, ديكور" className="w-full rounded-xl border px-3 py-2" />
-          </div>
-        </CardContent>
-      </Card>
+    <SurfaceCard className={`space-y-3 ${mode === "existing_item" ? "" : "hidden"}`}><h3 className="text-lg font-semibold">جهّز الحاجة اللي هتقدّمها</h3>
+      {ownItems.length === 0 ? <InlineNotice tone="warning">لسه ماعندكش حاجات نشطة. اختار وضع &quot;نزّل حاجة جديدة كعرض&quot;.</InlineNotice> : ownItems.map((item) => <label key={item.id} className={`grid cursor-pointer grid-cols-[auto_84px_1fr] items-center gap-3 rounded-surface-compact border p-3 ${offeredItemId === item.id ? "border-clay bg-app-accent-soft" : "border-app-border"}`}><input checked={offeredItemId === item.id} onChange={() => setOfferedItemId(item.id)} type="radio" name="offered_item_id" value={item.id} className="size-4" /><MediaFrame src={item.imageUrl} alt={item.title} ratio="square" /><div><p className="font-semibold">{item.title}</p><p className="text-xs text-app-text-muted">{item.category ?? "بدون تصنيف"} · {item.conditionLabel}</p></div></label>)}
+      {selectedItem ? <SoftPanel><p className="text-xs text-app-text-muted">اختيارك الحالي</p><p className="font-semibold">{selectedItem.title}</p></SoftPanel> : null}
+    </SurfaceCard>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">خلي عرضك مفهوم</CardTitle>
-          <CardDescription>{requestedItem.desireText ? `صاحب الحاجة كاتب إنه بيدور على: ${requestedItem.desireText}` : "لو مفيش رغبة مكتوبة، وضّح في الرسالة ليه العرض مناسب."}</CardDescription>
-        </CardHeader>
-      </Card>
+    <SurfaceCard className={`space-y-4 ${mode === "new_item" ? "" : "hidden"}`}><h3 className="text-lg font-semibold">جهّز الحاجة الجديدة كعرض</h3>
+      <FormSection>
+        <Field><Label htmlFor="title">عنوان الحاجة</Label><TextInput id="title" name="title" placeholder="مثال: مكتب خشب زان" /></Field>
+        <Field><Label htmlFor="category_id">التصنيف</Label><Select id="category_id" name="category_id" defaultValue=""><option value="">اختار تصنيف</option>{categories.map((c) => <option value={c.id} key={c.id}>{c.name_ar}</option>)}</Select></Field>
+        <MediaUploadBlock title="صورة الحاجة" helperText="JPG/PNG/WEBP أقل من 5MB."><label className="block"><input id="image_file" name="image_file" type="file" accept="image/jpeg,image/png,image/webp" required={mode === "new_item"} onChange={(event) => { const selectedFile = event.target.files?.[0] ?? null; setImagePreviewUrl(selectedFile ? URL.createObjectURL(selectedFile) : null); }} className="w-full rounded-field border border-app-border px-3 py-2 text-sm" /></label>{imagePreviewUrl ? <MediaFrame src={imagePreviewUrl} alt="معاينة الصورة" ratio="wide" /> : null}</MediaUploadBlock>
+        <Field><Label htmlFor="description" optional>وصف الحاجة</Label><Textarea id="description" name="description" placeholder="وصف مختصر يوضح حالتها واستخدامها" /></Field>
+        <Field><Label htmlFor="condition">حالة الحاجة</Label><Select id="condition" name="condition" defaultValue="good_used"><option value="almost_new">جديد تقريبًا</option><option value="good_used">مستخدم بحالة كويسة</option><option value="minor_issues">فيه عيوب بسيطة</option><option value="needs_repair">محتاج تصليح / عارف حالته</option></Select></Field>
+        <Field><Label htmlFor="condition_notes" optional>ملاحظات الحالة</Label><Textarea id="condition_notes" name="condition_notes" placeholder="اذكر أي تفاصيل مهمة عن الحالة" /></Field>
+        <div className="grid gap-3 sm:grid-cols-2"><Field><Label htmlFor="city" optional>المدينة</Label><TextInput id="city" name="city" placeholder="القاهرة" /></Field><Field><Label htmlFor="area" optional>المنطقة</Label><TextInput id="area" name="area" placeholder="مدينة نصر" /></Field></div>
+        <Field><Label htmlFor="desire_mode">بتدور على إيه؟</Label><Select id="desire_mode" name="desire_mode" defaultValue="flexible"><option value="specific">بدور على حاجة معينة</option><option value="flexible">عندي حاجات في بالي، بس فاجئني</option><option value="surprise">فاجئني تمامًا</option></Select></Field>
+        <Field><Label htmlFor="desire_text" optional>تفاصيل اللي محتاجه</Label><Textarea id="desire_text" name="desire_text" placeholder="اكتب أمثلة تساعد الطرف التاني يفهم تفضيلاتك" /></Field>
+        <Field><Label htmlFor="wanted_tags" optional>كلمات مفتاحية</Label><TextInput id="wanted_tags" name="wanted_tags" placeholder="مثال: مكتب, ديكور" /></Field>
+      </FormSection>
+    </SurfaceCard>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">رسالة توضح العرض (اختياري)</CardTitle>
-          <CardDescription>رسالة قصيرة وواضحة تزود فرصة الرد.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <textarea name="message" placeholder="الحاجة دي مناسبة لأن..." className="w-full rounded-xl border px-3 py-2" />
-          <p className="text-xs text-muted">أمثلة: &quot;الحاجة دي مناسبة لأن...&quot; / &quot;أقدر أبدّلها بالحاجة دي لأنها...&quot;</p>
-        </CardContent>
-      </Card>
+    <HighlightPanel className="space-y-2"><h3 className="text-lg font-semibold">خلي عرضك أقرب للي صاحب الحاجة مستنيه</h3><p className="text-sm">{requestedItem.desireText ? `صاحب الحاجة موضح إنه بيدوّر على: ${requestedItem.desireText}` : "مفيش رغبة مكتوبة، فركّز في الرسالة على الفايدة والحالة والتبادل المتوقع."}</p></HighlightPanel>
 
-      <Card className="border-clay/30 bg-sand/50">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-lg"><AppIcon name="swap" className="size-4 text-clay" />دي الصفقة اللي هتبعتها</CardTitle>
-        </CardHeader>
-        <CardContent className="grid gap-3 md:grid-cols-[1fr_auto_1fr] md:items-center">
-          <div className="rounded-xl border bg-white p-3"><p className="text-xs text-muted">اللي هتعرضه</p><p className="font-semibold">{mode === "existing_item" ? (selectedItem?.title ?? "اختار حاجة من قائمتك") : "حاجة جديدة (حسب البيانات اللي فوق)"}</p></div>
-          <div className="text-center text-2xl text-clay">↔</div>
-          <div className="rounded-xl border bg-white p-3"><p className="text-xs text-muted">اللي عايز تاخده</p><p className="font-semibold">{requestedItem.title}</p></div>
-        </CardContent>
-      </Card>
+    <SurfaceCard className="space-y-2"><h3 className="text-lg font-semibold">وضّح ليه عرضك مناسب</h3><Field><Label htmlFor="message" optional>رسالة قصيرة وواضحة</Label><Textarea id="message" name="message" placeholder="الحاجة دي مناسبة ليك لأن..." /><HelperText>مثال: &quot;مناسب لاستخدامك لأن...&quot; / &quot;أقدر أبدّل فورًا لأن...&quot;</HelperText></Field></SurfaceCard>
 
-      <div className="pt-2"><Button type="submit" size="lg">ابعت العرض</Button></div>
-      {hasSourceOffer ? <p className="text-xs text-muted">تذكير: لازم العرض التاني يكون بحاجة مختلفة عن العرض الأصلي.</p> : null}
-    </div>
-  );
+    <HighlightPanel className="space-y-3"><h3 className="flex items-center gap-2 text-lg font-semibold"><AppIcon name="swap" className="size-4 text-clay" />راجع الصفقة قبل الإرسال</h3><p className="text-sm text-app-text-secondary">دي الصفقة اللي هتتبعت دلوقتي.</p><div className="grid gap-3 md:grid-cols-[1fr_auto_1fr] md:items-center"><SoftPanel><p className="text-xs text-app-text-muted">اللي هتعرضه</p><p className="font-semibold">{mode === "existing_item" ? (selectedItem?.title ?? "اختار حاجة من قائمتك") : "حاجة جديدة حسب البيانات اللي فوق"}</p></SoftPanel><div className="text-center text-2xl text-clay">↔</div><SoftPanel><p className="text-xs text-app-text-muted">اللي عايز تاخده</p><p className="font-semibold">{requestedItem.title}</p></SoftPanel></div></HighlightPanel>
+
+    <div className="space-y-2 pt-1"><Button type="submit" size="lg" fullWidth>ابعت العرض</Button>{hasSourceOffer ? <InlineNotice tone="accent">تذكير: لازم العرض التاني يكون بحاجة مختلفة عن العرض الأصلي.</InlineNotice> : null}</div>
+  </div>;
 }

@@ -1,8 +1,7 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Alert } from "@/components/ui/alert";
-import { Card, CardContent } from "@/components/ui/card";
-import { PageHeading } from "@/components/ui/page-heading";
+import { ButtonLink } from "@/components/ui/button";
+import { MediaFrame, StateBlock } from "@/components/ui/product-primitives";
+import { HeroPanel, HighlightPanel, InlineNotice, PageSection, PageShell, SoftPanel, SurfaceCard } from "@/components/ui/surfaces";
 import { createClient } from "@/lib/supabase/server";
 import { createOffer } from "./actions";
 import { OfferComposerClient } from "./offer-composer-client";
@@ -32,51 +31,51 @@ export default async function NewOfferPage({ searchParams }: { searchParams: Pro
     const { data } = await supabase.from("offers").select("id,status,sender_id,requested_item_id,offered_item_id,public_note,redirect_type").eq("id", fromOffer).maybeSingle();
     sourceOffer = (data as SourceOffer | null) ?? null;
     if (!sourceOffer || sourceOffer.sender_id !== user.id || sourceOffer.status !== "redirected") {
-      return <section className="mx-auto max-w-3xl space-y-4 p-8"><p className="rounded-xl border border-red-200 bg-red-50 p-3 text-red-800">{errorMap[params.error ?? ""] ?? "مش متاح تبعت عرض تاني من هنا."}</p><div className="flex gap-3"><Link className="underline" href="/items">ارجع للسوق</Link>{fromOffer ? <Link className="underline" href={`/offers/${fromOffer}`}>افتح العرض</Link> : null}</div></section>;
+      return <PageShell><StateBlock title={errorMap[params.error ?? ""] ?? "مش متاح تبعت عرض تاني من هنا."} tone="danger" primaryAction={<ButtonLink href="/items" variant="outline" size="sm">ارجع للسوق</ButtonLink>} secondaryAction={fromOffer ? <a href={`/offers/${fromOffer}`} className="inline-flex min-h-10 items-center rounded-button border border-app-border bg-app-surface px-3 py-2 text-sm">افتح العرض</a> : undefined} /></PageShell>;
     }
     requestedItemId = sourceOffer.requested_item_id;
   }
 
-  if (!requestedItemId) return <section className="mx-auto max-w-3xl p-8">مش لاقيين الحاجة اللي عايز تعرض عليها.</section>;
+  if (!requestedItemId) return <PageShell><StateBlock title="مش لاقيين الحاجة اللي عايز تعرض عليها." tone="danger" primaryAction={<ButtonLink href="/items" variant="outline" size="sm">ارجع للسوق</ButtonLink>} /></PageShell>;
 
   const { data: requested } = await supabase.from("items").select("id,owner_id,title,condition,status,desire_text,categories(name_ar),item_images(image_url,is_primary),profiles!items_owner_id_fkey(display_name)").eq("id", requestedItemId).maybeSingle();
   const { data: ownItems } = await supabase.from("items").select("id,title,condition,categories(name_ar),item_images(image_url,is_primary)").eq("owner_id", user.id).eq("status", "active").order("created_at", { ascending: false });
   const { data: categories } = await supabase.from("categories").select("id,name_ar").eq("is_active", true).order("sort_order", { ascending: true });
 
   const req = requested as unknown as Row | null;
-  if (!req || req.status !== "active") return <section className="mx-auto max-w-3xl p-8">الحاجة دي مش متاحة للعروض دلوقتي.</section>;
-  if (req.owner_id === user.id || params.error === "own_item") return <section className="mx-auto max-w-3xl space-y-4 p-8"><p>دي حاجتك أنت. مينفعش تعرض على حاجة بتاعتك.</p><Link className="underline" href="/items">ارجع للسوق</Link></section>;
+  if (!req || req.status !== "active") return <PageShell><StateBlock title="الحاجة دي مش متاحة للعروض دلوقتي." tone="danger" primaryAction={<ButtonLink href="/items" variant="outline" size="sm">ارجع للسوق</ButtonLink>} /></PageShell>;
+  if (req.owner_id === user.id || params.error === "own_item") return <PageShell><StateBlock title="دي حاجتك أنت. مينفعش تعرض على حاجة بتاعتك." tone="info" primaryAction={<ButtonLink href="/items" variant="outline" size="sm">ارجع للسوق</ButtonLink>} /></PageShell>;
 
   const reqImg = req.item_images?.find((img) => img.is_primary)?.image_url ?? req.item_images?.[0]?.image_url ?? null;
   const reqOwner = firstOrNull(req.profiles);
   const reqCat = firstOrNull(req.categories);
   const filteredOwnItems = (ownItems ?? []).filter((it) => it.id !== requestedItemId && it.id !== sourceOffer?.offered_item_id);
 
-  return <section className="mx-auto max-w-6xl space-y-5 px-4 py-8">
-    <PageHeading title="ابعت عرض مقايضة" subtitle="اختار الحاجة اللي هتعرضها، وراجع الصفقة قبل الإرسال." />
-    {params.error && errorMap[params.error] ? <Alert variant="danger">{errorMap[params.error]}</Alert> : null}
-    {sourceOffer ? <Alert variant="info" className="space-y-1"><p className="font-semibold">فرصة تانية: صاحب الحاجة فتح باب جديد.</p><p>لازم تعرض حاجة مختلفة عن عرضك الأول.</p>{sourceOffer.public_note ? <p>ملاحظة صاحب الحاجة: {sourceOffer.public_note}</p> : null}{sourceOffer.redirect_type ? <p>نوع الباب التاني: {redirectMap[sourceOffer.redirect_type] ?? sourceOffer.redirect_type}</p> : null}</Alert> : null}
+  return <PageShell className="max-w-6xl">
+    <PageSection>
+      <HeroPanel>
+        <h1 className="text-2xl font-bold">ابعت عرض مقايضة</h1>
+        <p className="mt-2 text-app-text-secondary">اختار الحاجة اللي هتعرضها، وراجع الصفقة قبل الإرسال.</p>
+      </HeroPanel>
+      {params.error && errorMap[params.error] ? <InlineNotice tone="danger">{errorMap[params.error]}</InlineNotice> : null}
+      {sourceOffer ? <HighlightPanel className="space-y-2"><p className="font-semibold">فرصة تانية: صاحب الحاجة فتح باب جديد.</p><p className="text-sm text-app-text-secondary">لازم تعرض حاجة مختلفة عن عرضك الأول.</p>{sourceOffer.public_note ? <SoftPanel><p className="text-sm">ملاحظة صاحب الحاجة: {sourceOffer.public_note}</p></SoftPanel> : null}{sourceOffer.redirect_type ? <p className="text-xs text-app-text-muted">نوع الباب التاني: {redirectMap[sourceOffer.redirect_type] ?? sourceOffer.redirect_type}</p> : null}</HighlightPanel> : null}
 
-    <div className="grid gap-5 lg:grid-cols-[1.2fr_1.8fr]">
-      <Card className="h-fit"><CardContent className="space-y-3">
-        <p className="text-sm font-semibold text-clay">الحاجة اللي عايز تاخدها</p>
-        {reqImg ? <img src={reqImg} alt={req.title} className="aspect-video w-full rounded-xl object-cover" /> : <div className="aspect-video rounded-xl bg-stone-100" />}
-        <h2 className="text-xl font-bold">{req.title}</h2>
-        <p className="text-sm text-muted">{reqCat?.name_ar ?? "بدون تصنيف"} · {conditionLabels[req.condition]}</p>
-        <p className="text-sm">صاحبها: {reqOwner?.display_name ?? "مستخدم"}</p>
-        {req.desire_text ? <p className="rounded-xl bg-sand p-3 text-sm">هو بيدور على: {req.desire_text}</p> : null}
-      </CardContent></Card>
+      <div className="grid gap-5 lg:grid-cols-[1.1fr_1.9fr]">
+        <SurfaceCard className="h-fit space-y-3">
+          <p className="text-sm font-semibold text-clay">الحاجة اللي عايز تاخدها</p>
+          <MediaFrame src={reqImg} alt={req.title} ratio="wide" />
+          <h2 className="text-xl font-bold">{req.title}</h2>
+          <p className="text-sm text-app-text-muted">{reqCat?.name_ar ?? "بدون تصنيف"} · {conditionLabels[req.condition]}</p>
+          <p className="text-sm">صاحبها: {reqOwner?.display_name ?? "مستخدم"}</p>
+          <SoftPanel><p className="text-sm">هو بيدور على: {req.desire_text ?? "مافيش تفضيل مكتوب. حاول توضّح في رسالتك ليه عرضك مناسب."}</p></SoftPanel>
+        </SurfaceCard>
 
-      <form action={createOffer} encType="multipart/form-data">
-        <input type="hidden" name="requested_item_id" value={requestedItemId} />
-        {sourceOffer ? <input type="hidden" name="parent_offer_id" value={sourceOffer.id} /> : null}
-        <OfferComposerClient
-          requestedItem={{ id: req.id, title: req.title, conditionLabel: conditionLabels[req.condition], category: reqCat?.name_ar ?? null, ownerName: reqOwner?.display_name ?? "مستخدم", imageUrl: reqImg, desireText: req.desire_text }}
-          ownItems={filteredOwnItems.map((it) => ({ id: it.id, title: it.title, conditionLabel: conditionLabels[it.condition as keyof typeof conditionLabels], category: firstOrNull(it.categories)?.name_ar ?? null, imageUrl: it.item_images?.find((img) => img.is_primary)?.image_url ?? it.item_images?.[0]?.image_url ?? null }))}
-          categories={(categories ?? []).map((c) => ({ id: c.id, name_ar: c.name_ar }))}
-          hasSourceOffer={Boolean(sourceOffer)}
-        />
-      </form>
-    </div>
-  </section>;
+        <form action={createOffer} encType="multipart/form-data">
+          <input type="hidden" name="requested_item_id" value={requestedItemId} />
+          {sourceOffer ? <input type="hidden" name="parent_offer_id" value={sourceOffer.id} /> : null}
+          <OfferComposerClient requestedItem={{ id: req.id, title: req.title, conditionLabel: conditionLabels[req.condition], category: reqCat?.name_ar ?? null, ownerName: reqOwner?.display_name ?? "مستخدم", imageUrl: reqImg, desireText: req.desire_text }} ownItems={filteredOwnItems.map((it) => ({ id: it.id, title: it.title, conditionLabel: conditionLabels[it.condition as keyof typeof conditionLabels], category: firstOrNull(it.categories)?.name_ar ?? null, imageUrl: it.item_images?.find((img) => img.is_primary)?.image_url ?? it.item_images?.[0]?.image_url ?? null }))} categories={(categories ?? []).map((c) => ({ id: c.id, name_ar: c.name_ar }))} hasSourceOffer={Boolean(sourceOffer)} />
+        </form>
+      </div>
+    </PageSection>
+  </PageShell>;
 }
