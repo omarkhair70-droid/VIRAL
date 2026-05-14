@@ -17,9 +17,48 @@ body {
   color: var(--color-ink);
 }
 
-html, body {
+html,
+body {
   max-width: 100%;
   overflow-x: hidden;
+}
+
+@layer components {
+  .type-hero {
+    @apply text-4xl font-semibold tracking-tight text-app-text-primary sm:text-5xl;
+  }
+
+  .type-page-title {
+    @apply text-3xl font-bold tracking-tight text-app-text-primary;
+  }
+
+  .type-section-title {
+    @apply text-xl font-semibold text-app-text-primary;
+  }
+
+  .type-card-title {
+    @apply text-lg font-semibold text-app-text-primary;
+  }
+
+  .type-body {
+    @apply text-sm leading-7 text-app-text-secondary;
+  }
+
+  .type-support {
+    @apply text-sm leading-6 text-app-text-muted;
+  }
+
+  .type-meta {
+    @apply text-xs font-medium text-app-text-muted;
+  }
+
+  .type-micro {
+    @apply text-[11px] leading-5 text-app-text-muted;
+  }
+
+  .type-numeric {
+    @apply text-2xl font-semibold tabular-nums text-app-text-primary;
+  }
 }
 
 @media (max-width: 639px) {
