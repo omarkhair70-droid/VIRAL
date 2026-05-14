@@ -203,3 +203,12 @@ If docs and implementation differ, **current code + SQL behavior wins**; docs mu
 - Subtle realtime connection state copy now appears in both deal thread and inbox.
 - Sender UX now includes pending state on submit button (`جاري الإرسال...`) without changing server-action semantics.
 - Realtime remains intentionally deal-scoped only (no open DMs, typing indicators, read receipts UI, or presence).
+
+## Season 3 Phase 40 — Navigation Shell 3.0 (2026-05-14)
+- Logged-in mobile bottom nav now has 5 core tabs: السوق, الناس, اعرض, الرسائل, حسابي.
+- Notifications were removed from bottom nav and remain a utility action in the compact mobile top header bell.
+- Desktop logged-in header now promotes first-class product surfaces: السوق, الناس, الرسائل, اعرض حاجة.
+- Added lightweight unread shell badge path via `public.get_unread_deal_messages_count()` RPC for header and mobile nav badge counts.
+- Footer now carries secondary public/support navigation: إزاي بتشتغل, الأمان, الدروب.
+- Active-state coverage expanded across market/people/messages/publish/account/notifications routes in shell nav rendering.
+- No global realtime shell badge refresh loop was added; Phase 39 realtime messaging behavior remains scoped to messaging surfaces.

@@ -1,8 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
-import { AuthButton } from "@/components/auth-button";
 import { AppIcon } from "@/components/ui/app-icon";
 import { createClient } from "@/lib/supabase/server";
+import { SiteHeaderNav } from "@/components/site-header-nav";
 
 export async function SiteHeader() {
   const supabase = await createClient();
@@ -10,13 +10,16 @@ export async function SiteHeader() {
   const loggedIn = Boolean(data.user);
 
   let unreadNotificationsCount = 0;
+  let unreadMessagesCount = 0;
+
   if (data.user) {
-    const { count } = await supabase
-      .from("notifications")
-      .select("id", { count: "exact", head: true })
-      .eq("user_id", data.user.id)
-      .is("read_at", null);
+    const [{ count }, { data: unreadMessagesData, error: unreadMessagesError }] = await Promise.all([
+      supabase.from("notifications").select("id", { count: "exact", head: true }).eq("user_id", data.user.id).is("read_at", null),
+      supabase.rpc("get_unread_deal_messages_count"),
+    ]);
+
     unreadNotificationsCount = count ?? 0;
+    if (!unreadMessagesError) unreadMessagesCount = Number(unreadMessagesData ?? 0);
   }
 
   return (
@@ -45,16 +48,7 @@ export async function SiteHeader() {
           </Link>
         </div>
 
-        <nav className="hidden max-w-full items-center justify-end gap-1.5 text-sm sm:flex sm:gap-2">
-          <Link className="rounded-lg px-2.5 py-2" href="/items">السوق</Link>
-          <Link className="rounded-lg px-2.5 py-2" href="/drops">الدروب</Link>
-          {loggedIn ? <Link className="rounded-lg px-2.5 py-2" href="/items/new">اعرض حاجة</Link> : null}
-          {!loggedIn ? <Link className="rounded-lg px-2.5 py-2" href="/how-it-works">إزاي بتشتغل</Link> : null}
-          {loggedIn ? <Link className="rounded-lg px-2.5 py-2" href="/dashboard">حسابي</Link> : null}
-          {loggedIn ? <Link className="rounded-lg px-2.5 py-2" href="/notifications">الإشعارات{unreadNotificationsCount > 0 ? ` (${unreadNotificationsCount})` : ""}</Link> : null}
-          <Link className="rounded-lg px-2.5 py-2" href="/safety">الأمان</Link>
-          <AuthButton loggedIn={loggedIn} />
-        </nav>
+        <SiteHeaderNav loggedIn={loggedIn} unreadNotificationsCount={unreadNotificationsCount} unreadMessagesCount={unreadMessagesCount} />
       </div>
     </header>
   );
