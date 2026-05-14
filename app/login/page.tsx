@@ -25,8 +25,8 @@ export default async function LoginPage({
       <PageSection className="grid items-start gap-4 lg:grid-cols-[1.05fr_0.95fr]">
         <HeroPanel className="space-y-4">
           <p className="type-meta">تسجيل الدخول</p>
-          <h1 className="type-display">ادخل تِسوى وابدأ أول مقايضة.</h1>
-          <p className="type-lead text-app-text-secondary">الدخول بجوجل هو الأسرع. وبعده هنجهز بروفايلك ونوصلك لأول خطوة من غير تعقيد.</p>
+          <h1 className="type-page-title">ادخل تِسوى وابدأ أول مقايضة.</h1>
+          <p className="type-body text-app-text-secondary">الدخول بجوجل هو الأسرع. وبعده هنجهز بروفايلك ونوصلك لأول خطوة من غير تعقيد.</p>
           <InlineNotice tone="accent">إيميلك مش بيظهر للناس.</InlineNotice>
         </HeroPanel>
 

@@ -85,7 +85,7 @@ export default async function HomePage() {
           <HeroPanel className="space-y-4 bg-[#f9efe2]">
             <p className="type-support">{displayName ? `أهلاً ${displayName}` : "أهلاً بيك في تِسوى"}</p>
             {showPriorityBadge ? <StatusPill tone="warning">الأولوية دلوقتي</StatusPill> : null}
-            <h1 className="type-headline">{priorityTitle}</h1>
+            <h1 className="type-page-title">{priorityTitle}</h1>
             <p className="type-support">{prioritySubtitle}</p>
             <div className="flex flex-wrap gap-2.5">
               <ButtonLink href={priorityCtaPrimary.href} size="lg">{priorityCtaPrimary.label}</ButtonLink>
@@ -156,10 +156,10 @@ export default async function HomePage() {
       <PageSection className="space-y-6 md:space-y-8">
         <PwaInstallCard />
 
-        <HeroPanel className="space-y-4 bg-[#f9efe2] p-panel-lg md:p-panel-xl">
+        <HeroPanel className="space-y-4 bg-[#f9efe2] p-panel-lg ">
           <p className="type-meta">تِسوى — Teswa</p>
-          <h1 className="type-display">حاجتك لسه لها قيمة.</h1>
-          <p className="type-lead text-app-text-secondary">سجّل، اعرض حاجة عندك، استقبل عروض من ناس حقيقية، ونسّق المقايضة من داخل تِسوى.</p>
+          <h1 className="type-hero">حاجتك لسه لها قيمة.</h1>
+          <p className="type-body text-app-text-secondary">سجّل، اعرض حاجة عندك، استقبل عروض من ناس حقيقية، ونسّق المقايضة من داخل تِسوى.</p>
           <div className="flex flex-wrap gap-3">
             <ButtonLink href="/login?next=/items/new" size="lg">ابدأ وسجّل</ButtonLink>
             <ButtonLink href="/items" variant="secondary" size="lg">شوف السوق</ButtonLink>
@@ -170,7 +170,7 @@ export default async function HomePage() {
         <SurfaceCard className="space-y-4">
           <div>
             <p className="type-meta">آلية المقايضة</p>
-            <h2 className="type-headline mt-1">ثلاث حركات بسيطة تخليك تبدأ بثقة</h2>
+            <h2 className="type-section-title mt-1">ثلاث حركات بسيطة تخليك تبدأ بثقة</h2>
           </div>
           <div className="grid gap-3 md:grid-cols-3">
             {["اعرض حاجة بصور ووصف واضح.", "استقبل عروض مناسبة من ناس حقيقية.", "نسّق بأمان من الرسائل وغرفة الصفقة."].map((step, index) => (
