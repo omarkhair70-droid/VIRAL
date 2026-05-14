@@ -434,3 +434,23 @@
 - [ ] Realtime does not expose messages outside participant scope (RLS preserved).
 - [ ] No expansion to open DMs, typing indicators, read receipts UI, attachments, or presence.
 - [ ] `npm run build` passes.
+
+## AB. Season 3 Phase 40 — Navigation Shell 3.0
+- [ ] Logged-in mobile bottom nav shows exactly: السوق / الناس / اعرض / الرسائل / حسابي.
+- [ ] Mobile bottom nav no longer shows notifications.
+- [ ] Mobile top header bell remains visible for logged-in users and still shows unread notification badge (cap 9+).
+- [ ] Mobile bottom-nav رسائل tab shows unread badge when unread deal messages > 0 (cap 9+).
+- [ ] Desktop header logged-in primary nav promotes السوق / الناس / الرسائل / اعرض حاجة.
+- [ ] Desktop header notifications utility remains reachable and shows unread notification badge.
+- [ ] Desktop header account path remains reachable and logout still works.
+- [ ] Logged-out desktop header remains auth-aware and only shows public links + login.
+- [ ] Active state: `/people` and `/users/[username]` activate الناس.
+- [ ] Active state: `/messages` activates الرسائل.
+- [ ] Active state: `/items/new` activates اعرض/اعرض حاجة.
+- [ ] Active state: `/items` and `/items/[itemId]` activate السوق.
+- [ ] Active state: `/dashboard`, `/profile`, `/offers/[offerId]`, `/deals/[dealId]` activate حسابي.
+- [ ] Notifications active state remains route-aware on `/notifications`.
+- [ ] Desktop footer includes discoverable links for `/how-it-works`, `/safety`, `/drops`.
+- [ ] Shell badge path uses lightweight RPC `get_unread_deal_messages_count` (not `getUnreadMessagesCount(...)` conversation builder).
+- [ ] No global realtime shell badge refresh behavior was added.
+- [ ] `npm run build` passes.

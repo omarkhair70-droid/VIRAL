@@ -6,11 +6,9 @@ export async function MobileBottomNav() {
   const { data } = await supabase.auth.getUser();
   if (!data.user) return null;
 
-  const { count } = await supabase
-    .from("notifications")
-    .select("id", { count: "exact", head: true })
-    .eq("user_id", data.user.id)
-    .is("read_at", null);
+  let unreadMessagesCount = 0;
+  const { data: unreadCountData, error } = await supabase.rpc("get_unread_deal_messages_count");
+  if (!error) unreadMessagesCount = Number(unreadCountData ?? 0);
 
-  return <MobileBottomNavClient unreadNotificationsCount={count ?? 0} />;
+  return <MobileBottomNavClient unreadMessagesCount={unreadMessagesCount} />;
 }
