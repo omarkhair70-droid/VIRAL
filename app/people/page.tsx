@@ -75,7 +75,7 @@ export default async function PeoplePage({ searchParams }: { searchParams?: Prom
     <PageShell className="max-w-6xl space-y-6">
       <PageSection>
         <HeroPanel className="space-y-3">
-          <p className="type-label text-app-text-muted">مجتمع تِسوى</p>
+          <p className="type-meta text-app-text-muted">مجتمع تِسوى</p>
           <h1 className="text-2xl font-semibold text-app-text-primary md:text-3xl">ناس بتبدّل بجد.</h1>
           <p className="max-w-3xl text-sm text-app-text-secondary md:text-base">
             استكشف بروفايلات حقيقية، وافهم أسلوب كل شخص في المقايضة، والثقة اللي بناها من التعاملات، والحاجات اللي لسه متاحة عنده.

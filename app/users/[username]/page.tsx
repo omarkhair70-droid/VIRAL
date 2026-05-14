@@ -82,9 +82,9 @@ export default async function UserProfilePage({ params, searchParams }: { params
           <h2 className="text-xl font-semibold text-app-text-primary">بيحب يبدّل إيه؟</h2>
           {typed.interests || typed.preferred_categories || typed.swap_preferences ? (
             <div className="grid gap-2 text-sm text-app-text-secondary">
-              {typed.interests ? <SoftPanel className="space-y-1"><p className="type-label">اهتماماته</p><p>{typed.interests}</p></SoftPanel> : null}
-              {typed.preferred_categories ? <SoftPanel className="space-y-1"><p className="type-label">الفئات المفضلة</p><p>{typed.preferred_categories}</p></SoftPanel> : null}
-              {typed.swap_preferences ? <SoftPanel className="space-y-1"><p className="type-label">تفضيلاته</p><p>{typed.swap_preferences}</p></SoftPanel> : null}
+              {typed.interests ? <SoftPanel className="space-y-1"><p className="type-meta">اهتماماته</p><p>{typed.interests}</p></SoftPanel> : null}
+              {typed.preferred_categories ? <SoftPanel className="space-y-1"><p className="type-meta">الفئات المفضلة</p><p>{typed.preferred_categories}</p></SoftPanel> : null}
+              {typed.swap_preferences ? <SoftPanel className="space-y-1"><p className="type-meta">تفضيلاته</p><p>{typed.swap_preferences}</p></SoftPanel> : null}
             </div>
           ) : (
             <InlineNotice>لسه ما كتبش اهتماماته في المقايضة.</InlineNotice>
