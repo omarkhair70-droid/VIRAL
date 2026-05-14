@@ -78,3 +78,18 @@ Prepare Teswa for Google Play distribution through Trusted Web Activity (TWA) us
 
 ## 10) Recommended next phase
 Proceed to **GP-03 — Bubblewrap Local Generation**.
+
+## 11) GP-04 progress summary (Digital Asset Links & TWA verification prep)
+### Delivered in GP-04
+- GP-03 successfully generated signed Android artifacts locally: `app-release-signed.apk` and `app-release-bundle.aab`.
+- Real signing certificate SHA-256 fingerprint was extracted from the generated signing keystore.
+- Added Digital Asset Links file at `public/.well-known/assetlinks.json` for:
+  - origin: `https://viral-one-delta.vercel.app`
+  - package: `app.teswa.android`
+
+### Required post-deployment verification
+- Confirm the live endpoint resolves:
+  - `https://viral-one-delta.vercel.app/.well-known/assetlinks.json`
+- Install `app-release-signed.apk` on an Android device.
+- Verify launch behavior opens as a Trusted Web Activity (no browser chrome/address bar visible).
+
