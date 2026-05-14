@@ -10,6 +10,16 @@ create table public.account_deletion_requests (
   updated_at timestamptz not null default now()
 );
 
+create or replace function public.set_updated_at()
+returns trigger
+language plpgsql
+as $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$;
+
 create trigger account_deletion_requests_updated
 before update on public.account_deletion_requests
 for each row execute function public.set_updated_at();
