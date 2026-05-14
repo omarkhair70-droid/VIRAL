@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { ButtonLink } from "@/components/ui/button";
+import { HeroPanel, InlineNotice, PageSection, PageShell, SoftPanel, SurfaceCard } from "@/components/ui/surfaces";
 import { notFound } from "next/navigation";
 import { OfferItemCard } from "@/components/offers/offer-item-card";
 import { OfferStatusBadge } from "@/components/offers/offer-status-badge";
@@ -59,16 +61,13 @@ export default async function OfferDetail({ params, searchParams }: { params: Pr
     deal = (dealData as DealRow | null) ?? null;
   }
 
-  return <section className="mx-auto max-w-5xl space-y-6 px-4 py-10">
-    <div className="space-y-3">
-      <h1 className="text-3xl font-bold">عرض مقايضة</h1>
-      <OfferStatusBadge status={offer.status} />
-    </div>
-    {query.error && errorMap[query.error] ? <p className="rounded-xl border border-red-200 bg-red-50 p-3 text-red-800">{errorMap[query.error]}</p> : null}
-    {query.response ? <p className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-emerald-800">{responseMap[query.response] ?? "تم تحديث حالة العرض."}</p> : null}
-    {query.reported === "1" ? <p className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-emerald-800">تم إرسال البلاغ. شكرًا إنك ساعدتنا نحافظ على التجربة.</p> : null}
-    <div className="grid gap-4 md:grid-cols-[1fr_auto_1fr]"><OfferItemCard itemId={offered.id} title={offered.title} imageUrl={offImg} category={firstOrNull(offered.categories)?.name_ar ?? null} conditionLabel={conditionLabels[offered.condition]} ownerName={offOwner} /><div className="self-center text-center text-3xl">↔</div><OfferItemCard itemId={requested.id} title={requested.title} imageUrl={reqImg} category={firstOrNull(requested.categories)?.name_ar ?? null} conditionLabel={conditionLabels[requested.condition]} ownerName={reqOwner} /></div>
-    <p className="text-stone-700">{offProfile?.username ? <Link href={`/users/${offProfile.username}`} className="hover:underline">{offOwner}</Link> : offOwner} عرض {offered.title} مقابل {requested.title} لصاحب الإعلان {reqProfile?.username ? <Link href={`/users/${reqProfile.username}`} className="hover:underline">{reqOwner}</Link> : reqOwner}.</p>
+  return <PageShell className="mx-auto max-w-5xl px-4 py-10"><PageSection className="space-y-6">
+    <HeroPanel className="space-y-3"><h1 className="text-3xl font-bold">عرض مقايضة</h1><OfferStatusBadge status={offer.status} /><p className="text-sm text-app-text-muted">{isReceiver ? "راجع العرض واختار الرد المناسب." : "تابع حالة عرضك واعرف الخطوة الجاية."}</p></HeroPanel>
+    {query.error && errorMap[query.error] ? <InlineNotice tone="danger">{errorMap[query.error]}</InlineNotice> : null}
+    {query.response ? <InlineNotice tone="accent">{responseMap[query.response] ?? "تم تحديث حالة العرض."}</InlineNotice> : null}
+    {query.reported === "1" ? <InlineNotice tone="accent">تم إرسال البلاغ. شكرًا إنك ساعدتنا نحافظ على التجربة.</InlineNotice> : null}
+    <SurfaceCard className="grid gap-4 p-4 md:grid-cols-[1fr_auto_1fr]"><OfferItemCard itemId={offered.id} title={offered.title} imageUrl={offImg} category={firstOrNull(offered.categories)?.name_ar ?? null} conditionLabel={conditionLabels[offered.condition]} ownerName={offOwner} /><div className="self-center text-center text-3xl">↔</div><OfferItemCard itemId={requested.id} title={requested.title} imageUrl={reqImg} category={firstOrNull(requested.categories)?.name_ar ?? null} conditionLabel={conditionLabels[requested.condition]} ownerName={reqOwner} /></SurfaceCard>
+    <SoftPanel><p className="text-stone-700">{offProfile?.username ? <Link href={`/users/${offProfile.username}`} className="hover:underline">{offOwner}</Link> : offOwner} عرض {offered.title} مقابل {requested.title} لصاحب الإعلان {reqProfile?.username ? <Link href={`/users/${reqProfile.username}`} className="hover:underline">{reqOwner}</Link> : reqOwner}.</p></SoftPanel>
     {offer.message ? <div className="rounded-xl border p-3"><p className="font-semibold">رسالة العرض:</p><p>«{offer.message}»</p></div> : null}
     {offer.public_note ? <div className="rounded-xl border border-sky-200 bg-sky-50 p-3"><p className="font-semibold">ملاحظة صاحب الحاجة:</p><p>«{offer.public_note}»</p></div> : null}
     {offer.redirect_type ? <p className="text-sm text-stone-600">نوع الباب التاني: {redirectMap[offer.redirect_type] ?? offer.redirect_type}</p> : null}
@@ -95,6 +94,6 @@ export default async function OfferDetail({ params, searchParams }: { params: Pr
       )
     ) : null}
 
-    <div className="flex flex-wrap gap-3"><Link href={`/items/${requested.id}`} className="rounded-xl border px-4 py-2">افتح الحاجة المطلوبة</Link><Link href={`/items/${offered.id}`} className="rounded-xl border px-4 py-2">افتح الحاجة المعروضة</Link><Link href="/feed" className="rounded-xl bg-clay px-4 py-2 text-white">ارجع للعروض</Link></div>{isParticipant ? <Link href={`/report?offerId=${offer.id}&returnTo=${encodeURIComponent(`/offers/${offer.id}`)}`} className="inline-block text-sm text-stone-600 hover:underline">بلّغ عن العرض</Link> : null}
-  </section>;
+    <div className="flex flex-wrap gap-3"><Link href={`/items/${requested.id}`} className="inline-flex min-h-10 rounded-button bg-transparent px-3 py-2 text-sm text-app-text-muted hover:bg-app-soft">افتح الحاجة المطلوبة</Link><Link href={`/items/${offered.id}`} className="inline-flex min-h-10 rounded-button bg-transparent px-3 py-2 text-sm text-app-text-muted hover:bg-app-soft">افتح الحاجة المعروضة</Link><ButtonLink href="/feed" variant="secondary" size="sm">ارجع للعروض</ButtonLink></div>{isParticipant ? <Link href={`/report?offerId=${offer.id}&returnTo=${encodeURIComponent(`/offers/${offer.id}`)}`} className="inline-block text-sm text-stone-600 hover:underline">بلّغ عن العرض</Link> : null}
+  </PageSection></PageShell>;
 }
