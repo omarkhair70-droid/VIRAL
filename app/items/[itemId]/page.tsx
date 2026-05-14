@@ -61,13 +61,13 @@ export async function generateMetadata({ params }: { params: Promise<{ itemId: s
   const item = data as ItemMetadataRow | null;
   if (!item || !PUBLIC_METADATA_STATUSES.includes(item.status)) {
     return {
-      title: "إعلان على تِسوى",
-      description: "شوف الإعلانات العامة على تِسوى.",
+      title: "حاجة على تِسوى",
+      description: "شوف حاجة اتفتح لها باب عروض على تِسوى.",
     };
   }
 
   const imageUrl = item.item_images?.find((img) => img.is_primary)?.image_url ?? item.item_images?.[0]?.image_url ?? null;
-  const description = item.description || "شوف الإعلان ده على تِسوى.";
+  const description = item.description || "شوف الحاجة دي على تِسوى، واكتشف الناس ممكن تشوفها تِسوى إيه.";
 
   return {
     title: `${item.title} | تِسوى`,
@@ -143,6 +143,7 @@ export default async function ItemDetailPage({ params, searchParams }: { params:
             <StatusPill tone="warning">{getTeswaConditionLabel(typed.condition)}</StatusPill>
             {hasStory ? <StatusPill tone="pending">ليها حكاية</StatusPill> : null}
           </div>
+          <p className="text-xs font-semibold text-app-text-muted">سؤال قيمة مفتوح</p>
           <h1 className="text-3xl font-bold text-ink md:text-4xl">{typed.title}</h1>
           <p className="text-sm text-app-text-secondary">{location ? `${location} • ` : ""}اتنشر {new Date(typed.created_at).toLocaleDateString("ar-EG")}</p>
           <div className="flex flex-wrap items-center gap-3">
@@ -153,15 +154,15 @@ export default async function ItemDetailPage({ params, searchParams }: { params:
             ) : (
               user ? (
                 <ButtonLink href={`/offers/new?requestedItemId=${typed.id}`} className="min-w-[200px]">
-                  ابعت عرض مناسب
+                  قول دي تِسوى إيه عندك
                 </ButtonLink>
               ) : (
                 <ButtonLink href={`/login?next=${encodeURIComponent(`/offers/new?requestedItemId=${typed.id}`)}`} className="min-w-[200px]">
-                  سجّل وابعث عرض
+                  سجّل وابدأ اقتراحك
                 </ButtonLink>
               )
             )}
-            {!isOwner ? <p className="text-sm text-app-text-secondary">اختار حاجة من عندك، وصاحب الإعلان يقرر.</p> : null}
+            {!isOwner ? <p className="text-sm text-app-text-secondary">صاحبها فتح لها باب عروض. لو شدت عينك، قول إنت شايفها تِسوى إيه عندك.</p> : null}
           </div>
         </div>
       </HeroPanel>
@@ -173,8 +174,9 @@ export default async function ItemDetailPage({ params, searchParams }: { params:
           </PageSection>
 
           <HighlightPanel className="space-y-3">
-            <p className="text-lg font-semibold">صاحبها بيدور على إيه؟</p>
+            <p className="text-lg font-semibold">فاتح الباب لإيه؟</p>
             <StatusPill tone="pending">{getTeswaDesireModeLabel(typed.desire_mode)}</StatusPill>
+            <p className="text-xs text-app-text-muted">ده نوع المساحة اللي صاحب الحاجة سايبها للعروض.</p>
             {typed.desire_text ? <p className="text-sm leading-7 text-app-text-secondary">{typed.desire_text}</p> : null}
             {typed.item_wanted_tags?.length ? (
               <div className="flex flex-wrap gap-2">
@@ -191,13 +193,35 @@ export default async function ItemDetailPage({ params, searchParams }: { params:
             <SoftPanel className="space-y-3">
               <p className="flex items-center gap-2 text-lg font-semibold text-ink">
                 <AppIcon name="story" className="h-4 w-4 text-clay" />
-                حكاية الحاجة
+                ليه هي هنا؟
               </p>
               {typed.item_story ? <p className="leading-8 text-app-text-secondary">{typed.item_story}</p> : null}
-              {typed.swap_reason ? <p className="text-sm text-app-text-secondary"><span className="font-medium text-ink">ليه بيتبدّل؟ </span>{typed.swap_reason}</p> : null}
-              {typed.good_for ? <p className="text-sm text-app-text-secondary"><span className="font-medium text-ink">مناسب لمين؟ </span>{typed.good_for}</p> : null}
+              {typed.swap_reason ? <p className="text-sm text-app-text-secondary"><span className="font-medium text-ink">ليه فاتح لها باب جديد؟ </span>{typed.swap_reason}</p> : null}
+              {typed.good_for ? <p className="text-sm text-app-text-secondary"><span className="font-medium text-ink">مين ممكن يقدّرها؟ </span>{typed.good_for}</p> : null}
             </SoftPanel>
           ) : null}
+
+
+
+          <SoftPanel className="space-y-3">
+            <p className="text-lg font-semibold">إنت شايف دي تِسوى إيه؟</p>
+            {isOwner ? (
+              <p className="text-sm text-app-text-secondary">الناس هتشوف سؤالك هنا وتبدأ تقترح.</p>
+            ) : (
+              <>
+                <p className="text-sm leading-7 text-app-text-secondary">مش لازم تفكر بسعر. فكر في الحاجة اللي عندك وممكن تبقى إجابة مناسبة على الباب المفتوح هنا.</p>
+                {user ? (
+                  <ButtonLink href={`/offers/new?requestedItemId=${typed.id}`}>
+                    ابدأ باقتراحك
+                  </ButtonLink>
+                ) : (
+                  <ButtonLink href={`/login?next=${encodeURIComponent(`/offers/new?requestedItemId=${typed.id}`)}`}>
+                    ابدأ باقتراحك
+                  </ButtonLink>
+                )}
+              </>
+            )}
+          </SoftPanel>
 
           <SurfaceCard className="space-y-3">
             <p className="text-lg font-semibold">اللي لازم يتعرف بوضوح</p>
@@ -208,7 +232,7 @@ export default async function ItemDetailPage({ params, searchParams }: { params:
 
           {moreFromOwner.length ? (
             <SurfaceCard className="space-y-4">
-              <p className="text-lg font-semibold">حاجات تانية من نفس الشخص</p>
+              <p className="text-lg font-semibold">احتمالات تانية من نفس الشخص</p>
               <div className="grid gap-3 sm:grid-cols-3">
                 {moreFromOwner.map((other) => {
                   const otherImage = other.item_images?.find((x) => x.is_primary)?.image_url ?? other.item_images?.[0]?.image_url ?? null;
@@ -230,23 +254,23 @@ export default async function ItemDetailPage({ params, searchParams }: { params:
             <SurfaceCard className="space-y-3">
               <p className="flex items-center gap-2 text-base font-semibold">
                 <AppIcon name="swap" className="h-4 w-4 text-clay" />
-                جاهز للمقايضة؟
+                جاهز تقترح قيمة؟
               </p>
               {user ? (
                 <ButtonLink href={`/offers/new?requestedItemId=${typed.id}`} className="w-full">
-                  ابعت عرض
+                  ابدأ اقتراحك
                 </ButtonLink>
               ) : (
                 <ButtonLink href={`/login?next=${encodeURIComponent(`/offers/new?requestedItemId=${typed.id}`)}`} className="w-full">
-                  سجّل وابعث عرض
+                  سجّل وابدأ اقتراحك
                 </ButtonLink>
               )}
-              <p className="text-xs text-app-text-muted">اختار حاجة من عندك، وصاحب الإعلان يقرر.</p>
+              <p className="text-xs text-app-text-muted">اختار حاجة من عندك، وصاحب الحاجة يشوف هل العرض يفتح معنى مناسب.</p>
             </SurfaceCard>
           ) : null}
 
           <SurfaceCard className="space-y-3">
-            <p className="flex items-center gap-2 font-semibold"><AppIcon name="profile" className="h-4 w-4 text-clay" />صاحب الإعلان</p>
+            <p className="flex items-center gap-2 font-semibold"><AppIcon name="profile" className="h-4 w-4 text-clay" />صاحب الحاجة</p>
             <div className="flex items-center gap-3">
               {owner?.avatar_url ? (
                 <img src={owner.avatar_url} alt={owner.display_name ?? "مستخدم"} className="h-12 w-12 rounded-full object-cover" />
@@ -272,16 +296,16 @@ export default async function ItemDetailPage({ params, searchParams }: { params:
           </InlineNotice>
 
           <SurfaceCard className="space-y-3">
-            <ShareActions label={isOwner ? "شارك إعلانك" : "شارك الإعلان"} title={typed.title} text="شوف الإعلان ده على تِسوى — بدّل الحاجة بدل ما تسيبها مركونة." urlPath={`/items/${typed.id}`} />
+            <ShareActions label={isOwner ? "شارك حاجتك" : "شارك الحاجة"} title={typed.title} text="شوف الحاجة دي على تِسوى — يمكن تلاقي لها معنى جديد." urlPath={`/items/${typed.id}`} />
             {isOwner ? (
               <div className="flex gap-2">
                 <Link href={`/items/${typed.id}/edit`} className="inline-flex min-h-11 items-center justify-center rounded-xl border border-app-border bg-app-surface px-4 py-2.5 text-sm font-medium text-ink transition hover:bg-app-soft">
-                  عدّل الإعلان
+                  عدّل الحاجة
                 </Link>
                 <ButtonLink href="/dashboard/items" variant="secondary">إدارة حاجاتي</ButtonLink>
               </div>
             ) : null}
-            {user && !isOwner ? <Link href={`/report?itemId=${typed.id}&returnTo=${encodeURIComponent(`/items/${typed.id}`)}`} className="inline-block text-sm text-app-text-muted hover:underline">بلّغ عن الإعلان</Link> : null}
+            {user && !isOwner ? <Link href={`/report?itemId=${typed.id}&returnTo=${encodeURIComponent(`/items/${typed.id}`)}`} className="inline-block text-sm text-app-text-muted hover:underline">بلّغ عن الحاجة</Link> : null}
           </SurfaceCard>
         </aside>
       </div>
