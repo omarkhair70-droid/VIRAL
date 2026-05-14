@@ -97,3 +97,19 @@ grant execute on function public.mark_deal_thread_read(uuid) to authenticated;
 alter table public.deal_messages
   add constraint deal_messages_body_not_blank check (char_length(regexp_replace(body, '[[:space:]]', '', 'g')) > 0),
   add constraint deal_messages_body_max_length check (char_length(body) <= 800);
+
+drop policy if exists deal_messages_participant_insert on public.deal_messages;
+
+create policy deal_messages_participant_insert
+on public.deal_messages
+for insert to authenticated
+with check (
+  sender_id = auth.uid()
+  and exists (
+    select 1
+    from public.swap_deals d
+    where d.id = deal_id
+      and (d.requester_id = auth.uid() or d.offerer_id = auth.uid())
+      and d.status in ('coordinating', 'completed_pending_confirmation')
+  )
+);
