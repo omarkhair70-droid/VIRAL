@@ -1,4 +1,4 @@
-import { HeroPanel, InlineNotice, PageSection, PageShell, SoftPanel, SurfaceCard } from "@/components/ui/surfaces";
+import { HeroPanel, PageSection, PageShell, SoftPanel, SurfaceCard } from "@/components/ui/surfaces";
 
 const policySections = [
   {
@@ -52,8 +52,7 @@ const policySections = [
   {
     title: "8) حقوق المستخدم والتواصل",
     points: [
-      "يمكنك التواصل بخصوص الخصوصية عبر البريد التالي: privacy-contact@example.com",
-      "هذا البريد placeholder ويجب استبداله ببريد رسمي قبل الإطلاق على Google Play.",
+      "سيتم اعتماد وسيلة التواصل الرسمية الخاصة بالخصوصية قبل الإطلاق العام، وتُحدَّث هذه الصفحة وفقًا لذلك.",
     ],
   },
   {
@@ -67,23 +66,19 @@ export default function PrivacyPage() {
     <PageShell>
       <PageSection>
         <HeroPanel className="space-y-3">
-          <p className="type-label text-app-text-muted">الخصوصية</p>
-          <h1 className="type-display text-balance">سياسة الخصوصية في تِسوى</h1>
+          <p className="type-meta text-app-text-muted">الخصوصية</p>
+          <h1 className="type-page-title text-balance">سياسة الخصوصية في تِسوى</h1>
           <p className="type-body text-app-text-secondary text-balance">
             بنشرح هنا بوضوح إيه البيانات اللي بنستخدمها، وليه، وإزاي تتعامل تِسوى معاها.
           </p>
           <p className="type-meta text-app-text-muted">آخر تحديث: 2026</p>
         </HeroPanel>
 
-        <InlineNotice>
-          هذه الصفحة نسخة تشغيلية مخصّصة لشفافية الاستخدام قبل إصدار Google Play، ويجب مراجعتها نهائيًا مع بيانات
-          التواصل الرسمية قبل النشر.
-        </InlineNotice>
 
         <SurfaceCard className="space-y-4">
           {policySections.map((section) => (
             <SoftPanel key={section.title} className="space-y-3">
-              <h2 className="type-title">{section.title}</h2>
+              <h2 className="type-section-title">{section.title}</h2>
               {section.body ? <p className="type-body text-app-text-secondary">{section.body}</p> : null}
               {section.points ? (
                 <ul className="list-disc space-y-2 pr-5 text-sm text-app-text-secondary">
