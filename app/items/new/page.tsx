@@ -20,7 +20,7 @@ export default async function NewItemPage({ searchParams }: { searchParams: Prom
 
   return (
     <section className="mx-auto max-w-3xl space-y-5 px-4 py-10">
-      <PageHeading title="اعرض حاجة للمقايضة" subtitle="هنمشي خطوة خطوة: صور، تفاصيل واضحة، حكاية بسيطة، وبعدها راجع وانشر." />
+      <PageHeading title="اعرض حاجة وشوف تِسوى إيه عند غيرك" subtitle="صورها، قول اللي لازم يتعرف، وافتح باب العروض بدل ما تفضل مركونة." />
       {params.error ? <Alert variant="danger">مش قادرين نكمل دلوقتي. جرّب تاني كمان شوية.</Alert> : null}
       {categoriesError ? <Alert variant="danger">مش قادرين نحمّل التصنيفات دلوقتي. جرّب تاني كمان شوية.</Alert> : null}
       {!user ? (

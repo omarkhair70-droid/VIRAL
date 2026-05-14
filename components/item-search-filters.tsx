@@ -1,6 +1,7 @@
 import { Button, ButtonLink } from "@/components/ui/button";
 import { FormActions, Select, TextInput } from "@/components/ui/form";
 import { SoftPanel } from "@/components/ui/surfaces";
+import { TESWA_CONDITION_LANGUAGE } from "@/lib/teswa-product-language";
 
 type CategoryOption = {
   id: string;
@@ -49,10 +50,10 @@ export function ItemSearchFilters({ categories, values }: ItemSearchFiltersProps
             <TextInput name="city" defaultValue={values.city} placeholder="المدينة" />
             <Select name="condition" defaultValue={values.condition}>
               <option value="">كل الحالات</option>
-              <option value="almost_new">جديد تقريبًا</option>
-              <option value="good_used">مستخدم بحالة كويسة</option>
-              <option value="minor_issues">فيه عيوب بسيطة</option>
-              <option value="needs_repair">محتاج تصليح / عارف حالته</option>
+              <option value="almost_new">{TESWA_CONDITION_LANGUAGE.almost_new.label}</option>
+              <option value="good_used">{TESWA_CONDITION_LANGUAGE.good_used.label}</option>
+              <option value="minor_issues">{TESWA_CONDITION_LANGUAGE.minor_issues.label}</option>
+              <option value="needs_repair">{TESWA_CONDITION_LANGUAGE.needs_repair.label}</option>
             </Select>
             <Select name="sort" defaultValue={values.sort}>
               <option value="newest">الأحدث</option>
