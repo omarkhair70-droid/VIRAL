@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Alert } from "@/components/ui/alert";
+import { MediaFrame, MediaUploadBlock, ProcessingState } from "@/components/ui/product-primitives";
 
 type Category = { id: string; name_ar: string };
 
@@ -139,10 +140,10 @@ export function ItemForm({ categories, prefill, action, authRequired = false, us
 
     <Card className="space-y-3 p-4">
       {step === 1 ? <>
-        <h3 className="text-lg font-semibold">ابدأ بالصور</h3><p className="text-sm text-stone-600">الناس بتفهم الحاجة من الصورة قبل أي كلام. خليك واضح، مش لازم تصوير احترافي.</p>
-        <input type="file" accept="image/jpeg,image/png,image/webp" multiple onChange={(e)=>{ const selected = Array.from(e.target.files ?? []).slice(0, MAX_FILES); setFiles(selected); setErrorMessage(validateFiles(selected)); }} className="w-full rounded-xl border px-3 py-2 text-sm" />
-        <p className="text-xs text-stone-500">الصورة الأولى هتكون الرئيسية. الصور عامة (Public) — ما ترفعش أي بيانات خاصة أو حساسة.</p>
-        {previews.length > 0 ? <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">{previews.map((src, idx)=><img key={src} src={src} alt={`معاينة صورة ${idx + 1}`} className="h-24 w-full rounded-lg object-cover" />)}</div> : null}
+        <MediaUploadBlock title="ابدأ بالصور" helperText="الصورة الأولى هتكون الرئيسية. الصور عامة (Public) — ما ترفعش أي بيانات خاصة أو حساسة." errorText={errorMessage ?? undefined}><p className="text-sm text-stone-600">الناس بتفهم الحاجة من الصورة قبل أي كلام. خليك واضح، مش لازم تصوير احترافي.</p>
+        <label className="inline-flex cursor-pointer rounded-button border border-app-border bg-app-surface px-3 py-2 text-sm"><input type="file" accept="image/jpeg,image/png,image/webp" multiple onChange={(e)=>{ const selected = Array.from(e.target.files ?? []).slice(0, MAX_FILES); setFiles(selected); setErrorMessage(validateFiles(selected)); }} className="hidden" />اختار الصور</label>
+        {previews.length > 0 ? <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">{previews.map((src, idx)=><MediaFrame key={src} src={src} alt={`معاينة صورة ${idx + 1}`} ratio="square" />)}</div> : null}
+      </MediaUploadBlock>
       </> : null}
 
       {step === 2 ? <><h3 className="text-lg font-semibold">خلّي الحاجة مفهومة</h3><p className="text-sm text-stone-600">اكتب اسم واضح، وحط مكان تقريبي يساعد الناس تعرف لو التنسيق مناسب.</p><input name="title" required value={title} onChange={(e)=>setTitle(e.target.value)} className="w-full rounded-xl border px-3 py-2" placeholder="عنوان الحاجة" /><select name="category_id" required={categories.length > 0} value={categoryId} onChange={(e)=>setCategoryId(e.target.value)} className="w-full rounded-xl border px-3 py-2"><option value="">اختار تصنيف</option>{categories.map((c)=><option key={c.id} value={c.id}>{c.name_ar}</option>)}</select><div className="grid gap-3 sm:grid-cols-2"><input name="city" value={city} onChange={(e)=>setCity(e.target.value)} placeholder="المدينة" className="rounded-xl border px-3 py-2" /><input name="area" value={area} onChange={(e)=>setArea(e.target.value)} placeholder="المنطقة" className="rounded-xl border px-3 py-2" /></div></> : null}
@@ -156,6 +157,6 @@ export function ItemForm({ categories, prefill, action, authRequired = false, us
       <button type="button" onClick={goBack} disabled={step === 1 || isSubmitting} className="rounded-xl border px-4 py-2 disabled:opacity-50">السابق</button>
       {step < 6 ? <button type="button" onClick={goNext} disabled={isSubmitting} className="rounded-xl bg-clay px-5 py-2 text-white">التالي</button> : <button disabled={isSubmitting} className="rounded-xl bg-clay px-5 py-2 text-white disabled:opacity-60">انشر الإعلان</button>}
     </div>
-    {isSubmitting ? <p className="rounded-xl bg-blue-50 p-3 text-sm text-blue-900">{submissionStage === "publishing" ? "جاري نشر الإعلان..." : "جاري رفع الصور..."}</p> : null}
+    {isSubmitting ? <ProcessingState title={submissionStage === "publishing" ? "جاري نشر الإعلان" : "جاري رفع الصور"} body="يرجى الانتظار..." tone="info" /> : null}
   </form>;
 }
