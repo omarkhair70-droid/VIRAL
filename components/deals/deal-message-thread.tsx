@@ -107,19 +107,19 @@ export function DealMessageThread({
 
   return (
     <div className="space-y-3">
-      <p className="text-xs text-stone-500">{mapStatusLabel(realtimeStatus)}</p>
+      <p className="rounded-lg bg-stone-100 px-2 py-1 text-xs text-stone-600">{mapStatusLabel(realtimeStatus)}</p>
       {threadMessages.length === 0 ? (
-        <div className="rounded-xl border border-dashed p-4 text-sm text-stone-600">
+        <div className="rounded-xl border border-dashed border-stone-300 bg-stone-50 p-4 text-sm text-stone-600">
           <p className="font-medium text-stone-800">لسه مفيش رسائل.</p>
           <p className="mt-1">ابدأ برسالة بسيطة توضّح ميعاد أو مكان مناسب.</p>
         </div>
       ) : (
-        <div ref={listRef} className="space-y-3">
+        <div ref={listRef} className="max-h-[28rem] space-y-3 overflow-y-auto rounded-2xl border border-stone-200 bg-stone-50 p-3">
           {threadMessages.map((message) => {
             const isMine = message.senderId === currentUserId;
             return (
               <article key={message.id} className={`flex ${isMine ? "justify-end" : "justify-start"}`}>
-                <div className={`max-w-[85%] rounded-2xl border px-4 py-3 ${isMine ? "border-emerald-200 bg-emerald-50" : "border-stone-200 bg-white"}`}>
+                <div className={`max-w-[85%] rounded-2xl border px-4 py-3 shadow-sm ${isMine ? "border-emerald-200 bg-emerald-50" : "border-stone-200 bg-white"}`}>
                   <p className="text-xs font-semibold text-stone-600">{isMine ? "أنت" : message.senderName}</p>
                   <p className="mt-1 whitespace-pre-wrap text-sm text-stone-900">{message.body}</p>
                   <p className="mt-2 text-[11px] text-stone-500">{new Date(message.createdAt).toLocaleString("ar-EG")}</p>
