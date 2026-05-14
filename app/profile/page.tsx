@@ -1,8 +1,12 @@
-import Link from "next/link";
+import type { Route } from "next";
 import { redirect } from "next/navigation";
 import { updateProfile } from "./actions";
-import { createClient } from "@/lib/supabase/server";
+import { PageShell } from "@/components/page-shell";
+import { Button, ButtonLink } from "@/components/ui/button";
+import { Field, FormSection, HelperText, Label, TextInput, Textarea } from "@/components/ui/form";
 import { AvatarUpload, CoverUpload } from "@/components/ui/product-primitives";
+import { HeroPanel, HighlightPanel, InlineNotice, PageSection, SurfaceCard } from "@/components/ui/surfaces";
+import { createClient } from "@/lib/supabase/server";
 
 type PageParams = { searchParams?: Promise<{ updated?: string; error?: string }> };
 
@@ -21,35 +25,52 @@ export default async function ProfilePage({ searchParams }: PageParams) {
   const username = profile?.username ?? "";
   const isIncomplete = !profile?.display_name || !username;
 
-  return <section className="mx-auto max-w-3xl space-y-5 px-4 py-10">
-    <h1 className="text-3xl font-bold">ظبّط بروفايلك</h1>
-    <p className="text-sm text-stone-600">البروفايل الواضح بيخلّي الناس تفهمك وتتعامل معاك بثقة.</p>
-    {query.updated ? <p className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-emerald-800">تم تحديث بروفايلك بنجاح.</p> : null}
-    {query.error ? <p className="rounded-xl border border-red-200 bg-red-50 p-3 text-red-800">{query.error}</p> : null}
-    {isIncomplete ? <p className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-amber-900">كمّل الاسم واسم المستخدم عشان بروفايلك العام يبقى واضح للناس.</p> : null}
+  return <PageShell title="ظبّط بروفايلك"><PageSection className="space-y-4">
+    <HeroPanel>
+      <h1 className="text-2xl font-semibold">ظبّط بروفايلك</h1>
+      <p className="mt-2 text-sm text-app-text-secondary">البروفايل الواضح بيخلّي الناس تفهمك وتتعامل معاك بثقة.</p>
+    </HeroPanel>
 
-    <form action={updateProfile} className="space-y-5 rounded-2xl border bg-white p-5" encType="multipart/form-data">
-      <div className="space-y-3">
-        <h2 className="text-lg font-semibold">الهوية البصرية</h2>
-        <p className="rounded-lg border border-amber-200 bg-amber-50 p-2 text-sm text-amber-900">صور البروفايل بتظهر للناس. ما ترفعش صور فيها بيانات خاصة.</p>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div><p className="mb-2 text-sm font-medium">الأفاتار</p><AvatarUpload name="avatar_file" previewUrl={profile?.avatar_url ?? null} helperText="JPG/PNG/WEBP" /></div>
-          <div><p className="mb-2 text-sm font-medium">صورة الغلاف</p><CoverUpload name="cover_file" previewUrl={profile?.cover_url ?? null} helperText="صورة عرضية واضحة للبروفايل." /></div>
-        </div>
-      </div>
-      <div className="grid gap-3 sm:grid-cols-2">
-        <div><label htmlFor="display_name" className="mb-1 block text-sm font-medium">الاسم المعروض</label><input id="display_name" name="display_name" required minLength={2} maxLength={60} defaultValue={profile?.display_name ?? ""} className="w-full rounded-lg border p-2" /></div>
-        <div><label htmlFor="username" className="mb-1 block text-sm font-medium">اسم المستخدم</label><input id="username" name="username" required minLength={3} maxLength={30} defaultValue={username} className="w-full rounded-lg border p-2" /></div>
-      </div>
-      <div><label htmlFor="profile_tagline" className="mb-1 block text-sm font-medium">جملة صغيرة تحت اسمك</label><input id="profile_tagline" name="profile_tagline" maxLength={120} defaultValue={profile?.profile_tagline ?? ""} className="w-full rounded-lg border p-2" /><p className="mt-1 text-xs text-stone-600">مثال: بحب الحاجات اللي ليها قصة.</p></div>
-      <div className="grid gap-3 sm:grid-cols-2"><div><label htmlFor="city" className="mb-1 block text-sm font-medium">المدينة</label><input id="city" name="city" maxLength={60} defaultValue={profile?.city ?? ""} className="w-full rounded-lg border p-2" /></div><div><label htmlFor="area" className="mb-1 block text-sm font-medium">المنطقة</label><input id="area" name="area" maxLength={60} defaultValue={profile?.area ?? ""} className="w-full rounded-lg border p-2" /></div></div>
-      <div><label htmlFor="bio" className="mb-1 block text-sm font-medium">نبذة قصيرة</label><textarea id="bio" name="bio" maxLength={200} defaultValue={profile?.bio ?? ""} className="h-24 w-full rounded-lg border p-2" /></div>
-      <div><label htmlFor="interests" className="mb-1 block text-sm font-medium">اهتماماتك</label><input id="interests" name="interests" maxLength={180} defaultValue={profile?.interests ?? ""} className="w-full rounded-lg border p-2" /><p className="mt-1 text-xs text-stone-600">مثال: كتب، كاميرات، ديكور، لبس.</p></div>
-      <div><label htmlFor="preferred_categories" className="mb-1 block text-sm font-medium">الفئات المفضلة</label><input id="preferred_categories" name="preferred_categories" maxLength={180} defaultValue={profile?.preferred_categories ?? ""} className="w-full rounded-lg border p-2" /></div>
-      <div><label htmlFor="swap_preferences" className="mb-1 block text-sm font-medium">بتحب تبدّل إيه غالبًا؟</label><textarea id="swap_preferences" name="swap_preferences" maxLength={240} defaultValue={profile?.swap_preferences ?? ""} className="h-24 w-full rounded-lg border p-2" /><p className="mt-1 text-xs text-stone-600">اكتبها بطريقتك، دي بتساعد الناس تعرف إيه المناسب لك.</p></div>
-      <button className="rounded-xl bg-clay px-5 py-2.5 text-white">احفظ البروفايل</button>
-    </form>
+    {query.updated ? <InlineNotice tone="accent">تم تحديث بروفايلك بنجاح.</InlineNotice> : null}
+    {query.error ? <InlineNotice tone="danger">{query.error}</InlineNotice> : null}
+    {isIncomplete ? <HighlightPanel><p className="text-sm">كمّل الاسم واسم المستخدم عشان بروفايلك العام يبقى واضح وسهل الثقة فيه.</p></HighlightPanel> : null}
 
-    {username ? <Link href={`/users/${username}`} className="inline-flex rounded-xl border px-4 py-2">شوف شكل بروفايلك للناس</Link> : null}
-  </section>;
+    <SurfaceCard>
+      <form action={updateProfile} className="space-y-6" encType="multipart/form-data">
+        <FormSection>
+          <h2 className="text-lg font-semibold">الهوية البصرية</h2>
+          <InlineNotice tone="warning">صور البروفايل بتظهر للناس. ما ترفعش صور فيها بيانات خاصة.</InlineNotice>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field><Label>الأفاتار</Label><AvatarUpload name="avatar_file" previewUrl={profile?.avatar_url ?? null} helperText="JPG/PNG/WEBP" /></Field>
+            <Field><Label>صورة الغلاف</Label><CoverUpload name="cover_file" previewUrl={profile?.cover_url ?? null} helperText="صورة عرضية واضحة للبروفايل." /></Field>
+          </div>
+        </FormSection>
+
+        <FormSection>
+          <h2 className="text-lg font-semibold">الأساسيات</h2>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Field><Label htmlFor="display_name" required>الاسم المعروض</Label><TextInput id="display_name" name="display_name" required minLength={2} maxLength={60} defaultValue={profile?.display_name ?? ""} /></Field>
+            <Field><Label htmlFor="username" required>اسم المستخدم</Label><TextInput id="username" name="username" required minLength={3} maxLength={30} defaultValue={username} /></Field>
+          </div>
+          <Field><Label htmlFor="profile_tagline" optional>جملة صغيرة تحت اسمك</Label><TextInput id="profile_tagline" name="profile_tagline" maxLength={120} defaultValue={profile?.profile_tagline ?? ""} /><HelperText>مثال: بحب الحاجات اللي ليها قصة.</HelperText></Field>
+        </FormSection>
+
+        <FormSection>
+          <h2 className="text-lg font-semibold">المكان والنبذة</h2>
+          <div className="grid gap-3 sm:grid-cols-2"><Field><Label htmlFor="city" optional>المدينة</Label><TextInput id="city" name="city" maxLength={60} defaultValue={profile?.city ?? ""} /></Field><Field><Label htmlFor="area" optional>المنطقة</Label><TextInput id="area" name="area" maxLength={60} defaultValue={profile?.area ?? ""} /></Field></div>
+          <Field><Label htmlFor="bio" optional>نبذة قصيرة</Label><Textarea id="bio" name="bio" maxLength={200} defaultValue={profile?.bio ?? ""} /></Field>
+        </FormSection>
+
+        <FormSection>
+          <h2 className="text-lg font-semibold">شخصية المقايضة</h2>
+          <Field><Label htmlFor="interests" optional>اهتماماتك</Label><TextInput id="interests" name="interests" maxLength={180} defaultValue={profile?.interests ?? ""} /><HelperText>مثال: كتب، كاميرات، ديكور، لبس.</HelperText></Field>
+          <Field><Label htmlFor="preferred_categories" optional>الفئات المفضلة</Label><TextInput id="preferred_categories" name="preferred_categories" maxLength={180} defaultValue={profile?.preferred_categories ?? ""} /></Field>
+          <Field><Label htmlFor="swap_preferences" optional>بتحب تبدّل إيه غالبًا؟</Label><Textarea id="swap_preferences" name="swap_preferences" maxLength={240} defaultValue={profile?.swap_preferences ?? ""} /><HelperText>اكتبها بطريقتك، دي بتساعد الناس تعرف إيه المناسب لك.</HelperText></Field>
+        </FormSection>
+        <Button type="submit">احفظ البروفايل</Button>
+      </form>
+    </SurfaceCard>
+
+    {username ? <ButtonLink href={`/users/${username}` as Route} variant="outline">شوف شكل بروفايلك للناس</ButtonLink> : null}
+  </PageSection></PageShell>;
 }
