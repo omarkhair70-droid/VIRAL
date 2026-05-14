@@ -63,9 +63,10 @@ export default async function ProfilePage({ searchParams }: PageParams) {
 
         <FormSection>
           <h2 className="text-lg font-semibold">شخصية المقايضة</h2>
+          <p className="text-sm text-app-text-secondary">الكلام ده يساعد الناس تفهم أسلوبك قبل ما تبعت لك اقتراح.</p>
           <Field><Label htmlFor="interests" optional>اهتماماتك</Label><TextInput id="interests" name="interests" maxLength={180} defaultValue={profile?.interests ?? ""} /><HelperText>مثال: كتب، كاميرات، ديكور، لبس.</HelperText></Field>
           <Field><Label htmlFor="preferred_categories" optional>الفئات المفضلة</Label><TextInput id="preferred_categories" name="preferred_categories" maxLength={180} defaultValue={profile?.preferred_categories ?? ""} /></Field>
-          <Field><Label htmlFor="swap_preferences" optional>بتحب تبدّل إيه غالبًا؟</Label><Textarea id="swap_preferences" name="swap_preferences" maxLength={240} defaultValue={profile?.swap_preferences ?? ""} /><HelperText>اكتبها بطريقتك، دي بتساعد الناس تعرف إيه المناسب لك.</HelperText></Field>
+          <Field><Label htmlFor="swap_preferences" optional>إيه اللي يشدّك غالبًا في الاقتراحات؟</Label><Textarea id="swap_preferences" name="swap_preferences" maxLength={240} defaultValue={profile?.swap_preferences ?? ""} /><HelperText>اكتبها بطريقتك، دي بتساعد الناس تعرف إيه المناسب لك.</HelperText></Field>
         </FormSection>
         <Button type="submit">احفظ البروفايل</Button>
       </form>

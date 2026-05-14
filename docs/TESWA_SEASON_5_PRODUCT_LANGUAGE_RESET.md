@@ -111,3 +111,11 @@ These will be handled intentionally in later phases, especially Phase 54, Phase 
 - Home now links to this broader motion layer, not only story/drop curation.
 - Offer details and deal details remain private; this phase surfaces movement, not private content.
 - No schema, backend contracts, or status-model changes were introduced.
+
+
+## Phase 59 implementation note — People as Exchange Personalities
+- `/people` now introduces people as personalities with different ways of opening value, not just a directory of accounts.
+- Directory cards foreground style/personality line and “open doors” more than raw account summary.
+- Public profiles now frame interests/preferences as a visible exchange personality layer.
+- Trust and reviews remain intact, but they support the personality rather than define the whole page.
+- No social graph, schema, ranking, or privacy changes were introduced.

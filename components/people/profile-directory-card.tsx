@@ -41,26 +41,27 @@ export function ProfileDirectoryCard(props: ProfileDirectoryCardProps) {
           </div>
         </div>
 
-        <SoftPanel className="p-3">
-          <p className="line-clamp-2 text-sm text-app-text-secondary">{summary || "مقدّم نبذة بسيطة عن طريقته في المقايضة قريبًا."}</p>
+        <SoftPanel className="space-y-1 p-3">
+          <p className="type-meta">ملمح من أسلوبه</p>
+          <p className="line-clamp-2 text-sm text-app-text-secondary">{summary || "لسه بيشكّل طريقته في تِسوى، لكن أبوابه المفتوحة هتحكي عنه."}</p>
         </SoftPanel>
 
         <div className="flex flex-wrap gap-2">
-          <MetricPill label="مقايضات مكتملة" value={props.successfulSwapsCount} dense />
-          <MetricPill label="حاجات نشطة" value={props.activeItemsCount} dense />
+          <MetricPill label="مقايضات تمت" value={props.successfulSwapsCount} dense />
+          <MetricPill label="أبواب مفتوحة" value={props.activeItemsCount} dense />
         </div>
 
         <div className="space-y-2">
-          <p className="text-xs text-app-text-muted">إشارات ثقة من تقييمات ومقايضات سابقة</p>
+          <p className="text-xs text-app-text-muted">إشارات تساعدك تثق في التعامل</p>
           {props.trustBadges.length ? (
             <TrustBadges badges={props.trustBadges} compact maxVisible={2} />
           ) : (
-            <p className="text-xs text-app-text-muted">لسه مفيش إشارات كفاية.</p>
+            <p className="text-xs text-app-text-muted">لسه إشاراته بتتكوّن.</p>
           )}
         </div>
 
         <ButtonLink href={`/users/${props.username}` as Route} variant="outline" size="sm" className="mt-auto self-start">
-          افتح البروفايل
+          شوف أسلوبه
         </ButtonLink>
       </div>
     </SurfaceCard>

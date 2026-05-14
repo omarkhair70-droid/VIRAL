@@ -8,8 +8,8 @@ import { buildTrustBadges, type TrustCounts } from "@/lib/trust-badges";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
-  title: "ناس تِسوى",
-  description: "دليل ناس تِسوى: بروفايلات عامة، إشارات ثقة، وحاجات نشطة للمقايضة.",
+  title: "ناس تِسوى | كل واحد له طريقة في فتح القيمة",
+  description: "استكشف أشخاصًا لهم أساليب مختلفة في رؤية الحاجات، من أبوابهم المفتوحة إلى إشارات الثقة والحكايات التي يتركونها.",
 };
 
 type ProfileRow = {
@@ -75,26 +75,29 @@ export default async function PeoplePage({ searchParams }: { searchParams?: Prom
     <PageShell className="max-w-6xl space-y-6">
       <PageSection>
         <HeroPanel className="space-y-3">
-          <p className="type-meta text-app-text-muted">مجتمع تِسوى</p>
-          <h1 className="text-2xl font-semibold text-app-text-primary md:text-3xl">ناس بتبدّل بجد.</h1>
+          <p className="type-meta text-app-text-muted">شخصيات تِسوى</p>
+          <h1 className="text-2xl font-semibold text-app-text-primary md:text-3xl">كل واحد هنا بيفتح القيمة بطريقته.</h1>
           <p className="max-w-3xl text-sm text-app-text-secondary md:text-base">
-            استكشف بروفايلات حقيقية، وافهم أسلوب كل شخص في المقايضة، والثقة اللي بناها من التعاملات، والحاجات اللي لسه متاحة عنده.
+            فيه ناس تحب المفاجآت، وناس تدخل من باب الحكاية، وناس تعرف تقريبًا هي منتظرة إيه. اتعرّف على الأسلوب قبل ما تفكر في الاقتراح.
           </p>
-          <ButtonLink href="/items" variant="secondary" size="sm">تصفّح السوق</ButtonLink>
+          <div className="flex flex-wrap gap-2">
+            <ButtonLink href="/items" variant="secondary" size="sm">استكشف الاحتمالات</ButtonLink>
+            <ButtonLink href="/items/new" variant="outline" size="sm">اعرض حاجة</ButtonLink>
+          </div>
         </HeroPanel>
 
         <PeopleDirectorySearch query={q} />
 
         {safeQuery ? (
           <SoftPanel className="py-3">
-            <p className="text-sm text-app-text-secondary">نتائج البحث عن: <span className="font-medium text-app-text-primary">{safeQuery}</span></p>
+            <p className="text-sm text-app-text-secondary">ناس قريبة من اللي كتبت: <span className="font-medium text-app-text-primary">{safeQuery}</span></p>
           </SoftPanel>
         ) : null}
 
         {!profiles.length ? (
           <EmptyState
-            title={safeQuery ? "ملقيناش حد بنفس البحث ده." : "ناس تِسوى هيظهروا هنا."}
-            body={safeQuery ? "جرّب اسم تاني أو مدينة مختلفة، وهتلاقي بروفايلات أقرب للي بتدور عليه." : "كمّل بروفايلك أو تصفّح السوق، والناس اللي بتبدّل هتظهر هنا بشكل تلقائي."}
+            title={safeQuery ? "ملقيناش شخصية قريبة من البحث ده." : "لسه الشخصيات هنا بتتعرّف."}
+            body={safeQuery ? "جرّب اسمًا آخر، مدينة مختلفة، أو ارجع للاستكشاف الأوسع." : "كمّل طريقتك في تِسوى، أو استكشف الاحتمالات لحد ما يبدأ العالم يتملّى بوجوه أوضح."}
             tone="info"
           />
         ) : (
