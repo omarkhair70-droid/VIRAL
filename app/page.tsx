@@ -15,7 +15,6 @@ export const metadata: Metadata = {
 type HomeItem = {
   id: string;
   title: string | null;
-  slug: string | null;
   desire_mode: string | null;
   desire_text: string | null;
   city: string | null;
@@ -27,8 +26,7 @@ type HomeItem = {
 };
 
 function itemHref(item: HomeItem): Route {
-  const key = item.slug ?? item.id;
-  return `/items/${key}` as Route;
+  return `/items/${item.id}` as Route;
 }
 
 function itemLine(item: HomeItem) {
@@ -96,21 +94,21 @@ export default async function HomePage() {
     supabase.from("creator_drops").select("id", { count: "exact", head: true }).eq("status", "published"),
     supabase
       .from("items")
-      .select("id,title,slug,desire_mode,desire_text,city,area,item_story,swap_reason,good_for,item_images(image_url)")
+      .select("id,title,desire_mode,desire_text,city,area,item_story,swap_reason,good_for,item_images(image_url)")
       .eq("status", "active")
       .in("desire_mode", ["surprise", "flexible"])
       .order("created_at", { ascending: false })
       .limit(6),
     supabase
       .from("items")
-      .select("id,title,slug,desire_mode,desire_text,city,area,item_story,swap_reason,good_for,item_images(image_url)")
+      .select("id,title,desire_mode,desire_text,city,area,item_story,swap_reason,good_for,item_images(image_url)")
       .eq("status", "active")
       .or("item_story.not.is.null,swap_reason.not.is.null,good_for.not.is.null")
       .order("created_at", { ascending: false })
       .limit(6),
     supabase
       .from("items")
-      .select("id,title,slug,desire_mode,desire_text,city,area,item_story,swap_reason,good_for,item_images(image_url)")
+      .select("id,title,desire_mode,desire_text,city,area,item_story,swap_reason,good_for,item_images(image_url)")
       .eq("status", "active")
       .order("created_at", { ascending: false })
       .limit(3),
