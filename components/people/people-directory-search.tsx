@@ -7,14 +7,15 @@ export function PeopleDirectorySearch({ query }: { query: string }) {
     <SoftPanel>
       <form action="/people" method="get" className="space-y-3">
         <label htmlFor="people-search" className="type-meta block text-app-text-secondary">
-          دور على ناس بالاسم أو اليوزر أو المدينة
+          دوّر على شخصية أو اسم أو مدينة
         </label>
+        <p className="text-xs text-app-text-muted">البحث هنا يقربك من الشخص، والبروفايل يشرح أسلوبه.</p>
         <div className="flex flex-wrap items-center gap-2">
           <input
             id="people-search"
             name="q"
             defaultValue={query}
-            placeholder="مثال: القاهرة أو ahmed"
+            placeholder="مثال: القاهرة أو omar"
             className="min-h-11 min-w-[220px] flex-1 rounded-button border border-app-border bg-app-surface px-3 text-sm text-app-text-primary outline-none transition focus:border-app-accent focus:ring-2 focus:ring-app-focus"
           />
           <Button type="submit" size="md">ابحث</Button>

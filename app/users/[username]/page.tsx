@@ -11,7 +11,7 @@ import { createClient } from "@/lib/supabase/server";
 
 type ProfileRow = { id: string; display_name: string; username: string | null; bio: string | null; city: string | null; area: string | null; created_at: string; successful_swaps_count: number; avatar_url?: string | null; cover_url?: string | null; profile_tagline?: string | null; interests?: string | null; preferred_categories?: string | null; swap_preferences?: string | null; };
 type ReviewRow = { id: string; rating: number; comment: string | null; created_at: string; clear_description: boolean; good_communication: boolean; on_time: boolean; respectful_swapper: boolean; reviewer: { display_name: string | null; username: string | null }[] | null; };
-const genericProfileMetadata: Metadata = { title: "بروفايل على تِسوى", description: "بروفايل مقايضات وتقييمات على تِسوى." };
+const genericProfileMetadata: Metadata = { title: "شخصية على تِسوى", description: "شوف أسلوب الشخص في فتح القيمة، أبواب مفتوحة منه، وإشارات الثقة التي بنّاها." };
 const isSafePublicImageUrl = (url: string) => url.startsWith("https://") || url.startsWith("http://");
 
 export async function generateMetadata({ params }: { params: Promise<{ username: string }> }): Promise<Metadata> { const { username } = await params; if (!username) return genericProfileMetadata; const supabase = await createClient(); const { data } = await supabase.from("profiles").select("username,display_name,bio,avatar_url").eq("username", username.toLowerCase()).maybeSingle(); const p = data as Pick<ProfileRow, "username" | "display_name" | "bio" | "avatar_url"> | null; if (!p?.username) return genericProfileMetadata; const n = p.display_name || p.username; const d = p.bio || genericProfileMetadata.description!; const a = p.avatar_url && isSafePublicImageUrl(p.avatar_url) ? p.avatar_url : null; return { title: `${n} على تِسوى`, description: d, openGraph: { title: `${n} على تِسوى`, description: d, type: "profile", images: a ? [{ url: a }] : undefined }, twitter: { card: a ? "summary_large_image" : "summary", title: `${n} على تِسوى`, description: d, images: a ? [a] : undefined } }; }
@@ -45,6 +45,7 @@ export default async function UserProfilePage({ params, searchParams }: { params
               )}
             </div>
             <div className="space-y-2">
+              <p className="type-meta text-app-text-muted">شخصية في تِسوى</p>
               <h1 className="text-3xl font-semibold text-app-text-primary">{displayName}</h1>
               <p className="text-sm text-app-text-muted">@{typed.username}</p>
               {typed.profile_tagline ? <p className="text-base text-app-text-secondary">{typed.profile_tagline}</p> : null}
@@ -55,46 +56,48 @@ export default async function UserProfilePage({ params, searchParams }: { params
         </HeroPanel>
 
         <SurfaceCard className="space-y-3">
-          <p className="text-sm text-app-text-secondary">لو تعرف حد مهتم بنفس النوع من المقايضات، شاركه البروفايل ده.</p>
-          {typed.username ? <ShareActions label="شارك البروفايل" title={`${displayName} على تِسوى`} text="شوف بروفايل المقايضات والتقييمات على تِسوى." urlPath={`/users/${typed.username}`} /> : null}
+          <p className="text-sm text-app-text-secondary">لو أسلوبه شدك، شارك الشخصية دي مع حد ممكن يفهم نفس الباب.</p>
+          {typed.username ? <ShareActions label="شارك شخصيته" title={`${displayName} على تِسوى`} text="شوف أسلوبه في تِسوى، والحاجات اللي فاتح لها أبواب عروض." urlPath={`/users/${typed.username}`} /> : null}
           {query.reported === "1" ? <InlineNotice tone="warning">تم إرسال البلاغ. شكرًا إنك ساعدتنا نحافظ على التجربة.</InlineNotice> : null}
-          {user && user.id !== typed.id ? <Link href={`/report?username=${encodeURIComponent(username)}&returnTo=${encodeURIComponent(`/users/${username}`)}`} className="text-sm text-app-text-muted underline underline-offset-2">بلّغ عن المستخدم</Link> : null}
+          {user && user.id !== typed.id ? <Link href={`/report?username=${encodeURIComponent(username)}&returnTo=${encodeURIComponent(`/users/${username}`)}`} className="text-sm text-app-text-muted underline underline-offset-2">بلّغ عن الحساب</Link> : null}
         </SurfaceCard>
 
         <HighlightPanel className="space-y-3">
-          <h2 className="text-lg font-semibold text-app-text-primary">ملخص النشاط والسمعة</h2>
+          <h2 className="text-lg font-semibold text-app-text-primary">ملامح من حضوره في تِسوى</h2>
+          <p className="text-sm text-app-text-secondary">الأرقام لا تشرح الشخص كله، لكنها تعطي لمحة عن أبوابه المفتوحة والحركة التي تركها.</p>
           <div className="flex flex-wrap gap-2">
-            <MetricPill label="حاجات متاحة" value={items?.length ?? 0} />
-            <MetricPill label="مقايضات مكتملة" value={typed.successful_swaps_count} />
+            <MetricPill label="أبواب مفتوحة" value={items?.length ?? 0} />
+            <MetricPill label="مقايضات تمت" value={typed.successful_swaps_count} />
             <MetricPill label="كل التقييمات" value={reviewCount} />
             <MetricPill label="متوسط التقييم" value={averageRating ? averageRating.toFixed(1) : "-"} />
           </div>
-          <p className="text-xs text-app-text-muted">صفقات مقبولة: {dealsCount ?? 0}</p>
+          <p className="text-xs text-app-text-muted">صفقات اتفتحت: {dealsCount ?? 0}</p>
         </HighlightPanel>
 
         <SurfaceCard className="space-y-3">
-          <h2 className="text-lg font-semibold text-app-text-primary">سمعة المقايضة</h2>
-          <p className="text-sm text-app-text-secondary">الإشارات دي مبنية من مقايضات مكتملة وتقييمات فعلية على تِسوى.</p>
+          <h2 className="text-lg font-semibold text-app-text-primary">إشارات الثقة</h2>
+          <p className="text-sm text-app-text-secondary">دي إشارات من تعاملات وتقييمات حقيقية، تساعدك تفهم جودة التجربة.</p>
           {trustBadges.length ? <TrustBadges badges={trustBadges} /> : <InlineNotice>لسه مفيش إشارات ثقة كفاية تظهر هنا.</InlineNotice>}
         </SurfaceCard>
 
         <SurfaceCard className="space-y-3">
-          <h2 className="text-xl font-semibold text-app-text-primary">بيحب يبدّل إيه؟</h2>
+          <h2 className="text-xl font-semibold text-app-text-primary">طريقته في فتح القيمة</h2>
+          <p className="text-sm text-app-text-secondary">دي الكلمات اللي كتبها عن اهتماماته، الفئات التي تشده، ونوع الأبواب التي يرتاح لها.</p>
           {typed.interests || typed.preferred_categories || typed.swap_preferences ? (
             <div className="grid gap-2 text-sm text-app-text-secondary">
               {typed.interests ? <SoftPanel className="space-y-1"><p className="type-meta">اهتماماته</p><p>{typed.interests}</p></SoftPanel> : null}
               {typed.preferred_categories ? <SoftPanel className="space-y-1"><p className="type-meta">الفئات المفضلة</p><p>{typed.preferred_categories}</p></SoftPanel> : null}
-              {typed.swap_preferences ? <SoftPanel className="space-y-1"><p className="type-meta">تفضيلاته</p><p>{typed.swap_preferences}</p></SoftPanel> : null}
+              {typed.swap_preferences ? <SoftPanel className="space-y-1"><p className="type-meta">إيه اللي يشدّه غالبًا</p><p>{typed.swap_preferences}</p></SoftPanel> : null}
             </div>
           ) : (
-            <InlineNotice>لسه ما كتبش اهتماماته في المقايضة.</InlineNotice>
+            <InlineNotice>لسه ما كتبش ملامح واضحة عن أسلوبه.</InlineNotice>
           )}
         </SurfaceCard>
 
         <SurfaceCard className="space-y-4">
           <div className="space-y-1">
             <h2 className="text-xl font-semibold text-app-text-primary">آراء الناس بعد المقايضة</h2>
-            <p className="text-sm text-app-text-secondary">الآراء دي بتظهر بعد مقايضات مكتملة فقط.</p>
+            <p className="text-sm text-app-text-secondary">الآراء دي تظهر بعد مقايضات مكتملة، فتكمّل الصورة مش تستبدلها.</p>
             <p className="text-sm text-app-text-muted">متوسط التقييم: {averageRating ? averageRating.toFixed(1) : "-"} • عدد التقييمات: {reviewCount}</p>
           </div>
           {latestReviews.length ? latestReviews.map((review) => {
@@ -115,7 +118,8 @@ export default async function UserProfilePage({ params, searchParams }: { params
         </SurfaceCard>
 
         <SurfaceCard className="space-y-3">
-          <h2 className="text-xl font-semibold text-app-text-primary">الحاجات المتاحة منه</h2>
+          <h2 className="text-xl font-semibold text-app-text-primary">أبواب مفتوحة منه</h2>
+          <p className="text-sm text-app-text-secondary">دي الحاجات اللي ما زالت تنتظر قراءة مناسبة من شخص آخر.</p>
           {items?.length ? (
             <div className="grid gap-3 sm:grid-cols-2">
               {items.map((item) => {
@@ -133,9 +137,9 @@ export default async function UserProfilePage({ params, searchParams }: { params
               })}
             </div>
           ) : (
-            <InlineNotice>لسه مفيش حاجات متاحة للمقايضة.</InlineNotice>
+            <InlineNotice>لسه ما فتحش أبوابًا جديدة هنا.</InlineNotice>
           )}
-          {user?.id === typed.id ? <ButtonLink href="/items/new" variant="outline" size="sm">اعرض حاجة جديدة</ButtonLink> : null}
+          {user?.id === typed.id ? <ButtonLink href="/items/new" variant="outline" size="sm">افتح بابًا جديدًا</ButtonLink> : null}
         </SurfaceCard>
       </PageSection>
     </PageShell>
