@@ -1,7 +1,8 @@
 {
   "name": "تِسوى",
   "short_name": "تِسوى",
-  "description": "تِسوى — حاجتك لسه لها قيمة.",
+  "description": "حاجتك ممكن تِسوى إيه عند غيرك؟ اعرضها، وافتح لها باب اقتراحات.",
+  "id": "/",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
@@ -10,6 +11,7 @@
   "lang": "ar-EG",
   "background_color": "#FAF5EE",
   "theme_color": "#C45A3A",
+  "prefer_related_applications": false,
   "categories": ["shopping", "lifestyle"],
   "icons": [
     {

@@ -1,4 +1,4 @@
-const CACHE_PREFIX = "baddelha";
+const CACHE_PREFIX = "teswa";
 const CACHE_NAME = `${CACHE_PREFIX}-v1`;
 const STATIC_ASSETS = ["/offline", "/icons/icon-192.png", "/icons/icon-512.png", "/icons/icon-maskable.png", "/manifest.webmanifest"];
 
