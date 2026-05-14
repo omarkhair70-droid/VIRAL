@@ -13,17 +13,19 @@ type EmptyStateProps = {
 
 export function EmptyState({ title, subtitle, action, secondaryAction, iconName, iconClassName }: EmptyStateProps) {
   return (
-    <Card className="border-dashed text-center">
-      <CardContent>
+    <Card className="rounded-surface border border-app-border bg-app-surface text-center shadow-[0_10px_24px_rgba(31,41,55,0.05)]">
+      <CardContent className="space-y-3 p-panel-md">
         {iconName ? (
-          <div className="mb-2 flex justify-center text-muted">
-            <AppIcon name={iconName} className={["h-8 w-8", iconClassName].filter(Boolean).join(" ")} />
+          <div className="flex justify-center text-app-text-muted">
+            <span className="rounded-2xl border border-app-border bg-app-soft p-2.5">
+              <AppIcon name={iconName} className={["h-7 w-7", iconClassName].filter(Boolean).join(" ")} />
+            </span>
           </div>
         ) : null}
-        <CardTitle className="text-lg">{title}</CardTitle>
-        <p className="text-sm text-muted">{subtitle}</p>
+        <CardTitle className="type-card-title">{title}</CardTitle>
+        <p className="type-support">{subtitle}</p>
       </CardContent>
-      {(action || secondaryAction) ? <CardFooter className="justify-center">{action}{secondaryAction}</CardFooter> : null}
+      {(action || secondaryAction) ? <CardFooter className="justify-center gap-2 p-panel-sm pt-0">{action}{secondaryAction}</CardFooter> : null}
     </Card>
   );
 }

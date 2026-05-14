@@ -16,7 +16,7 @@ export function OfferItemCard({ itemId, title, imageUrl, category, conditionLabe
     <SurfaceCard className="space-y-3 p-3 md:p-4">
       <MediaFrame src={imageUrl} alt={title} ratio="wide" fallback={<div className="flex h-full items-center justify-center text-sm text-app-text-muted">لا توجد صورة للحاجة</div>} />
       <div className="space-y-1.5">
-        <Link href={`/items/${itemId}`} className="line-clamp-2 font-semibold text-app-text hover:underline">{title}</Link>
+        <Link href={`/items/${itemId}`} className="line-clamp-2 font-semibold text-app-text-primary hover:underline">{title}</Link>
         <p className="text-sm text-app-text-muted">{category ?? "بدون تصنيف"}</p>
         <p className="text-sm text-app-text-muted">الحالة: {conditionLabel}</p>
         {ownerName ? <p className="text-xs text-app-text-muted">صاحبها: {ownerName}</p> : null}

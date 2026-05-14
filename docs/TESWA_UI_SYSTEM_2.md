@@ -96,3 +96,34 @@ All upcoming redesign phases should consume these shared tokens/primitives first
 - **Phase 43**: consume state/trust/upload primitives in targeted route touch-ups.
 - **Phase 44**: build listing card media hierarchy via `MediaFrame`, `GalleryIndicator`, `MediaSkeleton`.
 - **Phase 45**: build item-detail gallery-first layouts using the same media/upload/state primitives.
+
+## 13) Phase 50 — Season 4 Closure Pass
+
+### A) System state policy
+- Global `loading`, `error`, and `not-found` screens must use the same Warm Editorial surface hierarchy as core flows.
+- State pages keep original meaning/behavior contracts (error reset, safe market return paths) while upgrading feel.
+- `AppLoadingState` remains the default loading bridge and preserves its prop API.
+- Bridge states (like `EmptyState`) remain compatibility-safe for legacy/utility routes.
+
+### B) Motion policy
+- Motion is clarity-first: subtle hover/tap response and clear focus-visible states.
+- Interaction motion should be short and calm, never decorative.
+- Reduced-motion support is mandatory for transforms/transitions and ongoing animations where feasible.
+
+### C) Shared bridge primitives (compatibility role)
+- `EmptyState`, `Alert`, `PageHeading`, and `ImageFrame` are maintained as API-stable bridges.
+- They should follow Season 4 tokens/surfaces internally while keeping existing props and call-site compatibility.
+- New work should prefer Season 4 primitives, but bridge components remain valid for gradual migration.
+
+### D) Shell polish policy
+- Header navigation, mobile bottom navigation, and footer should match the Warm Editorial system.
+- Preserve existing IA, route semantics, counts/badges, auth behavior, and active-state logic.
+- Polish can include focus/hover/tap consistency and token alignment only.
+
+### E) Final audit rule
+- Do not introduce undefined typography/color/spacing utility classes.
+- Explicitly avoid invalid classes such as `type-display`, `type-lead`, `type-headline`, `type-label`, standalone `text-app-text`, and `p-panel-xl`.
+- Future enhancements must reuse shared tokens/primitives instead of silent one-off utility names.
+
+### F) Season 4 completion note
+- Phases 42A, 42B, and 43–50 now establish and apply the Warm Editorial Marketplace system across Teswa’s core product experience.

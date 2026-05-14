@@ -35,13 +35,13 @@ const sizeClasses: Record<Size, string> = {
 };
 
 function buttonClassName({ variant = "primary", size = "md", fullWidth, iconOnly, className }: ButtonVisualProps & { className?: string }) {
-  return `inline-flex items-center justify-center gap-2 font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-focus focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-60 ${variantClasses[variant]} ${sizeClasses[size]} ${fullWidth ? "w-full" : ""} ${iconOnly ? "aspect-square px-0" : ""} ${className ?? ""}`;
+  return `inline-flex items-center justify-center gap-2 font-medium transition duration-200 ease-out active:translate-y-px motion-reduce:translate-y-0 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-focus focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-60 ${variantClasses[variant]} ${sizeClasses[size]} ${fullWidth ? "w-full" : ""} ${iconOnly ? "aspect-square px-0" : ""} ${className ?? ""}`;
 }
 
 export function Button({ variant = "primary", size = "md", className, type = "button", loading, children, disabled, fullWidth, iconOnly, ...props }: ButtonProps) {
   return (
     <button type={type} className={buttonClassName({ variant, size, className, fullWidth, iconOnly })} aria-busy={loading || undefined} disabled={disabled || loading} {...props}>
-      {loading ? <span aria-hidden="true" className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-current border-t-transparent" /> : null}
+      {loading ? <span aria-hidden="true" className="h-3.5 w-3.5 animate-spin motion-reduce:animate-none rounded-full border-2 border-current border-t-transparent" /> : null}
       {children}
     </button>
   );
