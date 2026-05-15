@@ -17,6 +17,15 @@ export type CreateItemResult = { ok: true; itemId: string } | { ok: false; error
 
 export async function createItem(formData: FormData): Promise<CreateItemResult> {
   const supabase = await createClient();
+
+  async function cleanupUploadedImages(paths: string[]) {
+    if (paths.length === 0) return;
+
+    const { error: cleanupError } = await supabase.storage.from("item-images").remove(paths);
+    if (cleanupError) {
+      console.error("Failed to cleanup uploaded images", cleanupError);
+    }
+  }
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
@@ -83,6 +92,7 @@ export async function createItem(formData: FormData): Promise<CreateItemResult> 
 
   if (error || !item) {
     console.error("Failed to create item", error);
+    await cleanupUploadedImages(uploadedPaths);
     return { ok: false, error: "publish" };
   }
 
@@ -99,6 +109,21 @@ export async function createItem(formData: FormData): Promise<CreateItemResult> 
   const { error: imageInsertError } = await supabase.from("item_images").insert(itemImagesPayload);
   if (imageInsertError) {
     console.error("Failed to insert item images", imageInsertError);
+
+    const { error: deleteError } = await supabase.from("items").delete().eq("id", item.id);
+    if (deleteError) {
+      console.error("Failed to delete item after image insert failure", deleteError);
+
+      const { error: archiveError } = await supabase
+        .from("items")
+        .update({ status: "archived" })
+        .eq("id", item.id);
+      if (archiveError) {
+        console.error("Failed to archive item after delete failure", archiveError);
+      }
+    }
+
+    await cleanupUploadedImages(uploadedPaths);
     return { ok: false, error: "publish" };
   }
 
