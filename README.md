@@ -1,3 +1,13 @@
+> [!IMPORTANT]
+> **Legacy / Superseded Teswa Web Beta**
+>
+> This repository preserves an earlier web/PWA beta of **Teswa** and is **not the current Teswa product repository**.
+>
+> Current product source: **[omarkhair70-droid/teswa.eg](https://github.com/omarkhair70-droid/teswa.eg)**  
+> Current Android product: **[Teswa on Google Play](https://play.google.com/store/apps/details?id=com.teswa.mobile)**
+>
+> The status, scope, limitations, and beta notes below describe this historical web beta only. They should not be used as the current release status of Teswa.
+
 # VIRAL / تِسوى
 
 منصة marketplace عربية للتبادل المباشر بين الأفراد (item-for-item swap)، حالياً في **Controlled Beta Marketplace MVP**.
